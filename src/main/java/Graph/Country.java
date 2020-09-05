@@ -1,4 +1,4 @@
-package Graph;
+package graph;
 
 public class Country {
     private String name;
@@ -17,4 +17,12 @@ public class Country {
     public int getSoldiers() {
         return soldiers;
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public boolean isEqual(Country country) {
+        return this.iD == country.iD;
+     }
 }

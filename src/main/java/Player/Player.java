@@ -1,7 +1,7 @@
-package Player;
-import Graph.Country;
-
+package player;
 import java.util.*;
+
+import graph.Country;
 
 public abstract class Player {
     private int[] cards = new int[4];
