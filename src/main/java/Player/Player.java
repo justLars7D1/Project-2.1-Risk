@@ -26,13 +26,8 @@ public abstract class Player {
         for(int i=0; i < cards.length; i++){
             sum += cards[i];
         }
-        if (sum >= CARDSALLOWED){
-            return true;
+         return sum>=CARDSALLOWED;
         }
-        else{
-            return false;
-        }
-    }
     private void endTurn(){
     }
     private void nextPhase(){}
