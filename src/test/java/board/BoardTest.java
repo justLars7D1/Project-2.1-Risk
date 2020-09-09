@@ -1,12 +1,10 @@
-package graph;
+package board;
 
 import org.junit.Test;
 
-import static org.junit.Assert.*;
-
 public class BoardTest {
     @Test
-    public void testJUnitSetup() {
+    public void testBoardStructure() {
         Board b = new Board();
         System.out.println(b);
     }

@@ -1,6 +1,6 @@
 package player;
 
-import graph.Country;
+import board.Country;
 
 import java.util.ArrayList;
 import java.util.List;
