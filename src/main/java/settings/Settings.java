@@ -57,7 +57,7 @@ public class Settings {
             "Madagascar",
             "North Africa",
             "South Africa",
-            "Eastern Australia", 
+            "Eastern Australia",
 
             // From here Australia
             "Indonesia",
@@ -102,12 +102,13 @@ public class Settings {
             //Edges within Europe
             {"Iceland","Great Britain (Great Britain & Ireland)" },
             {"Iceland", "Scandinavia"},
-            {"Great Britain (Great Britain & Ireland)","Scandinavia" },
+            {"Great Britain (Great Britain & Ireland)", "Scandinavia"},
             {"Scandinavia", "Northern Europe"},
             {"Scandinavia", "Ukraine (Eastern Europe, Russia)" },
             {"Great Britain (Great Britain & Ireland)", "Northern Europe" },
             {"Great Britain (Great Britain & Ireland)", "Western Europe"},
             {"Western Europe", "Northern Europe"},
+            {"Western Europe", "Southern Europe"},
             {"Northern Europe", "Ukraine (Eastern Europe, Russia)"},
             {"Northern Europe", "Southern Europe"},
             {"Southern Europe", "Ukraine (Eastern Europe, Russia)"},
@@ -115,7 +116,7 @@ public class Settings {
             //Edges within Asia
             {"Middle East","Afghanistan"},
             {"Middle East", "India (Hindustan)"},
-            {"Afghanistan","Ural"},
+            {"Afghanistan", "Ural"},
             {"Afghanistan", "India (Hindustan)"},
             {"Ural","Siberia"},
             {"India (Hindustan)","China"},
@@ -132,6 +133,9 @@ public class Settings {
             {"Irkutsk", "Kamchatka"},
             {"Yakutsk", "Kamchatka"},
             {"Kamchatka", "Japan"},
+            {"India (Hindustan)", "Siam (Southeast Asia)"},
+            {"Afghanistan", "China"},
+            {"Mongolia", "Kamchatka"},
 
             //Edges within Australasia
             {"Indonesia", "New Guinea"},
