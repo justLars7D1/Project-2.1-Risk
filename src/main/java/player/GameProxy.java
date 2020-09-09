@@ -1,5 +1,7 @@
 package player;
 
+import board.Country;
+
 import java.util.LinkedList;
 
 /**
@@ -15,5 +17,12 @@ public class GameProxy implements GameObserver {
     @Override
     public void onGameEvent(){
         //TODO: battle and setup events during the gameplay
+    }
+
+    /**
+     * player accessible methods
+     */
+    protected void sendSoldiers(Country country){
+        //TODO: access the map and modify units in country
     }
 }
