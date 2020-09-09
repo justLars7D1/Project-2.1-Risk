@@ -24,6 +24,7 @@ public class Board {
 
     /**
      * Retrieve a Country object based on it's ID
+     *
      * @param ID The country's ID
      * @return The Country object for that ID
      */
@@ -33,6 +34,7 @@ public class Board {
 
     /**
      * Retrieve a Country object based on it's name
+     *
      * @param name The country's name
      * @return The Country object for that name
      */
@@ -63,7 +65,7 @@ public class Board {
      * Add the correct edges between the different countries (which represent vertices in a graph)
      */
     private void addEdgesToCountries() {
-        for (String[] edge: Settings.countryEdges) {
+        for (String[] edge : Settings.countryEdges) {
             Country country1 = nameToCountryMapping.get(edge[0]);
             Country country2 = nameToCountryMapping.get(edge[1]);
             country1.addNeighboringCountry(country2);
@@ -74,7 +76,7 @@ public class Board {
     @Override
     public String toString() {
         StringBuilder res = new StringBuilder("Board\n");
-        for (Country country: nameToCountryMapping.values()) {
+        for (Country country : nameToCountryMapping.values()) {
             res.append("Country ID ").append(country.getID()).append(": ").append(country).append("\n");
         }
         return res.toString();
