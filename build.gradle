@@ -1,10 +1,15 @@
 plugins {
     id 'java'
+    id 'application'
     id 'org.openjfx.javafxplugin' version '0.0.9'
 }
 
 javafx {
-    modules = [ 'javafx.controls', 'javafx.fxml' ]
+    modules = ['javafx.controls', 'javafx.fxml']
+}
+
+application {
+    mainClassName = 'UI.Menu'
 }
 
 group 'edu.um.dke'
