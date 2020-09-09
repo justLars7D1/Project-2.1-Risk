@@ -83,6 +83,7 @@ public class Settings {
             {"Eastern United States", "Quebec (Eastern Canada)"},
             {"Quebec (Eastern Canada)", "Greenland"},
             {"Western United States", "Central America" },
+            {"Western United States", "Ontario (Central Canada)"},
 
             //Edges within South America
             {"Venezuela", "Brazil"},
