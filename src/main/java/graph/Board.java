@@ -1,11 +1,8 @@
 package graph;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
-import player.Player;
 import settings.Settings;
+
+import java.util.HashMap;
 
 public class Board {
 
@@ -14,6 +11,14 @@ public class Board {
     public Board() {
         this.nameToCountryMapping = new HashMap<>();
         setUpGameBoard();
+    }
+
+    public Country getCountryFromID(int ID) {
+        return getCountryFromName(Settings.counties[ID]);
+    }
+
+    public Country getCountryFromName(String name) {
+        return nameToCountryMapping.get(name);
     }
 
     private void setUpGameBoard() {
@@ -36,6 +41,15 @@ public class Board {
             country1.addNeighboringCountry(country2);
             country2.addNeighboringCountry(country1);
         }
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder res = new StringBuilder("Board\n");
+        for (Country country: nameToCountryMapping.values()) {
+            res.append("Country ID ").append(country.getiD()).append(": ").append(country).append("\n");
+        }
+        return res.toString();
     }
 
 }

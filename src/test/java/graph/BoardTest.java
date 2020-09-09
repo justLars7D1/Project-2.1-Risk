@@ -7,6 +7,7 @@ import static org.junit.Assert.*;
 public class BoardTest {
     @Test
     public void testJUnitSetup() {
-        assertTrue(true);
+        Board b = new Board();
+        System.out.println(b);
     }
 }

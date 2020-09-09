@@ -35,7 +35,7 @@ public class Settings {
             "Peru",
             "Venezuela",
             "Congo (Central Africa)", // From here Africa
-            "East Africa[note 1]",
+            "East Africa",
             "Egypt",
             "Madagascar",
             "North Africa",
