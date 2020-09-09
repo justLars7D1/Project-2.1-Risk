@@ -165,6 +165,7 @@ public class Settings {
             {"Ukraine (Eastern Europe, Russia)", "Middle East"},//Asia
             {"Ukraine (Eastern Europe, Russia)", "Afghanistan"},
             {"Ukraine (Eastern Europe, Russia)", "Ural"},
+            {"Southern Europe", "Middle East"},
 
             //Asia to
             {"Siam (Southeast Asia)", "Indonesia"} //Australasia
