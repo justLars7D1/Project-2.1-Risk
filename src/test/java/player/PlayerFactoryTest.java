@@ -8,4 +8,10 @@ public class PlayerFactoryTest {
     public void testJUnitSetup() {
         assertTrue(true);
     }
+
+    @Test
+    public void testCreateHumanPlayer(){
+        Player user = PlayerFactory.createHumanPlayer();
+        assertNotNull(user);
+    }
 }
