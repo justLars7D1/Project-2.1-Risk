@@ -9,7 +9,7 @@ javafx {
 }
 
 application {
-    mainClassName = 'UI.Menu'
+    mainClassName = 'UI.MainMenu.Menu'
 }
 
 group 'edu.um.dke'
