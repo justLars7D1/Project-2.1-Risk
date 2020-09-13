@@ -1,6 +1,7 @@
 package player;
 
 import board.Country;
+import settings.Settings;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,8 +14,8 @@ public abstract class Player {
     private int[] cards = new int[4];
     private TreeSet<Country> countriesOwned;
 
-    protected Player(int cardsallowed) {
-        CARDSALLOWED = cardsallowed;
+    protected Player() {
+        CARDSALLOWED = Settings.CARDSALLOWED;
     }
 
     private List<Integer> rollDice(int dice) {
@@ -35,10 +36,17 @@ public abstract class Player {
         return sum >= CARDSALLOWED;
     }
 
+    private int[] seeCards(){
+        return cards;
+    }
+
     private void endTurn() {
     }
 
     private void nextPhase() {
+    }
+    private void addCountry(Country country){
+        countriesOwned.add(country);
     }
 
 }

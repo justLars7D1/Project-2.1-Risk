@@ -4,6 +4,10 @@ package settings;
  * Settings class that provides easy access to all game constants used (for easy modification / access)
  */
 public class Settings {
+    /**
+     *  Defines the maximum number of cards that can be held on hand by a player.
+     */
+    public static final int CARDSALLOWED = 5;
 
     /**
      * The number of countries that exist within the board
