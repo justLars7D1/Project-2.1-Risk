@@ -10,7 +10,9 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Map;
 
 public class PlayerSelection {
 
@@ -169,10 +171,16 @@ public class PlayerSelection {
         HashMap<Integer, Integer> players = new HashMap<>();
 
         for (int i = 0; i < 6; i++) {
-            if (!playerList.get(i).getValue().equals("Empty")) {
-                players.put(i + 1, getColorID(colorList.get(i).getValue()));
+            if (playerList.get(i).getValue().equals("PLAYER")) {
+                players.put(getColorID(colorList.get(i).getValue()), 1);
+            } else if(playerList.get(i).getValue().equals("EASY BOT")) {
+                players.put(getColorID(colorList.get(i).getValue()), 2);
+            } else if (playerList.get(i).getValue().equals("HARD BOT")) {
+                players.put(getColorID(colorList.get(i).getValue()), 3);
             }
         }
+        System.out.println(Arrays.asList(players)); // method 1
         return players;
+
     }
 }
