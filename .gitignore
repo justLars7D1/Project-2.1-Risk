@@ -1,8 +1,8 @@
 # IDE Files
 .idea
-build
-.gradle
 
+.gradle
+build
 
 # Compiled class file
 *.class
