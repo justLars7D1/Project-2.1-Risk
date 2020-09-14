@@ -13,8 +13,8 @@ import java.util.ArrayList;
 
 public class Instructions {
 
-    private static final String IDLE_BUTTON_STYLE = "-fx-font-size: 1.8em; -fx-text-fill: black;-fx-background-color:transparent;";
-    private static final String HOVERED_BUTTON_STYLE = "-fx-font-size: 1.8em; -fx-text-fill: black;-fx-background-color:#00000026;";
+    private static final String IDLE_BUTTON_STYLE = "-fx-font-family: Vivaldi;-fx-font-size: 3em; -fx-text-fill: black;-fx-background-color:transparent;";
+    private static final String HOVERED_BUTTON_STYLE = "-fx-background-radius: 100px;-fx-font-family: Vivaldi;-fx-font-size: 3em; -fx-text-fill: black;-fx-background-color:#00000026;";
     private ArrayList<Text> rules;
     private int pageNumber = 0;
     private Label pageLabel;
@@ -72,7 +72,7 @@ public class Instructions {
         //Page number label
         pageLabel = new Label(pageNumber+1 + " / " + rules.size());
         pageLabel.setAlignment(Pos.CENTER);
-        pageLabel.setStyle("-fx-font-size: 1.3em;");
+        pageLabel.setStyle("-fx-font-family: Vivaldi;-fx-font-size: 2.5em;");
 
         //Add items to layout
         grid.add(pageLabel, 0, 2);

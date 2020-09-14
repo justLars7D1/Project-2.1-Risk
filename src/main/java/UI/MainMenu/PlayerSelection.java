@@ -19,8 +19,8 @@ public class PlayerSelection {
     private ArrayList<ComboBox<String>> colorList = new ArrayList<>();
     private ArrayList<Color> colors;
 
-    private static final String IDLE_BUTTON_STYLE = "-fx-font-size: 1.8em; -fx-text-fill: black;-fx-background-color:transparent;";
-    private static final String HOVERED_BUTTON_STYLE = "-fx-font-size: 1.8em; -fx-text-fill: black;-fx-background-color:#00000026;";
+    private static final String IDLE_BUTTON_STYLE = "-fx-font-family: Vivaldi;-fx-font-size: 3em; -fx-text-fill: black;-fx-background-color:transparent;";
+    private static final String HOVERED_BUTTON_STYLE = "-fx-background-radius: 100px; -fx-font-family: Vivaldi;-fx-font-size: 3em; -fx-text-fill: black;-fx-background-color:#00000026;";
 
     public void buildScene(Menu menu) {
 
@@ -36,14 +36,14 @@ public class PlayerSelection {
         grid.setPrefHeight(30);
 
         //Column labels
-        Label player = new Label("PLAYER");
-        Label colorLabel = new Label("COLOR");
+        Label player = new Label("Players");
+        Label colorLabel = new Label("Choose Color");
 
         //Label style
         grid.setConstraints(player, 0, 0);
         grid.setConstraints(colorLabel, 1, 0);
-        player.setStyle("-fx-font-size:1.6em");
-        colorLabel.setStyle("-fx-font-size:1.6em");
+        player.setStyle("-fx-font-family: Vivaldi;-fx-font-size: 2.5em;");
+        colorLabel.setStyle("-fx-font-family: Vivaldi;-fx-font-size: 2.5em;");
         //Player and color choice boxes
 
 //        TODO remove color item if it is being used

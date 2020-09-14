@@ -13,8 +13,8 @@ public class Menu extends Application {
 
     public Stage window;
     public Scene scene1, scene2, scene3;
-    private static final String IDLE_BUTTON_STYLE = "-fx-font-size: 1.8em; -fx-text-fill: white;-fx-background-color:transparent;";
-    private static final String HOVERED_BUTTON_STYLE = "-fx-font-size: 1.8em; -fx-text-fill: white;-fx-background-color:#ffffff45;";
+    private static final String IDLE_BUTTON_STYLE = "-fx-font-family: Vivaldi;-fx-font-size: 3em; -fx-text-fill: white;-fx-background-color:transparent;";
+    private static final String HOVERED_BUTTON_STYLE = "-fx-font-family: Vivaldi;-fx-font-size: 3em; -fx-text-fill: white;-fx-background-color:#ffffff45; -fx-background-radius: 100px;";
 
     public static void main(String[] args) {
         launch(args);
@@ -24,22 +24,21 @@ public class Menu extends Application {
     public void start(Stage primaryStage) throws Exception {
 
         window = primaryStage;
-
+//        System.out.println(javafx.scene.text.Font.getFamilies());
         //Initialize layout
         GridPane grid = new GridPane();
         VBox vBox = new VBox();
         vBox.setSpacing(20);
         grid.setPadding(new Insets(30, 0, 0, 50));
-
         //Background of menu
         BackgroundImage myBI = new BackgroundImage(new Image("file:risk.jpg", 1200, 700, false, true),
                 BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
                 BackgroundSize.DEFAULT);
 
         //Initialize buttons
-        Button play = new Button("PLAY");
-        Button instructions = new Button("RULES");
-        Button quit = new Button("QUIT");
+        Button play = new Button("Play");
+        Button instructions = new Button("Rules");
+        Button quit = new Button("Quit");
 
         //Set style to buttons
         play.setStyle(IDLE_BUTTON_STYLE);
