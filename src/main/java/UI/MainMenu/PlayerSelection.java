@@ -179,7 +179,7 @@ public class PlayerSelection {
                 players.put(getColorID(colorList.get(i).getValue()), 3);
             }
         }
-        System.out.println(Arrays.asList(players)); // method 1
+        //System.out.println(Arrays.asList(players)); // method 1
         return players;
 
     }

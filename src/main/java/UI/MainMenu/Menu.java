@@ -76,6 +76,7 @@ public class Menu extends Application {
         scene1 = new Scene(grid, 1200, 600);
         window.setTitle("Risk");
         window.setScene(scene1);
+        window.setResizable(false);
         window.show();
     }
 
