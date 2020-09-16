@@ -13,8 +13,6 @@ import java.util.ArrayList;
 
 public class Instructions {
 
-    private static final String IDLE_BUTTON_STYLE = "-fx-font-family: Vivaldi;-fx-font-size: 3em; -fx-text-fill: black;-fx-background-color:transparent;";
-    private static final String HOVERED_BUTTON_STYLE = "-fx-background-radius: 100px;-fx-font-family: Vivaldi;-fx-font-size: 3em; -fx-text-fill: black;-fx-background-color:#00000026;";
     private ArrayList<Text> rules;
     private int pageNumber = 0;
     private Label pageLabel;
@@ -27,30 +25,12 @@ public class Instructions {
         grid.setPrefWidth(80);
         grid.setPrefHeight(30);
 
-        //Background image
-        BackgroundImage myBI = new BackgroundImage(new Image("file:player.jpg", 1200, 700, false, true),
-                BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
-                BackgroundSize.DEFAULT);
-
         addRulesPages();
 
         //Button initialization
         Button back = new Button("Back");
         Button prev = new Button("Previous page");
         Button next = new Button("Next page");
-
-        //Set style to buttons
-        next.setStyle(IDLE_BUTTON_STYLE);
-        prev.setStyle(IDLE_BUTTON_STYLE);
-        back.setStyle(IDLE_BUTTON_STYLE);
-
-        next.setOnMouseEntered(e -> next.setStyle(HOVERED_BUTTON_STYLE));
-        prev.setOnMouseEntered(e -> prev.setStyle(HOVERED_BUTTON_STYLE));
-        back.setOnMouseEntered(e -> back.setStyle(HOVERED_BUTTON_STYLE));
-
-        next.setOnMouseExited(e -> next.setStyle(IDLE_BUTTON_STYLE));
-        prev.setOnMouseExited(e -> prev.setStyle(IDLE_BUTTON_STYLE));
-        back.setOnMouseExited(e -> back.setStyle(IDLE_BUTTON_STYLE));
 
         //Button actions
         next.setOnAction(e -> nextPage());
@@ -72,7 +52,6 @@ public class Instructions {
         //Page number label
         pageLabel = new Label(pageNumber+1 + " / " + rules.size());
         pageLabel.setAlignment(Pos.CENTER);
-        pageLabel.setStyle("-fx-font-family: Vivaldi;-fx-font-size: 2.5em;");
 
         //Add items to layout
         grid.add(pageLabel, 0, 2);
@@ -81,9 +60,9 @@ public class Instructions {
         rules.get(0).setVisible(true);
 
         root.getChildren().addAll(grid);
-        root.setBackground(new Background(myBI));
 
         menu.scene3 = new Scene(root, 1200, 600);
+        menu.scene3.getStylesheets().add("css/InstrStyle.css");
     }
 
     private void addRulesPages() {

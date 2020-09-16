@@ -1,0 +1,45 @@
+.root {
+     -fx-background-image: url("/images/instr.jpg");
+     -fx-background-size: cover;
+     -fx-background-size: 1200 700;
+}
+
+.button {
+      -fx-font-family: Vivaldi;
+      -fx-font-size: 3em;
+      -fx-text-fill: black;
+      -fx-background-color: transparent;
+      -fx-background-radius: 100px;
+}
+
+.button:hover {
+    -fx-effect: dropshadow( gaussian, black, 2, 0.2, 1, 1);
+}
+
+.label {
+    -fx-font-family: Vivaldi;
+    -fx-effect: dropshadow( gaussian , white , 4, 0.5, 1, 1);
+    -fx-font-size: 2.5em;
+    -fx-font-weight: bold;
+}
+
+.combo-box {
+    -fx-background-color: #d1d1d1;
+    -fx-pref-width: 200;
+    -fx-pref-height: 35;
+    -fx-font-size: 1.2em;
+}
+
+.combo-box .combo-box-popup .list-view, .combo-box .combo-box-popup .list-cell {
+    -fx-background-color: #ececec;
+    -fx-text-fill: black ;
+    -fx-font-family: "Calibri" ;
+}
+
+#title {
+   -fx-font-size: 5em;
+}
+
+.combo-box .combo-box-popup .list-cell:hover {
+    -fx-background-color: #bdbdbd;
+}

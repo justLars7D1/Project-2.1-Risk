@@ -1,0 +1,19 @@
+.root {
+    -fx-background-image: url("/images/risk.jpg");
+    -fx-background-size: cover;
+    -fx-background-size: 1200 700;
+}
+
+.button {
+    -fx-font-family: Vivaldi;
+    -fx-font-size: 3em;
+    -fx-text-fill: white;
+    -fx-background-color:transparent;
+    -fx-background-radius: 100px;
+    -fx-width: 100;
+    -fx-height: 20;
+}
+
+.button:hover{
+    -fx-effect: dropshadow( gaussian, white, 2, 0.2, 1, 1 );
+}

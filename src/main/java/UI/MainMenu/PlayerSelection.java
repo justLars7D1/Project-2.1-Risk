@@ -3,16 +3,16 @@ package UI.MainMenu;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Map;
 
 public class PlayerSelection {
 
@@ -21,36 +21,33 @@ public class PlayerSelection {
     private ArrayList<ComboBox<String>> colorList = new ArrayList<>();
     private ArrayList<Color> colors;
 
-    private static final String IDLE_BUTTON_STYLE = "-fx-font-family: Vivaldi;-fx-font-size: 3em; -fx-text-fill: black;-fx-background-color:transparent;";
-    private static final String HOVERED_BUTTON_STYLE = "-fx-background-radius: 100px; -fx-font-family: Vivaldi;-fx-font-size: 3em; -fx-text-fill: black;-fx-background-color:#00000026;";
-
     public void buildScene(Menu menu) {
 
         fillColors();
-        //Background image
-        BackgroundImage myBI = new BackgroundImage(new Image("file:instr.jpg", 1200, 700, false, true),
-                BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
-                BackgroundSize.DEFAULT);
-        grid.setPadding(new Insets(100, 0, 0, 150));
+
+        grid.setPadding(new Insets(50, 0, 0, 120));
         grid.setVgap(10);
-        grid.setHgap(40);
         grid.setPrefWidth(80);
         grid.setPrefHeight(30);
 
         //Column labels
-        Label player = new Label("Players");
+        Label title = new Label("Player Selection");
+        title.setId("title");
+        Label player = new Label("Choose Player");
         Label colorLabel = new Label("Choose Color");
+        HBox hBox = new HBox(title);
+        hBox.setAlignment(Pos.CENTER);
 
         //Label style
-        grid.setConstraints(player, 0, 0);
-        grid.setConstraints(colorLabel, 1, 0);
-        player.setStyle("-fx-font-family: Vivaldi;-fx-font-size: 2.5em;");
-        colorLabel.setStyle("-fx-font-family: Vivaldi;-fx-font-size: 2.5em;");
+        grid.setConstraints(hBox, 0, 0);
+        grid.setConstraints(player, 0, 1);
+        grid.setConstraints(colorLabel, 1, 1);
+
         //Player and color choice boxes
 
 //        TODO remove color item if it is being used
 
-        for (int i = 0; i < 6; i++) {
+        for (int i = 1; i < 7; i++) {
             createChoiceBoxes(i);
         }
 
@@ -59,31 +56,21 @@ public class PlayerSelection {
         Button back = new Button("Back");
 
         //Button style
-        grid.setConstraints(start, 1, 8);
-        grid.setConstraints(back, 0, 8);
+        grid.setConstraints(start, 1, 9);
+        grid.setConstraints(back, 0, 9);
         start.setMinWidth(grid.getPrefWidth());
         start.setMinHeight(grid.getPrefHeight());
         back.setMinWidth(grid.getPrefWidth());
         back.setMinHeight(grid.getPrefHeight());
 
-        //Set style to buttons
-        start.setStyle(IDLE_BUTTON_STYLE);
-        back.setStyle(IDLE_BUTTON_STYLE);
-
-        start.setOnMouseEntered(e -> start.setStyle(HOVERED_BUTTON_STYLE));
-        back.setOnMouseEntered(e -> back.setStyle(HOVERED_BUTTON_STYLE));
-
-        start.setOnMouseExited(e -> start.setStyle(IDLE_BUTTON_STYLE));
-        back.setOnMouseExited(e -> back.setStyle(IDLE_BUTTON_STYLE));
-
         //Button actions
         start.setOnAction(e -> getPlayers());
         back.setOnAction(e -> menu.window.setScene(menu.scene1));
 
-        grid.getChildren().addAll(player, colorLabel, start, back);
-        grid.setBackground(new Background(myBI));
+        grid.getChildren().addAll(title, player, colorLabel, start, back);
 
         menu.scene2 = new Scene(grid, 1200, 600);
+        menu.scene2.getStylesheets().add("css/SelectionStyle.css");
     }
 
     private void fillColors() {
@@ -100,7 +87,6 @@ public class PlayerSelection {
     private void createChoiceBoxes(int i) {
 
         ComboBox<String> playerBox = new ComboBox<>();
-        playerBox.setStyle("-fx-pref-width: 200; -fx-pref-height: 35; -fx-font-size: 1.2em");
         playerList.add(playerBox);
 
         playerBox.getItems().addAll("EMPTY", "PLAYER", "EASY BOT", "HARD BOT");
@@ -108,7 +94,6 @@ public class PlayerSelection {
         grid.setConstraints(playerBox, 0, i + 1);
 
         ComboBox<String> colorBox = new ComboBox<>();
-        colorBox.setStyle("-fx-pref-width: 200; -fx-pref-height: 35; -fx-font-size: 1.2em");
 
         colorList.add(colorBox);
         colorBox.setItems(FXCollections.observableArrayList("EMPTY", "RED", "BLUE", "GREEN", "YELLOW", "ORANGE", "PURPLE"));

@@ -4,7 +4,6 @@ import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
@@ -13,8 +12,6 @@ public class Menu extends Application {
 
     public Stage window;
     public Scene scene1, scene2, scene3;
-    private static final String IDLE_BUTTON_STYLE = "-fx-font-family: Vivaldi;-fx-font-size: 3em; -fx-text-fill: white;-fx-background-color:transparent;";
-    private static final String HOVERED_BUTTON_STYLE = "-fx-font-family: Vivaldi;-fx-font-size: 3em; -fx-text-fill: white;-fx-background-color:#ffffff45; -fx-background-radius: 100px;";
 
     public static void main(String[] args) {
         launch(args);
@@ -24,38 +21,17 @@ public class Menu extends Application {
     public void start(Stage primaryStage) throws Exception {
 
         window = primaryStage;
-//        System.out.println(javafx.scene.text.Font.getFamilies());
+
         //Initialize layout
         GridPane grid = new GridPane();
         VBox vBox = new VBox();
         vBox.setSpacing(20);
         grid.setPadding(new Insets(30, 0, 0, 50));
-        //Background of menu
-        BackgroundImage myBI = new BackgroundImage(new Image("file:risk.jpg", 1200, 700, false, true),
-                BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
-                BackgroundSize.DEFAULT);
 
         //Initialize buttons
         Button play = new Button("Play");
         Button instructions = new Button("Rules");
         Button quit = new Button("Quit");
-
-        //Set style to buttons
-        play.setStyle(IDLE_BUTTON_STYLE);
-        instructions.setStyle(IDLE_BUTTON_STYLE);
-        quit.setStyle(IDLE_BUTTON_STYLE);
-
-        play.setOnMouseEntered(e -> play.setStyle(HOVERED_BUTTON_STYLE));
-        instructions.setOnMouseEntered(e -> instructions.setStyle(HOVERED_BUTTON_STYLE));
-        quit.setOnMouseEntered(e -> quit.setStyle(HOVERED_BUTTON_STYLE));
-
-        play.setOnMouseExited(e -> play.setStyle(IDLE_BUTTON_STYLE));
-        instructions.setOnMouseExited(e -> instructions.setStyle(IDLE_BUTTON_STYLE));
-        quit.setOnMouseExited(e -> quit.setStyle(IDLE_BUTTON_STYLE));
-
-        play.setMinSize(100, 20);
-        instructions.setMinSize(100, 20);
-        quit.setMinSize(100,20);
 
         //Initialize other screens
         PlayerSelection selection = new PlayerSelection();
@@ -71,9 +47,9 @@ public class Menu extends Application {
         //Add attributes to layout
         vBox.getChildren().addAll(play, instructions, quit);
         grid.getChildren().addAll(vBox);
-        grid.setBackground(new Background(myBI));
 
         scene1 = new Scene(grid, 1200, 600);
+        scene1.getStylesheets().add("css/MainStyle.css");
         window.setTitle("Risk");
         window.setScene(scene1);
         window.setResizable(false);
