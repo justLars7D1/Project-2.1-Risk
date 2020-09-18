@@ -20,6 +20,7 @@ public class PlayerSelection {
     private ArrayList<ComboBox<String>> playerList = new ArrayList<>();
     private ArrayList<ComboBox<String>> colorList = new ArrayList<>();
     private ArrayList<Color> colors;
+    public Scene scene4;
 
     public void buildScene(Menu menu) {
 
@@ -37,6 +38,10 @@ public class PlayerSelection {
         Label colorLabel = new Label("Choose Color");
         HBox hBox = new HBox(title);
         hBox.setAlignment(Pos.CENTER);
+
+        //initialising the board map
+        BoardMap board = new BoardMap();
+        board.buildScene(menu);
 
         //Label style
         grid.setConstraints(hBox, 0, 0);
@@ -64,7 +69,7 @@ public class PlayerSelection {
         back.setMinHeight(grid.getPrefHeight());
 
         //Button actions
-        start.setOnAction(e -> getPlayers());
+        start.setOnAction(e -> menu.window.setScene(menu.scene4));
         back.setOnAction(e -> menu.window.setScene(menu.scene1));
 
         grid.getChildren().addAll(title, player, colorLabel, start, back);
@@ -168,4 +173,5 @@ public class PlayerSelection {
         return players;
 
     }
+
 }

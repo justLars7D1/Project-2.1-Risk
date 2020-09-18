@@ -11,7 +11,7 @@ import javafx.stage.Stage;
 public class Menu extends Application {
 
     public Stage window;
-    public Scene scene1, scene2, scene3;
+    public Scene scene1, scene2, scene3, scene4;
 
     public static void main(String[] args) {
         launch(args);
