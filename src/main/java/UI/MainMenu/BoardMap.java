@@ -7,14 +7,21 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.SVGPath;
 import javafx.stage.Stage;
-
+import javafx.scene.transform.Scale;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class BoardMap {
 
 
     SVGPath path1 = new SVGPath();
+    double scaleFactor = 5.0;
+    ArrayList<SVGPath> listOfPaths;
+    double width;
+    double height;
+    double offsetX; // offset of the image to move it left or right
+    Scale scale = new Scale();
 
   ///*
   //Declaring all the aSVG path objects,
@@ -85,7 +92,7 @@ public class BoardMap {
     String auss4 = "M 175.1 85.8 L 175.7 84.9 L 175.4 84.5 L 174.6 84.4 L 174 85 L 173.6 86.1 L 173.1 85.6 L 173 85 L 172.4 84.6 L 172 84 L 168.5 84.1 L 168 84 L 167.1 84.8 L 166 85 L 164.6 85.3 L 163 86 L 161.7 86.2 L 161 86 L 160.7 85.5 L 161 85 L 161.7 83.8 L 162 83 L 161.6 82.5 L 161 82 L 161.8 79 L 161.7 77.8 L 162 77 L 164.2 76 L 165 76 L 165.2 75.7 L 167 75 L 168 74 L 168.3 73.4 L 169 73.6 L 169.3 72.8 L 170.6 71.8 L 171 71 L 172.1 71.8 L 173 72 L 173 73 L 170 79 L 172 80 L 179 80 L 177 84 L 177 86 L 176 88 L 176.1 88.5 L 175.6 88.5 L 175 88 L 175.4 86.8 L 175.1 86.4 L 175.1 85.8";
 
     //North America
-    String nas1 = "M 25 10 L 20 9 L 17.2 9.4 L 15 10 L 12 11 L 13 12 L 12.2 12.2 L 10 12 L 9 13 L 10 13 L 10.8 12.8 L 11 13 L 10 14 L 7 15 L 6 17 L 7.6 16.8 L 8 17 L 7 17.6 L 4 19 L 10 17 L 11 16.4 L 12 16 L 14.5 15.5 L 15 16 L 15.2 16.6 L 15.5 17 L 15.8 17.4 L 15.6 18.1 L 15.9 18.7 L 16.4 18.1 L 16.8 17.5 L 16.4 17 L 17 16.7 L 17 16.1 L 18 16";
+    String nas1 = "M 26 10 L 21 9 L 18.2 9.4 L 16 10 L 13 11 L 14 12 L 13.2 12.2 L 11 12 L 10 13 L 11 13 L 11.8 12.8 L 12 13 L 11 14 L 8 15 L 7 17 L 8.6 16.8 L 9 17 L 8 17.6 L 5 19 L 11 17 L 12 16.4 L 13 16 L 15.5 15.5 L 16 16 L 19 16 L 26 10";
     String nas2 = "M 16 16 L 37 16 L 35 18 L 35 19 L 34 20 L 34 21 L 32 23 L 32 24 L 16 24 L 15.7 23.5 L 15 23 L 15.2 22.5 L 15 22 L 14.6 22.2 L 14.5 21.8 L 14.5 21.5 L 14.7 21.2 L 15 21 L 15.2 20.5 L 14.7 20.3 L 15 19.8 L 15.6 19.1 L 16 19 L 15.9 18.7 L 16.4 18.1 L 16.8 17.5 L 16.4 17 L 16 16";
     String nas3 = "M 13 35 L 12.8 36.4 L 13.2 38.5 L 13 39 L 13.7 39.5 L 13.9 39.7 L 14 40 L 14.2 40.5 L 14 41 L 14.5 41.2 L 15 42 L 14.8 40.8 L 14.4 39.9 L 14 39 L 13.6 37.8 L 13.7 36.7 L 14.2 36.2 L 14.9 36.3 L 15.5 37 L 16 38 L 16.7 38.9 L 17 40 L 18.1 40.9 L 19 42 L 18.9 43.2 L 18.5 44.4 L 19 45 L 20 45 L 21 46 L 23 47 L 24.5 47.4 L 26 47 L 26.6 48.2 L 28 49 L 29.2 49.1 L 30 49 L 30.1 49.6 L 30 50 L 30.3 50.6 L 31 51 L 31.3 51.9 L 32.1 52.7 L 33.4 52.5 L 34.9 52.5 L 36 53 L 35 52 L 32.8 52.3 L 32 52 L 31.8 50 L 32 48 L 31 47.4 L 29 47.5 L 29.7 46.2 L 30 45 L 31 44 L 30.8 43.2 L 30 43 L 29 44 L 28.5 45.2 L 27 46 L 26 46 L 26 45 L 25 44 L 25.7 42.1 L 26.7 40.8 L 27.7 40 L 27 40 L 26 38 L 24 38 L 24 37 L 23 36 L 15 36 L 13 35";
     String nas4 = "M 16 16 L 37 16 L 35 18 L 35 19 L 34 20 L 34 21 L 32 23 L 32 24 L 16 24 L 15.7 23.5 L 15 23 L 15.2 22.5 L 15 22 L 14.6 22.2 L 14.5 21.8 L 14.5 21.5 L 14.7 21.2 L 15 21 L 15.2 20.5 L 14.7 20.3 L 15 19.8 L 15.6 19.1 L 16 19 L 15.9 18.7 L 16.4 18.1 L 16.8 17.5 L 16.4 17 L 16 16M 23 36 L 24 37 L 24 38 L 25 38 L 26 38 L 27 40 L 28 40 L 28 39 L 29 38 L 29.7 37.7 L 30.3 37.3 L 31 37 L 32 37.7 L 33 38 L 34 37 L 35 36.7 L 36.3 37.2 L 37 37 L 37.4 37.7 L 38 38 L 37.6 38.8 L 38.2 39.9 L 38.6 40.3 L 39 40 L 38.7 37.9 L 39 36 L 40 35 L 41.1 34.4 L 43 33 L 43.2 32.3 L 43 31 L 45 30 L 45.9 29.3 L 47 29 L 48.1 28.6 L 48.7 27.8 L 49 27 L 50 26.7 L 51 26.3 L 51.2 25.6 L 51 25 L 50 25 L 49 26 L 47.9 26.2 L 47 27 L 46.5 27.7 L 46 28.3 L 45.1 28.7 L 44 28 L 43.7 28 L 43.5 28.5 L 43 29 L 42.6 29.1 L 42 29 L 41.8 28.5 L 42 28 L 41.8 27.5 L 41.9 27 L 42.3 26.4 L 41.4 26.7 L 40.4 27.6 L 39.8 28.7 L 39 29 L 38.7 28.3 L 39.1 27.4 L 39.4 26.7 L 40 26 L 41 26 L 40.8 25.5 L 40 25 L 38.8 25.3 L 38 25 L 38.3 24.6 L 39 24.2 L 39 24.2 L 37.9 24.4 L 37.4 24.1 L 33 24 L 33 27 L 32 28 L 32 30 L 33 31 L 32 32 L 27 32 L 26 33 L 26 34 L 25 36 L 23 36";
@@ -131,8 +138,7 @@ public class BoardMap {
 
         Pane canvas = new Pane();
         canvas.setStyle("-fx-background-color: white;");
-        canvas.setPrefSize(200,200);
-        canvas.setPrefSize(400,300);
+        canvas.setPrefSize(1200,600);
 
         path1.setContent(wholeWorld);
         path1.setFill(Color.GREY);
@@ -193,15 +199,42 @@ public class BoardMap {
         }
        // */
 
-        canvas.getChildren().addAll(af1,af2, af3, af4,af5,af6,aus1,aus2,aus3,aus4, na1,na2,na3,na4,na5,na6,na7,na8,na9,sa1,sa2,sa3,sa4,eu1,eu2,eu3,eu4,eu5,eu6,eu7,as1,as2,as3,as4,as5,as6,as7,as8,as9,as10,as11,as12);
+        listOfPaths = new ArrayList<SVGPath>(Arrays.asList(af1, af2, af3, af4,af5,af6,aus1,aus2,aus3,aus4, na1,na2,na3,na4,na5,na6,na7,na8,na9,sa1,sa2,sa3,sa4,eu1,eu2,eu3,eu4,eu5,eu6,eu7,as1,as2,as3,as4,as5,as6,as7,as8,as9,as10,as11,as12));
 
+        for(SVGPath s : listOfPaths){ // grey inside, black border
+            s.setFill(Color.color(120./255,120./255,120./255));
+            s.setStrokeWidth(0.5);
+            s.setStroke(Color.color(0,0,0));
+        }
+
+        as4.setFill(Color.color(200./255,10./255,10./255));
+
+
+        canvas.getChildren().addAll(listOfPaths);
         Group root = new Group(canvas);
-
-
 
         menu.scene4 = new Scene(root, 1200, 600);
         menu.scene4.getStylesheets().add("css/InstrStyle.css");
 
+        width = menu.scene4.getWidth();
+        height = menu.scene4.getHeight();
+        offsetX = 0.0;
+
+        scale.setX(getScaleFactor()); //initialising the scale object
+        scale.setY(getScaleFactor());
+
+        scale.setPivotX(0); //pivot point as the top left corner to make post scaling translation easier
+        scale.setPivotY(0);
+
+        root.getTransforms().add(scale);
+
+        root.setTranslateX(225); // offsetting the image to allow for a box.
+        root.setTranslateY(50);
+
+    }
+
+    public double getScaleFactor(){
+        return scaleFactor;
     }
 
 }
