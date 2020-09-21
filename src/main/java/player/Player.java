@@ -10,9 +10,13 @@ import java.util.TreeSet;
 
 public abstract class Player {
 
-    private final int CARDSALLOWED;
     private int[] cards = new int[4];
     private TreeSet<Country> countriesOwned;
+
+    //draft=0, attack=1, fortify=2
+    private int PHASE=0;
+
+    private final int CARDSALLOWED;
 
     protected Player() {
         CARDSALLOWED = Settings.CARDSALLOWED;
