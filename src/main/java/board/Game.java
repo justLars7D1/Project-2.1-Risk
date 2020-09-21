@@ -14,7 +14,7 @@ public class Game implements GameInterface {
     /**
      * Handles game events and processes the interaction between players
      */
-    private GameProxy proxy;
+    protected GameProxy proxy;
 
     public Game() {
     }
@@ -33,11 +33,9 @@ public class Game implements GameInterface {
         for (int id: playerIDs) {
             Player p;
             if (playerSelection.get(id).equalsIgnoreCase("user")) {
-                // Add id to it
-                p = PlayerFactory.createHumanPlayer();
+                p = PlayerFactory.createHumanPlayer(id);
             } else {
-                // Add id to it
-                p = PlayerFactory.createAIPlayer();
+                p = PlayerFactory.createAIPlayer(id);
             }
             players.add(p);
         }
@@ -54,4 +52,5 @@ public class Game implements GameInterface {
     public void startBattlePhase() {
 
     }
+
 }

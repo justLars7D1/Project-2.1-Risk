@@ -9,7 +9,7 @@ import java.util.LinkedList;
  */
 public class GameProxy implements GameObserver {
 
-    LinkedList<Player> players;
+    public LinkedList<Player> players;
 
     public GameProxy(LinkedList<Player> players){
         this.players = players;

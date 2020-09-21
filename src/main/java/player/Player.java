@@ -10,6 +10,8 @@ import java.util.TreeSet;
 
 public abstract class Player {
 
+    public int id;
+
     private int[] cards = new int[4];
     private TreeSet<Country> countriesOwned;
 
@@ -18,7 +20,8 @@ public abstract class Player {
 
     private final int CARDSALLOWED;
 
-    protected Player() {
+    protected Player(int id) {
+        this.id = id;
         CARDSALLOWED = Settings.CARDSALLOWED;
     }
 
@@ -53,4 +56,14 @@ public abstract class Player {
         countriesOwned.add(country);
     }
 
+    public int getId() {
+        return id;
+    }
+
+    @Override
+    public String toString() {
+        return "Player{" +
+                "id=" + id +
+                '}';
+    }
 }

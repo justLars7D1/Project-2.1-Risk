@@ -3,13 +3,14 @@ package player;
 import settings.Settings;
 
 public class RiskUser extends Player{
+
     public String name;
-    public int id;
 
     /**
      * actions and cards management for a human player
      */
-    public RiskUser(){
+    public RiskUser(int id) {
+        super(id);
     }
 
     public void setName(String name) {
@@ -20,12 +21,10 @@ public class RiskUser extends Player{
         return this.name;
     }
 
-    public void setId(int id){
-        this.id = id;
+    @Override
+    public String toString() {
+        return "RiskUser{" +
+                "id=" + id +
+                '}';
     }
-
-    public int getId(){
-        return this.id;
-    }
-
 }

@@ -2,12 +2,11 @@ package player;
 
 public class RiskBot extends Player {
 
-    public int id;
-
     /**
      * algorithm and strategies for our risk bot
      */
-    public RiskBot() {
+    public RiskBot(int id) {
+        super(id);
     }
 
     public void setId(int id) {
@@ -17,4 +16,12 @@ public class RiskBot extends Player {
     public int getId() {
         return id;
     }
+
+    @Override
+    public String toString() {
+        return "RiskBot{" +
+                "id=" + id +
+                '}';
+    }
+
 }
