@@ -6,13 +6,24 @@ import player.PlayerFactory;
 
 import java.util.*;
 
-public class Game {
+/**
+ * Represents the implementation of the back-end of the game
+ */
+public class Game implements GameInterface {
 
+    /**
+     * Handles game events and processes the interaction between players
+     */
     private GameProxy proxy;
 
     public Game() {
     }
 
+    /**
+     * Creates the game from the hashmap configuration
+     * Builds a random order for turns
+     * @param playerSelection The hashmap containing player configurations
+     */
     public void buildSetup(HashMap<Integer, String> playerSelection) {
         LinkedList<Player> players = new LinkedList<>();
 
@@ -34,4 +45,13 @@ public class Game {
         proxy = new GameProxy(players);
     }
 
+    @Override
+    public void startPlacementPhase() {
+
+    }
+
+    @Override
+    public void startBattlePhase() {
+
+    }
 }
