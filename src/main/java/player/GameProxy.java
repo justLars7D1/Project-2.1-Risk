@@ -8,6 +8,7 @@ import java.util.LinkedList;
  * Handles game events and processes the interaction between players
  */
 public class GameProxy implements GameObserver {
+    Player currentPlayer;
     LinkedList<Player> players;
 
     public GameProxy(LinkedList<Player> players){
