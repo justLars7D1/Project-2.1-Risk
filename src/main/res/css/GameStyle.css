@@ -1,0 +1,37 @@
+#main{
+    -fx-background-image: url("/images/player.jpg");
+    -fx-background-size: cover;
+    -fx-background-size: 1200 600;
+}
+
+.button {
+      -fx-font-family: Vivaldi;
+      -fx-font-size: 3em;
+      -fx-text-fill: white;
+      -fx-background-color: transparent;
+      -fx-background-radius: 100px;
+}
+
+.button:hover {
+    -fx-effect: dropshadow( gaussian, black, 3, 0.3, 1, 1 );
+}
+
+.label {
+    -fx-text-fill: white;
+    -fx-font-family: Vivaldi;
+    -fx-font-size: 5em;
+}
+
+#pauseMenu {
+     -fx-background-image: url("/images/frame.jpg");
+     -fx-background-size:  cover;
+     -fx-min-width: 400px;
+     -fx-min-height: 400px;
+     -fx-background-radius: 50px;
+    -fx-effect: dropshadow( gaussian, black, 15, 0.3, 0, 0 );
+}
+
+#pausePane {
+    -fx-background-color: rgba(0,0,0,0.5);
+    -fx-background-radius: 70px;
+}

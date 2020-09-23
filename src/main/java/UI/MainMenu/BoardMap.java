@@ -1,9 +1,15 @@
 package UI.MainMenu;
 
 import javafx.application.Application;
+import javafx.event.EventHandler;
+import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.layout.Pane;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.SVGPath;
 import javafx.stage.Stage;
@@ -136,8 +142,13 @@ public class BoardMap {
     public void buildScene(Menu menu){
         //test case to showcase the world map on the screen
 
-        Pane canvas = new Pane();
-        canvas.setStyle("-fx-background-color: white;");
+        Pane pane = new Pane();
+        StackPane canvas = new StackPane();
+        BorderPane pausePane = new BorderPane();
+        pausePane.setId("pausePane");
+
+        BorderPane borderPane = new BorderPane();
+        canvas.setId("main");
         canvas.setPrefSize(1200,600);
 
         path1.setContent(wholeWorld);
@@ -209,12 +220,41 @@ public class BoardMap {
 
         as4.setFill(Color.color(200./255,10./255,10./255));
 
+        VBox pause = pauseMenu(menu, pausePane);
+        Button pauseB = new Button();
 
-        canvas.getChildren().addAll(listOfPaths);
-        Group root = new Group(canvas);
+        Group pauseM = new Group(pause);
+        Group board = new Group();
+        board.getChildren().addAll(listOfPaths);
 
-        menu.scene4 = new Scene(root, 1200, 600);
-        menu.scene4.getStylesheets().add("css/InstrStyle.css");
+        Button attackB = new Button("Attack");
+        Button endTurnB = new Button("End Turn");
+        HBox hButtonBox = new HBox(attackB, endTurnB);
+        hButtonBox.setAlignment(Pos.CENTER);
+
+        borderPane.setBottom(hButtonBox);
+
+        pane.getChildren().addAll(board);
+        pausePane.setCenter(pauseM);
+        canvas.getChildren().addAll(pauseB, pane, borderPane, pausePane);
+
+        borderPane.setPickOnBounds(false);
+        pane.setPickOnBounds(false);
+        canvas.setPickOnBounds(false);
+        pausePane.setVisible(false);
+        pausePane.setPickOnBounds(false);
+
+        /*Button Listener ESCAPE - Pause menu*/
+        pauseB.setOnKeyPressed(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                if (event.getCode() == KeyCode.ESCAPE) {
+                    pausePane.setVisible(true);
+                }
+            }
+        });
+        menu.scene4 = new Scene(canvas, 1200, 600);
+        menu.scene4.getStylesheets().add("css/GameStyle.css");
 
         width = menu.scene4.getWidth();
         height = menu.scene4.getHeight();
@@ -226,11 +266,44 @@ public class BoardMap {
         scale.setPivotX(0); //pivot point as the top left corner to make post scaling translation easier
         scale.setPivotY(0);
 
-        root.getTransforms().add(scale);
+        board.getTransforms().add(scale);
+        board.setTranslateX(120);
+        board.setTranslateY(50);
+    }
 
-        root.setTranslateX(225); // offsetting the image to allow for a box.
-        root.setTranslateY(50);
+    public VBox pauseMenu(Menu menu, BorderPane pane) {
+        Label pauseL = new Label("Pause Menu");
+        Button continueB = new Button("Continue");
+        Button newGameB = new Button("New Game");
+        Button restartB = new Button("Restart");
+        Button quitB = new Button("Quit");
 
+        VBox vBox = new VBox(pauseL, continueB, newGameB, restartB, quitB);
+        vBox.setAlignment(Pos.CENTER);
+        vBox.setId("pauseMenu");
+
+        //Button Actions
+        continueB.setOnAction(e -> { pane.setVisible(false);});
+        newGameB.setOnAction(e -> menu.window.setScene(menu.scene2));
+        restartB.setOnAction(e -> restart());
+        quitB.setOnAction(e -> quitAction(quitB));
+
+        return vBox;
+    }
+
+    /*
+    * Restart the current game.
+    * */
+    private void restart() {
+
+    }
+
+    /*
+    * Quit the whole game.
+    * */
+    private void quitAction(Button quit) {
+        Stage stage = (Stage) quit.getScene().getWindow();
+        stage.close();
     }
 
     public double getScaleFactor(){
