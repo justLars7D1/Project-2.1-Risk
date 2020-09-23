@@ -232,7 +232,8 @@ public class BoardMap {
 
         borderPane.setBottom(hButtonBox);
 
-        pane.getChildren().addAll(board);
+        Button testB = new Button("TEST");
+        pane.getChildren().addAll(board, testB);
         pausePane.setCenter(pauseM);
         canvas.getChildren().addAll(pauseB, pane, borderPane, pausePane);
 
