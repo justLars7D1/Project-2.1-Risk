@@ -220,7 +220,8 @@ public class BoardMap {
 
         as4.setFill(Color.color(200./255,10./255,10./255));
 
-        VBox pause = pauseMenu(menu, pausePane);
+        PauseMenu p = new PauseMenu();
+        VBox pause = p.pauseMenu(menu, pausePane, this);
         Button pauseB = new Button();
 
         Group pauseM = new Group(pause);
@@ -271,39 +272,11 @@ public class BoardMap {
         board.setTranslateY(50);
     }
 
-    public VBox pauseMenu(Menu menu, BorderPane pane) {
-        Label pauseL = new Label("Pause Menu");
-        Button continueB = new Button("Continue");
-        Button newGameB = new Button("New Game");
-        Button restartB = new Button("Restart");
-        Button quitB = new Button("Quit");
-
-        VBox vBox = new VBox(pauseL, continueB, newGameB, restartB, quitB);
-        vBox.setAlignment(Pos.CENTER);
-        vBox.setId("pauseMenu");
-
-        //Button Actions
-        continueB.setOnAction(e -> { pane.setVisible(false);});
-        newGameB.setOnAction(e -> menu.window.setScene(menu.scene2));
-        restartB.setOnAction(e -> restart());
-        quitB.setOnAction(e -> quitAction(quitB));
-
-        return vBox;
-    }
-
     /*
     * Restart the current game.
     * */
-    private void restart() {
+    public void restart() {
 
-    }
-
-    /*
-    * Quit the whole game.
-    * */
-    private void quitAction(Button quit) {
-        Stage stage = (Stage) quit.getScene().getWindow();
-        stage.close();
     }
 
     public double getScaleFactor(){
