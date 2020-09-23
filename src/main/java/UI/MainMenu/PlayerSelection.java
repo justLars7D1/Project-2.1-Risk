@@ -78,6 +78,12 @@ public class PlayerSelection {
         menu.scene2.getStylesheets().add("css/SelectionStyle.css");
     }
 
+    public void refreshScene() {
+        for (int i = 1; i < 7; i++) {
+            createChoiceBoxes(i);
+        }
+    }
+
     private void fillColors() {
         colors = new ArrayList<>();
         colors.add(Color.TRANSPARENT);

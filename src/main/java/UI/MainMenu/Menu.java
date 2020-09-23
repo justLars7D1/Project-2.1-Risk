@@ -40,7 +40,7 @@ public class Menu extends Application {
         instr.buildScene(this);
 
         //Button Actions
-        play.setOnAction(e -> window.setScene(scene2));
+        play.setOnAction(e -> {selection.refreshScene();window.setScene(scene2);});
         instructions.setOnAction(e -> window.setScene(scene3));
         quit.setOnAction(e -> quitAction(quit));
 
