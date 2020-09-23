@@ -1,5 +1,7 @@
-package UI.MainMenu;
+package UI.InGame;
 
+import UI.InGame.BoardMap;
+import UI.MainMenu.Menu;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;

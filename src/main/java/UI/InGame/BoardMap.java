@@ -1,22 +1,19 @@
-package UI.MainMenu;
+package UI.InGame;
 
-import javafx.application.Application;
+import UI.MainMenu.Menu;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.SVGPath;
-import javafx.stage.Stage;
 import javafx.scene.transform.Scale;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 public class BoardMap {
 
