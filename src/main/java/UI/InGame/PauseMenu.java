@@ -23,9 +23,9 @@ public class PauseMenu {
         vBox.setId("pauseMenu");
 
         //Button Actions
-        continueB.setOnAction(e -> { pane.setVisible(false);});
-        newGameB.setOnAction(e -> menu.window.setScene(menu.scene2));
-        restartB.setOnAction(e -> game.restart());
+        continueB.setOnAction(e -> pane.setVisible(false));
+        newGameB.setOnAction(e -> {pane.setVisible(false);menu.window.setScene(menu.scene2);});
+        restartB.setOnAction(e -> {pane.setVisible(false);game.restart();});
         quitB.setOnAction(e -> quitAction(quitB));
 
         return vBox;
