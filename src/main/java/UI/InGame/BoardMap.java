@@ -220,7 +220,6 @@ public class BoardMap {
 
         PauseMenu p = new PauseMenu();
         VBox pause = p.pauseMenu(menu, pausePane, this);
-        Button pauseB = new Button();
 
         Group pauseM = new Group(pause);
         Group board = new Group();
@@ -235,8 +234,9 @@ public class BoardMap {
 
         Button testB = new Button("TEST");
         pane.getChildren().addAll(board, testB);
+
         pausePane.setCenter(pauseM);
-        canvas.getChildren().addAll(pauseB, pane, borderPane, pausePane);
+        canvas.getChildren().addAll(pane, borderPane, pausePane);
 
         borderPane.setPickOnBounds(false);
         pane.setPickOnBounds(false);
@@ -244,8 +244,11 @@ public class BoardMap {
         pausePane.setVisible(false);
         pausePane.setPickOnBounds(false);
 
+        menu.scene4 = new Scene(canvas, 1200, 600);
+        menu.scene4.getStylesheets().add("css/GameStyle.css");
+
         /*Button Listener ESCAPE - Pause menu*/
-        pauseB.setOnKeyPressed(new EventHandler<KeyEvent>() {
+        menu.scene4.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent event) {
                 if (event.getCode() == KeyCode.ESCAPE) {
@@ -253,8 +256,6 @@ public class BoardMap {
                 }
             }
         });
-        menu.scene4 = new Scene(canvas, 1200, 600);
-        menu.scene4.getStylesheets().add("css/GameStyle.css");
 
         width = menu.scene4.getWidth();
         height = menu.scene4.getHeight();
