@@ -13,10 +13,10 @@ public class GameTest {
     @Test
     public void testBuildSetup() {
         GameMockup game = new GameMockup();
-        HashMap<Integer, String> playerConfig = new HashMap<>();
-        playerConfig.put(0, "user");
-        playerConfig.put(1, "bot");
-        playerConfig.put(2, "user");
+        HashMap<Integer, Integer> playerConfig = new HashMap<>();
+        playerConfig.put(1, 1);
+        playerConfig.put(2, 2);
+        playerConfig.put(3, 3);
         game.buildSetup(playerConfig);
         System.out.print(game.getProxy().players);
     }

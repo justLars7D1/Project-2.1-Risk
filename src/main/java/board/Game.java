@@ -24,7 +24,7 @@ public class Game implements GameInterface {
      * Builds a random order for turns
      * @param playerSelection The hashmap containing player configurations
      */
-    public void buildSetup(HashMap<Integer, String> playerSelection) {
+    public void buildSetup(HashMap<Integer, Integer> playerSelection) {
         LinkedList<Player> players = new LinkedList<>();
 
         List<Integer> playerIDs = Arrays.asList(playerSelection.keySet().toArray(new Integer[0]));
@@ -32,7 +32,8 @@ public class Game implements GameInterface {
 
         for (int id: playerIDs) {
             Player p;
-            if (playerSelection.get(id).equalsIgnoreCase("user")) {
+            // 1 == user
+            if (playerSelection.get(id) == 1) {
                 p = PlayerFactory.createHumanPlayer(id);
             } else {
                 p = PlayerFactory.createAIPlayer(id);
