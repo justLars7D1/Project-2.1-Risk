@@ -4,7 +4,10 @@ import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 
@@ -25,10 +28,10 @@ public class PlayerSelection {
         grid.setHgap(20);
 
         Label player = new Label("Player");
-        grid.setConstraints(player, 0, 0);
+        GridPane.setConstraints(player, 0, 0);
 
         Label colorLabel = new Label("Color");
-        grid.setConstraints(colorLabel, 1, 0);
+        GridPane.setConstraints(colorLabel, 1, 0);
 
         //Player and color choice boxes
 
@@ -40,11 +43,11 @@ public class PlayerSelection {
 
 
         Button start = new Button("Start");
-        grid.setConstraints(start, 1, 8);
+        GridPane.setConstraints(start, 1, 8);
         start.setOnAction(e -> getPlayers());
 
         Button back = new Button("Back");
-        grid.setConstraints(back, 0, 8);
+        GridPane.setConstraints(back, 0, 8);
         back.setOnAction(e -> menu.window.setScene(menu.scene1));
 
 
@@ -62,7 +65,7 @@ public class PlayerSelection {
         int playerID = i + 1;
         playerBox.getItems().addAll("Empty", "Player " + playerID, "Easy Bot", "Hard Bot");
         playerBox.setValue("Empty");
-        grid.setConstraints(playerBox, 0, i + 1);
+        GridPane.setConstraints(playerBox, 0, i + 1);
 
         ComboBox<String> colorBox = new ComboBox<>();
         colorList.add(colorBox);
@@ -123,7 +126,7 @@ public class PlayerSelection {
             };
         }, colorBox.valueProperty()));
 
-        grid.setConstraints(colorBox, 1, i + 1);
+        GridPane.setConstraints(colorBox, 1, i + 1);
 
         grid.getChildren().addAll(playerBox, colorBox);
     }

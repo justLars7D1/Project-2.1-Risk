@@ -13,7 +13,7 @@ public class Settings {
      * The number of countries that exist within the board
      * Here, the index of the country is it's ID (e.g. Alaska -> ID: 0)
      */
-    public static final String[] counties = {
+    public static final String[] countries = {
             // From here North America
             "Alaska",
             "Alberta (Western Canada)",

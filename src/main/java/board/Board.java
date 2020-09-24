@@ -29,7 +29,7 @@ public class Board {
      * @return The Country object for that ID
      */
     public Country getCountryFromID(int ID) {
-        return getCountryFromName(Settings.counties[ID]);
+        return getCountryFromName(Settings.countries[ID]);
     }
 
     /**
@@ -54,8 +54,8 @@ public class Board {
      * Add the countries to the mapping
      */
     private void addCountriesToMapping() {
-        for (int i = 0; i < Settings.counties.length; i++) {
-            String countryName = Settings.counties[i];
+        for (int i = 0; i < Settings.countries.length; i++) {
+            String countryName = Settings.countries[i];
             Country country = new Country(countryName, i);
             nameToCountryMapping.put(countryName, country);
         }
