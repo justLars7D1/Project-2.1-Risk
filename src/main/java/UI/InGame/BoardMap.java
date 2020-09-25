@@ -22,13 +22,14 @@ public class BoardMap {
     private int stage = 1;
 
     private SVGPath path1 = new SVGPath();
-    private double scaleFactor = 5.0;
+    private double scaleFactor = 5.3;
     private ArrayList<SVGPath> listOfPaths;
     private double width;
     private double height;
     private double offsetX; // offset of the image to move it left or right
     private Scale scale = new Scale();
-
+    private ActionPanel ap = new ActionPanel();
+    private BorderPane borderPane = new BorderPane();
 
   ///*
   //Declaring all the aSVG path objects,
@@ -148,7 +149,7 @@ public class BoardMap {
         BorderPane pausePane = new BorderPane();
         pausePane.setId("pausePane");
 
-        BorderPane borderPane = new BorderPane();
+
         canvas.setId("main");
         canvas.setPrefSize(1200,600);
 
@@ -229,51 +230,28 @@ public class BoardMap {
         Group board = new Group();
         board.getChildren().addAll(listOfPaths);
 
-        Button attackB = new Button("Attack");
-
-        for (SVGPath s : listOfPaths) {
-            s.setOnMousePressed(new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent me) {
-                    if (me.getButton() == MouseButton.PRIMARY) {
-                        System.out.println(s.getContent());
-                    }
-                }
-            });
-        }
-
-        Button endTurnB = new Button("End Turn");
-        HBox hButtonBox = new HBox(attackB, endTurnB);
+        //Action Panel with Buttons
+        HBox hButtonBox = ap.setPanel(this, stage);
+        hButtonBox.getStyleClass().add("hbox");
         hButtonBox.setAlignment(Pos.CENTER);
-
         borderPane.setBottom(hButtonBox);
 
-        Button testB = new Button("TEST");
-        pane.getChildren().addAll(board, testB);
-
-        pausePane.setCenter(pauseM);
+        //Adding elements
+        pane.getChildren().addAll(board);
         canvas.getChildren().addAll(pane, borderPane, pausePane);
 
+        //Settings ------------------------
         borderPane.setPickOnBounds(false);
         pane.setPickOnBounds(false);
         canvas.setPickOnBounds(false);
         pausePane.setVisible(false);
-        pausePane.setPickOnBounds(false);
+        pausePane.setCenter(pauseM);
 
         menu.scene4 = new Scene(canvas, 1200, 600);
         menu.scene4.getStylesheets().add("css/GameStyle.css");
 
-        /*Button Listener ESCAPE - Pause menu*/
-        menu.scene4.setOnKeyPressed(new EventHandler<KeyEvent>() {
-            @Override
-            public void handle(KeyEvent event) {
-                if (event.getCode() == KeyCode.ESCAPE) {
-                    pausePane.setVisible(true);
-                }
-            }
-        });
-
-
+        onBoardClick();
+        onKeyPressed(pausePane, menu);
 
         width = menu.scene4.getWidth();
         height = menu.scene4.getHeight();
@@ -286,16 +264,51 @@ public class BoardMap {
         scale.setPivotY(0);
 
         board.getTransforms().add(scale);
-        board.setTranslateX(120);
-        board.setTranslateY(50);
+        board.setTranslateX(100);
+        board.setTranslateY(10);
 
     }
 
-    private void changeStage() {
+    private void onBoardClick() {
+        //Board Clicking
+        for (SVGPath s : listOfPaths) {
+            s.setOnMousePressed(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent me) {
+                    if (me.getButton() == MouseButton.PRIMARY) {
+                        s.setStyle("-fx-fill: #d7d7d7;");
+                        System.out.println(s.getContent());
+                    }
+                }
+            });
+        }
+    }
+
+    private void onKeyPressed(BorderPane pausePane, Menu menu) {
+        /*Button Listener ESCAPE - Pause menu*/
+        menu.scene4.setOnKeyPressed(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                if (event.getCode() == KeyCode.ESCAPE) {
+                    pausePane.setVisible(true);
+                }
+            }
+        });
+    }
+
+    public void changeStage() {
         stage++;
-        if (stage >= 3) {
+        if (stage > 3) {
             stage = 1;
         }
+        updateActionPanel();
+    }
+
+    public void updateActionPanel() {
+        HBox hBox = ap.setPanel(this, stage);
+        hBox.getStyleClass().add("hbox");
+        borderPane.setBottom(hBox);
+        System.out.println(stage);
     }
 
     /*

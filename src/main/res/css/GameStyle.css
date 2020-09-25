@@ -7,17 +7,23 @@
 .button {
       -fx-font-family: Vivaldi;
       -fx-font-size: 3em;
-      -fx-text-fill: black;
+      -fx-text-fill: white;
       -fx-background-color: transparent;
-      -fx-background-radius: 100px;
+      -fx-effect: dropshadow( gaussian, black, 3, 0.3, 1, 1 );
 }
 
 .button:hover {
-    -fx-effect: dropshadow( gaussian, black, 3, 0.3, 1, 1 );
+    -fx-effect: dropshadow( gaussian, black, 5, 0.8, 1, 1 );
 }
 
 .button:pressed {
-    -fx-effect: dropshadow( gaussian, white, 3, 0.3, 1, 1 );
+    -fx-effect: dropshadow( gaussian, black, 7, 0.8, 1, 1 );
+}
+
+.hbox {
+    -fx-background-color: rgba(0,0,0,0.3);
+    -fx-width: 500px;
+    -fx-border-radius: 20;
 }
 
 .svg:hover{
@@ -25,13 +31,14 @@
 }
 
 .svg:pressed{
-    -fx-fill: white;
+    -fx-fill: #d7d7d7;
 }
 
 .label {
     -fx-text-fill: white;
     -fx-font-family: Vivaldi;
-    -fx-font-size: 5em;
+    -fx-font-size: 3em;
+    -fx-effect: dropshadow( gaussian, black, 3, 0.3, 1, 1 );
 }
 
 #pauseMenu {
@@ -47,8 +54,13 @@
     -fx-text-fill: white;
 }
 
+#pauseMenu .label {
+    -fx-font-size: 5em;
+    -fx-text-fill: white;
+}
+
 #pauseMenu .button:pressed {
-    -fx-effect: dropshadow( gaussian, black, 3, 0.3, 1, 1 );
+    -fx-effect: dropshadow( gaussian, black, 7, 0.8, 1, 1 );
 }
 
 #pausePane {
