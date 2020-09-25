@@ -9,5 +9,6 @@ public class test {
         players.put(1, 1);
         Game game = new Game(players);
         System.out.println(game);
+
     }
 }

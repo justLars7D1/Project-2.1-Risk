@@ -1,22 +1,25 @@
 package gameelements.player;
 
-import java.util.Queue;
+import java.util.LinkedList;
 
 public class PlayerList {
 
-    private Queue<Player> players;
-    private Player currentPlayer;
+    private LinkedList<Player> players;
+    Player currentPlayer;
 
-    public PlayerList(Queue<Player> players) {
+    public PlayerList(LinkedList<Player> players) {
         this.players = players;
         getNextPlayer();
     }
 
     public Player getNextPlayer() {
-        Player nextPlayer = players.poll();
-        players.add(nextPlayer);
-        currentPlayer = nextPlayer;
-        return nextPlayer;
+        this.currentPlayer = players.poll();
+        players.add(this.currentPlayer);
+        return this.currentPlayer;
+    }
+
+    public void removePlayer(Player p) {
+        players.remove(p);
     }
 
     public Player getCurrentPlayer() {
