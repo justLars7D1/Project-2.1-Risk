@@ -1,5 +1,6 @@
 package gameelements.game;
 
+import gameelements.board.Board;
 import gameelements.board.Country;
 import gameelements.player.Player;
 
@@ -9,6 +10,8 @@ import java.util.LinkedList;
  * Handles game events and processes the interaction between players
  */
 public class GameProxy implements GameObserver {
+
+    private Board gameBoard = new Board();
 
     public LinkedList<Player> players;
 
@@ -32,6 +35,10 @@ public class GameProxy implements GameObserver {
         Player nextPlayer = players.peek();
         if (nextPlayer == null) nextPlayer = players.getFirst();
         return nextPlayer;
+    }
+
+    public Board getGameBoard() {
+        return gameBoard;
     }
 
     @Override

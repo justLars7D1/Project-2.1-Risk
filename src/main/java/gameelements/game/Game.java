@@ -8,7 +8,7 @@ import java.util.*;
 /**
  * Represents the implementation of the back-end of the game
  */
-public class Game implements GameInterface {
+public class Game {
 
     /**
      * Handles game events and processes the interaction between players
@@ -47,16 +47,6 @@ public class Game implements GameInterface {
         }
 
         proxy = new GameProxy(players);
-    }
-
-    @Override
-    public void startPlacementPhase() {
-
-    }
-
-    @Override
-    public void startBattlePhase() {
-
     }
 
     public GamePhase getGamePhase() {
