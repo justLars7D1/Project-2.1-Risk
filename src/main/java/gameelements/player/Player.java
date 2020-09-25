@@ -10,10 +10,10 @@ import java.util.TreeSet;
 
 public abstract class Player {
 
-    public int id;
+    protected int id;
 
-    private int[] cards = new int[4];
-    private TreeSet<Country> countriesOwned;
+    protected int[] cards = new int[4];
+    protected TreeSet<Country> countriesOwned;
 
     //draft=0, attack=1, fortify=2
     private int PHASE=0;

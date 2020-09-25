@@ -1,27 +1,36 @@
 package gameelements.game;
 
+import gameelements.board.Board;
+import gameelements.data.BattleEventData;
+import gameelements.data.DistributionEventData;
+import gameelements.data.GameEventData;
 import gameelements.player.Player;
 import gameelements.player.PlayerFactory;
+import gameelements.player.PlayerList;
 
 import java.util.*;
 
 /**
  * Represents the implementation of the back-end of the game
  */
-public class Game {
+public class Game extends GameObserver {
 
     /**
      * Handles game events and processes the interaction between players
      */
-    protected GameProxy proxy;
+    private Board gameBoard = new Board();
 
-    private GamePhase gamePhase;
+    private PlayerList players;
 
-    private GamePhase.BATTLE battlePhase;
+    public Game(HashMap<Integer, Integer> playerSelection) {
+        super(GamePhase.DISTRIBUTION, GamePhase.BATTLE.PLACEMENT);
+        buildPlayerSetup(playerSelection);
+    }
 
-    public Game() {
-        this.gamePhase = GamePhase.DISTRIBUTION;
-        this.battlePhase = GamePhase.BATTLE.PLACEMENT;
+    protected void onDistributionEvent(DistributionEventData data) {
+    }
+
+    protected void onBattleEvent(BattleEventData data) {
     }
 
     /**
@@ -29,8 +38,8 @@ public class Game {
      * Builds a random order for turns
      * @param playerSelection The hashmap containing gameelements.player configurations
      */
-    public void buildSetup(HashMap<Integer, Integer> playerSelection) {
-        LinkedList<Player> players = new LinkedList<>();
+    private void buildPlayerSetup(HashMap<Integer, Integer> playerSelection) {
+        Queue<Player> players = new LinkedList<>();
 
         List<Integer> playerIDs = Arrays.asList(playerSelection.keySet().toArray(new Integer[0]));
         Collections.shuffle(playerIDs);
@@ -46,7 +55,7 @@ public class Game {
             players.add(p);
         }
 
-        proxy = new GameProxy(players);
+        this.players = new PlayerList(players);
     }
 
     public GamePhase getGamePhase() {
@@ -57,12 +66,16 @@ public class Game {
         return this.battlePhase;
     }
 
+    public Board getGameBoard() {
+        return gameBoard;
+    }
+
     @Override
     public String toString() {
         return "Game{" +
-                "\n\tproxy = " + proxy +
                 ",\n\tgamePhase = " + gamePhase +
                 ",\n\tbattlePhase = " + battlePhase +
                 "\n}";
     }
+
 }
