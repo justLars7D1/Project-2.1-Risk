@@ -1,5 +1,14 @@
+import gameelements.game.Game;
+
+import java.util.HashMap;
+
 public class test {
     public static void main(String[] args) {
-        System.out.println("Yeey");
+        HashMap<Integer, Integer> players = new HashMap<>();
+        players.put(0, 1);
+        players.put(1, 1);
+        Game game = new Game();
+        game.buildSetup(players);
+        System.out.println(game);
     }
 }

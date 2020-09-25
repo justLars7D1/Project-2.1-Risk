@@ -1,4 +1,4 @@
-package player;
+package gameelements.player;
 
 public class PlayerFactory {
 
@@ -9,7 +9,7 @@ public class PlayerFactory {
 
 
     /**
-     * configure player settings
+     * configure gameelements.player settings
      */
     public static Player createHumanPlayer(int id) {
         return new RiskUser(id);

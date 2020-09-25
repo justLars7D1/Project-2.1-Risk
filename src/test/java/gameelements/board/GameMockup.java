@@ -1,6 +1,7 @@
-package board;
+package gameelements.board;
 
-import player.GameProxy;
+import gameelements.game.Game;
+import gameelements.game.GameProxy;
 
 public class GameMockup extends Game {
 

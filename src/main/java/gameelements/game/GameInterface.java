@@ -1,4 +1,4 @@
-package board;
+package gameelements.game;
 
 /**
  * Represents the main access point to the back-end of the game

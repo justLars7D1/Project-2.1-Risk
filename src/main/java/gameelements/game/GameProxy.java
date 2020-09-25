@@ -1,6 +1,7 @@
-package player;
+package gameelements.game;
 
-import board.Country;
+import gameelements.board.Country;
+import gameelements.player.Player;
 
 import java.util.LinkedList;
 
@@ -21,7 +22,7 @@ public class GameProxy implements GameObserver {
     }
 
     /**
-     * player accessible methods
+     * gameelements.player accessible methods
      */
     protected void sendSoldiers(Country country) {
         //TODO: access the map and modify units in country
@@ -33,4 +34,10 @@ public class GameProxy implements GameObserver {
         return nextPlayer;
     }
 
+    @Override
+    public String toString() {
+        return "GameProxy{" +
+                "players=" + players +
+                '}';
+    }
 }

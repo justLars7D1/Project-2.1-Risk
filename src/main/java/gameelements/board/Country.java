@@ -1,6 +1,6 @@
-package board;
+package gameelements.board;
 
-import player.Player;
+import gameelements.player.Player;
 
 import java.util.ArrayList;
 import java.util.List;

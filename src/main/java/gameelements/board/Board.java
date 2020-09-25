@@ -1,11 +1,11 @@
-package board;
+package gameelements.board;
 
 import settings.Settings;
 
 import java.util.HashMap;
 
 /**
- * Represents the board of the game, which functions as a simple mapping to countries / continents
+ * Represents the gameelements.board of the game, which functions as a simple mapping to countries / continents
  */
 public class Board {
 
@@ -43,7 +43,7 @@ public class Board {
     }
 
     /**
-     * Sets up the board by creating the graph structure of the game
+     * Sets up the gameelements.board by creating the graph structure of the game
      */
     private void setUpGameBoard() {
         addCountriesToMapping();

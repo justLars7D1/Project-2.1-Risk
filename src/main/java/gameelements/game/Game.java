@@ -1,8 +1,7 @@
-package board;
+package gameelements.game;
 
-import player.GameProxy;
-import player.Player;
-import player.PlayerFactory;
+import gameelements.player.Player;
+import gameelements.player.PlayerFactory;
 
 import java.util.*;
 
@@ -16,13 +15,19 @@ public class Game implements GameInterface {
      */
     protected GameProxy proxy;
 
+    private GamePhase gamePhase;
+
+    private GamePhase.BATTLE battlePhase;
+
     public Game() {
+        this.gamePhase = GamePhase.DISTRIBUTION;
+        this.battlePhase = GamePhase.BATTLE.PLACEMENT;
     }
 
     /**
      * Creates the game from the hashmap configuration
      * Builds a random order for turns
-     * @param playerSelection The hashmap containing player configurations
+     * @param playerSelection The hashmap containing gameelements.player configurations
      */
     public void buildSetup(HashMap<Integer, Integer> playerSelection) {
         LinkedList<Player> players = new LinkedList<>();
@@ -54,4 +59,20 @@ public class Game implements GameInterface {
 
     }
 
+    public GamePhase getGamePhase() {
+        return this.gamePhase;
+    }
+
+    public GamePhase.BATTLE getBattlePhase() {
+        return this.battlePhase;
+    }
+
+    @Override
+    public String toString() {
+        return "Game{" +
+                "\n\tproxy = " + proxy +
+                ",\n\tgamePhase = " + gamePhase +
+                ",\n\tbattlePhase = " + battlePhase +
+                "\n}";
+    }
 }

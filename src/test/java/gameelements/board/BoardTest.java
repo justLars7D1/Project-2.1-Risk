@@ -1,4 +1,4 @@
-package board;
+package gameelements.board;
 
 import org.junit.Test;
 

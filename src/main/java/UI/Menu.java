@@ -25,7 +25,7 @@ public class Menu extends Application {
         //Parent root = FXMLLoader.load(getClass().getResource("Menu.fxml"));
         window = primaryStage;
 
-        BackgroundImage myBI= new BackgroundImage(new Image("file:player.jpg",32,32,false,true),
+        BackgroundImage myBI= new BackgroundImage(new Image("file:gameelements.player.jpg",32,32,false,true),
                 BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
                 BackgroundSize.DEFAULT);
 

@@ -1,6 +1,6 @@
-package player;
+package gameelements.player;
 
-import board.Country;
+import gameelements.board.Country;
 import settings.Settings;
 
 import java.util.ArrayList;

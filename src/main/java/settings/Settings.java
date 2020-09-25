@@ -5,12 +5,12 @@ package settings;
  */
 public class Settings {
     /**
-     *  Defines the maximum number of cards that can be held on hand by a player.
+     *  Defines the maximum number of cards that can be held on hand by a gameelements.player.
      */
     public static final int CARDSALLOWED = 5;
 
     /**
-     * The number of countries that exist within the board
+     * The number of countries that exist within the gameelements.board
      * Here, the index of the country is it's ID (e.g. Alaska -> ID: 0)
      */
     public static final String[] countries = {

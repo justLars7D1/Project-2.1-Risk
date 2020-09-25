@@ -133,9 +133,9 @@ public class PlayerSelection {
 
     public HashMap<String, String> getPlayers() {
 
-        // Maybe it's easier if we map from an int to a string and use a random color for every player
-        // int would represent the player id
-        // string would represent the type of player (e.g. user or bot)
+        // Maybe it's easier if we map from an int to a string and use a random color for every gameelements.player
+        // int would represent the gameelements.player id
+        // string would represent the type of gameelements.player (e.g. user or bot)
         HashMap<String, String> players = new HashMap<>();
 
         for (int i = 0; i < 6; i++) {

@@ -1,4 +1,4 @@
-package player;
+package gameelements.player;
 
 public class RiskBot extends Player {
 
