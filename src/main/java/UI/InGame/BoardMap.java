@@ -8,6 +8,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.SVGPath;
@@ -17,14 +19,16 @@ import java.util.Arrays;
 
 public class BoardMap {
 
+    private int stage = 1;
 
-    SVGPath path1 = new SVGPath();
-    double scaleFactor = 5.0;
-    ArrayList<SVGPath> listOfPaths;
-    double width;
-    double height;
-    double offsetX; // offset of the image to move it left or right
-    Scale scale = new Scale();
+    private SVGPath path1 = new SVGPath();
+    private double scaleFactor = 5.0;
+    private ArrayList<SVGPath> listOfPaths;
+    private double width;
+    private double height;
+    private double offsetX; // offset of the image to move it left or right
+    private Scale scale = new Scale();
+
 
   ///*
   //Declaring all the aSVG path objects,
@@ -211,7 +215,7 @@ public class BoardMap {
 
         for(SVGPath s : listOfPaths){ // grey inside, black border
             s.setFill(Color.color(120./255,120./255,120./255));
-            s.setStrokeWidth(0.5);
+            s.setStrokeWidth(0.2);
             s.setStroke(Color.color(0,0,0));
             s.getStyleClass().add("svg");
         }
@@ -226,6 +230,18 @@ public class BoardMap {
         board.getChildren().addAll(listOfPaths);
 
         Button attackB = new Button("Attack");
+
+        for (SVGPath s : listOfPaths) {
+            s.setOnMousePressed(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent me) {
+                    if (me.getButton() == MouseButton.PRIMARY) {
+                        System.out.println(s.getContent());
+                    }
+                }
+            });
+        }
+
         Button endTurnB = new Button("End Turn");
         HBox hButtonBox = new HBox(attackB, endTurnB);
         hButtonBox.setAlignment(Pos.CENTER);
@@ -257,6 +273,8 @@ public class BoardMap {
             }
         });
 
+
+
         width = menu.scene4.getWidth();
         height = menu.scene4.getHeight();
         offsetX = 0.0;
@@ -271,6 +289,13 @@ public class BoardMap {
         board.setTranslateX(120);
         board.setTranslateY(50);
 
+    }
+
+    private void changeStage() {
+        stage++;
+        if (stage >= 3) {
+            stage = 1;
+        }
     }
 
     /*

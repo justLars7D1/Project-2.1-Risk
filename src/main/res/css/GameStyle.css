@@ -7,7 +7,7 @@
 .button {
       -fx-font-family: Vivaldi;
       -fx-font-size: 3em;
-      -fx-text-fill: white;
+      -fx-text-fill: black;
       -fx-background-color: transparent;
       -fx-background-radius: 100px;
 }
@@ -16,8 +16,16 @@
     -fx-effect: dropshadow( gaussian, black, 3, 0.3, 1, 1 );
 }
 
+.button:pressed {
+    -fx-effect: dropshadow( gaussian, white, 3, 0.3, 1, 1 );
+}
+
 .svg:hover{
     -fx-fill: red;
+}
+
+.svg:pressed{
+    -fx-fill: white;
 }
 
 .label {
@@ -33,6 +41,14 @@
      -fx-min-height: 400px;
      -fx-background-radius: 50px;
     -fx-effect: dropshadow( gaussian, black, 15, 0.3, 0, 0 );
+}
+
+#pauseMenu .button {
+    -fx-text-fill: white;
+}
+
+#pauseMenu .button:pressed {
+    -fx-effect: dropshadow( gaussian, black, 3, 0.3, 1, 1 );
 }
 
 #pausePane {
