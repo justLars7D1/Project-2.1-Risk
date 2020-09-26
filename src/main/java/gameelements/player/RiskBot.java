@@ -2,7 +2,6 @@ package gameelements.player;
 
 import gameelements.board.Country;
 import gameelements.phases.data.AttackEventData;
-import gameelements.phases.data.DistributionEventData;
 import gameelements.phases.data.FortifyEventData;
 import gameelements.phases.data.PlacementEventData;
 
@@ -17,18 +16,26 @@ public class RiskBot extends Player {
 
     @Override
     public void onDistributionEvent(Country country) {
+        // Put all the code to pick the right action here
+        super.onDistributionEvent(country);
     }
 
     @Override
     public void onPlacementEvent(PlacementEventData data) {
+        // Put all the code to pick the right action here
+        super.onPlacementEvent(data);
     }
 
     @Override
     public void onAttackEvent(AttackEventData data) {
+        // Put all the code to pick the right action here
+        super.onAttackEvent(data);
     }
 
     @Override
     public void onFortifyEvent(FortifyEventData data) {
+        // Put all the code to pick the right action here
+        super.onFortifyEvent(data);
     }
 
     @Override

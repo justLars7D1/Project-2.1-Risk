@@ -30,14 +30,23 @@ public abstract class Player {
         CARDSALLOWED = Settings.CARDSALLOWED;
     }
 
-    public abstract void onDistributionEvent(Country country);
+    public void onDistributionEvent(Country country) {
+        if (!country.hasOwner() || countriesOwned.contains(country)) {
+            country.setOwner(this);
+            country.addNumSoldiers(Settings.NUMTROOPSONDISTRIBUTION);
+            numTroopsInInventory -= Settings.NUMTROOPSONDISTRIBUTION;
+            countriesOwned.add(country);
+        }
+    }
 
-    public abstract void onPlacementEvent(PlacementEventData data);
+    public void onPlacementEvent(PlacementEventData data) {
+    }
 
-    public abstract void onAttackEvent(AttackEventData data);
+    public void onAttackEvent(AttackEventData data) {
+    }
 
-    public abstract void onFortifyEvent(FortifyEventData data);
-
+    public void onFortifyEvent(FortifyEventData data) {
+    }
 
     private List<Integer> rollDice(int dice) {
         Random die = new Random();

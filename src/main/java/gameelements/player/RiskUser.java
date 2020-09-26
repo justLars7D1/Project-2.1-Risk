@@ -17,28 +17,6 @@ public class RiskUser extends Player {
         super(id, numTroopsInInventory);
     }
 
-    @Override
-    public void onDistributionEvent(Country country) {
-        if (!country.hasOwner() || countriesOwned.contains(country)) {
-            country.setOwner(this);
-            country.addNumSoldiers(Settings.NUMTROOPSONDISTRIBUTION);
-            numTroopsInInventory -= Settings.NUMTROOPSONDISTRIBUTION;
-            countriesOwned.add(country);
-        }
-    }
-
-    @Override
-    public void onPlacementEvent(PlacementEventData data) {
-    }
-
-    @Override
-    public void onAttackEvent(AttackEventData data) {
-    }
-
-    @Override
-    public void onFortifyEvent(FortifyEventData data) {
-    }
-
     public void setName(String name) {
         this.name = name;
     }
