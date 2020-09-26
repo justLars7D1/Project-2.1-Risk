@@ -37,6 +37,7 @@ public class Game extends GameObserver {
 
     @Override
     protected void onDistributionEvent(DistributionEventData data) {
+
     }
 
     @Override

@@ -12,6 +12,8 @@ public abstract class Player {
 
     protected int id;
 
+    private int numTroopInInventory;
+
     protected int[] cards = new int[4];
     protected TreeSet<Country> countriesOwned;
 
@@ -58,6 +60,10 @@ public abstract class Player {
 
     public int getId() {
         return id;
+    }
+
+    public int getNumTroopInInventory() {
+        return numTroopInInventory;
     }
 
     @Override
