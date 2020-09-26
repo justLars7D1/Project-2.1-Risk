@@ -1,5 +1,6 @@
 package gameelements.player;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 public class PlayerList {
@@ -24,6 +25,10 @@ public class PlayerList {
 
     public Player getCurrentPlayer() {
         return currentPlayer;
+    }
+
+    public ArrayList<Player> getPlayers() {
+        return new ArrayList<>(players);
     }
 
 }

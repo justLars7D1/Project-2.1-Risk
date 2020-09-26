@@ -10,6 +10,11 @@ public class Settings {
     public static final int CARDSALLOWED = 5;
 
     /**
+     * The number of troops that are placed at once at the first phase of the game (distribution phase)
+     */
+    public static final int NUMTROOPSONDISTRIBUTION = 1;
+
+    /**
      * The number of countries that exist within the gameelements.board
      * Here, the index of the country is it's ID (e.g. Alaska -> ID: 0)
      */

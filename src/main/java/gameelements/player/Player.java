@@ -1,31 +1,43 @@
 package gameelements.player;
 
 import gameelements.board.Country;
+import gameelements.phases.data.AttackEventData;
+import gameelements.phases.data.DistributionEventData;
+import gameelements.phases.data.FortifyEventData;
+import gameelements.phases.data.PlacementEventData;
 import settings.Settings;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.TreeSet;
+import java.util.*;
 
 public abstract class Player {
 
     protected int id;
 
-    private int numTroopInInventory;
+    protected int numTroopsInInventory;
 
     protected int[] cards = new int[4];
-    protected TreeSet<Country> countriesOwned;
+    protected HashSet<Country> countriesOwned;
 
     //draft=0, attack=1, fortify=2
     private int PHASE=0;
 
-    private final int CARDSALLOWED;
+    protected final int CARDSALLOWED;
 
-    protected Player(int id) {
+    protected Player(int id, int numTroopsInInventory) {
+        this.countriesOwned = new HashSet<>();
         this.id = id;
+        this.numTroopsInInventory = numTroopsInInventory;
         CARDSALLOWED = Settings.CARDSALLOWED;
     }
+
+    public abstract void onDistributionEvent(Country country);
+
+    public abstract void onPlacementEvent(PlacementEventData data);
+
+    public abstract void onAttackEvent(AttackEventData data);
+
+    public abstract void onFortifyEvent(FortifyEventData data);
+
 
     private List<Integer> rollDice(int dice) {
         Random die = new Random();
@@ -39,8 +51,8 @@ public abstract class Player {
 
     private boolean fullHand() {
         int sum = 0;
-        for (int i = 0; i < cards.length; i++) {
-            sum += cards[i];
+        for (int card : cards) {
+            sum += card;
         }
         return sum >= CARDSALLOWED;
     }
@@ -62,14 +74,15 @@ public abstract class Player {
         return id;
     }
 
-    public int getNumTroopInInventory() {
-        return numTroopInInventory;
+    public int getNumTroopsInInventory() {
+        return numTroopsInInventory;
     }
 
     @Override
     public String toString() {
         return "Player{" +
                 "id=" + id +
+                ", numTroopsInInventory=" + numTroopsInInventory +
                 '}';
     }
 }
