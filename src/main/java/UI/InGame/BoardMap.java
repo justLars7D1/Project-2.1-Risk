@@ -14,6 +14,8 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.SVGPath;
 import javafx.scene.transform.Scale;
+import settings.Settings;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -30,6 +32,7 @@ public class BoardMap {
     private Scale scale = new Scale();
     private ActionPanel ap = new ActionPanel();
     private BorderPane borderPane = new BorderPane();
+    private ArrayList<String> countryCode = new ArrayList<String>();
 
   ///*
   //Declaring all the aSVG path objects,
@@ -138,7 +141,6 @@ public class BoardMap {
     String ass10 = "M 136.2 22.1 L 136.4 21.6 L 136.8 21.8 L 137.7 21.3 L 136.7 20.1 L 137.6 19.2 L 138.6 19.7 L 139.5 18.5 L 140.5 18.3 L 140.6 17 L 140.5 16.4 L 139.9 16.1 L 140.3 15.6 L 141.4 15.9 L 142.3 14.9 L 143.3 15 L 142.7 14.4 L 142.5 13.9 L 141.9 14 L 141.9 13.5 L 142.2 13.3 L 141.4 12.7 L 141.6 11.8 L 140.6 11.5 L 140.4 10.6 L 139.6 10.3 L 139.6 9.5 L 138.7 9.3 L 138.4 8.7 L 137.9 8.2 L 138.7 7.6 L 138 6.9 L 137 6.7 L 136.5 7 L 135.9 6.7 L 135.7 6.2 L 136.6 5.7 L 137.3 5.4 L 136.9 4.9 L 135.4 4.7 L 134.7 5.1 L 133.7 5.1 L 132.8 4.5 L 131.9 4.8 L 130.7 5.7 L 129.8 5.3 L 128.8 5.2 L 127.7 5.6 L 127.1 5.5 L 126.8 6 L 127.1 6.6 L 126.5 6.8 L 125.6 6.6 L 125.1 6.8 L 124.6 7.4 L 124.5 8.2 L 124.6 8.7 L 125.4 9.8 L 125.3 10.1 L 125.6 10.7 L 126.2 10.2 L 127 10.5 L 127.3 11.3 L 127.9 11.6 L 128.3 12.4 L 128.8 12.6 L 129.5 13 L 129.8 13.8 L 130.8 13.8 L 132 14.6 L 132.4 15.3 L 132.1 15.9 L 133.1 16.3 L 133.1 17.1 L 134.1 17.1 L 136 17.8 L 135.9 18.1 L 136.3 18.2 L 136.9 19.1 L 135 19.6 L 135.4 20.3 L 136.2 20.7 L 135.8 21.8 L 136.2 22.1";
     String ass11 = "M 118.1 10.3 L 119 10.4 L 119.9 10.9 L 120.3 11.2 L 120.9 11 L 121 10.7 L 120.2 10.1 L 119.6 9.8 L 119.4 9.1 L 119.5 8.8 L 120 8.5 L 120.6 8.4 L 121.2 8.7 L 122.2 9.8 L 123.1 11.2 L 122.3 12.1 L 122.8 12.6 L 123.1 12.1 L 123.9 11.9 L 124 11.1 L 123.9 10.5 L 123 10.1 L 122.3 9.5 L 122.2 9 L 123.5 9.1 L 124.6 8.7 L 125.4 9.8 L 125.3 10.1 L 125.6 10.7 L 126.2 10.2 L 127 10.5 L 127.3 11.3 L 127.9 11.6 L 128.3 12.4 L 128.8 12.6 L 129.5 13 L 129.8 13.8 L 130.8 13.8 L 132 14.6 L 132.4 15.3 L 132.1 15.9 L 133.1 16.3 L 133.1 17.1 L 134.1 17.1 L 136 17.8 L 135.9 18.1 L 136.3 18.2 L 136.9 19.1 L 135 19.6 L 135.4 20.3 L 136.2 20.7 L 135.8 21.8 L 136.2 22.1 L 136.5 23 L 136.1 23.3 L 135.8 23 L 135.2 23.3 L 134 22.4 L 132.3 21.7 L 131.4 20.3 L 130.4 19.7 L 129.4 18.6 L 128.2 19.4 L 127.6 18.7 L 126.8 18.6 L 125.9 18.3 L 125.2 17.9 L 124.5 17.9 L 123.4 18.6 L 121.9 18.7 L 120.8 19.6 L 121.2 20.4 L 121.1 21 L 120.7 21.5 L 120 20.9 L 120 20.5 L 120.2 20.1 L 119.9 19.8 L 118.9 20 L 118.2 19.5 L 119.2 19.3 L 119.1 18.9 L 117.5 18.2 L 118.2 17.3 L 117.7 16.8 L 117.9 15.7 L 116.9 14.9 L 117.1 14.1 L 116.8 13.3 L 117.9 12.8 L 118.9 11.9 L 118.1 10.3";
     String ass12 = "M 156.8 17 L 157 16.1 L 156.1 15.9 L 156 15.5 L 156.4 14.9 L 157.3 14.8 L 157.8 14.2 L 158.2 14.6 L 158.5 14 L 158.4 13.3 L 158 13.1 L 158.4 12.6 L 160 12.6 L 160.5 12.8 L 160.7 12.6 L 159.8 11.5 L 160.2 11.1 L 161.2 10.9 L 161.8 11.2 L 163.1 11 L 162.2 10.8 L 162.4 9.9 L 162.9 9.6 L 163.4 9.8 L 164 10 L 164.3 9.8 L 163.1 9 L 163.8 8.2 L 162.8 8.2 L 161.9 8.1 L 160.8 7.5 L 160 7.8 L 159 7.8 L 158.7 7.4 L 156.3 7.6 L 155.2 6.5 L 154.8 6.5 L 154.2 6.9 L 153.7 6.3 L 151.2 6.3 L 150.7 7.4 L 149.5 7.1 L 148.7 7.1 L 148.3 7.4 L 147.7 7.7 L 146 6.5 L 144.7 5.5 L 143 5.5 L 142.2 5.9 L 141.6 5.9 L 140.5 5.4 L 139.5 5.4 L 137.9 6 L 137.6 6.4 L 137 6.7 L 138 6.9 L 138.7 7.6 L 137.9 8.2 L 138.4 8.7 L 138.7 9.3 L 139.6 9.5 L 139.6 10.3 L 140.4 10.6 L 140.6 11.5 L 141.6 11.8 L 142.1 12.1 L 142.3 12.6 L 142.6 12.9 L 143.7 13.2 L 143.8 13.9 L 144 14.6 L 144.3 14.9 L 144.6 14.7 L 144.8 14.5 L 145 14.7 L 145.3 14.8 L 145.9 14.5 L 145.9 14.1 L 146.2 13.9 L 147 14 L 147.7 14.4 L 148.3 14.3 L 149.1 15 L 149.8 15.9 L 150.8 16.5 L 151.5 16.1 L 152.8 16.6 L 154 16.9 L 155 17 L 156.8 17";
-
     //*/
 
     public void buildScene(Menu menu){
@@ -219,6 +221,7 @@ public class BoardMap {
             s.setStrokeWidth(0.2);
             s.setStroke(Color.color(0,0,0));
             s.getStyleClass().add("svg");
+            countryCode.add(s.getContent());
         }
 
 //        as4.setFill(Color.color(200./255,10./255,10./255));
@@ -269,6 +272,24 @@ public class BoardMap {
 
     }
 
+    /**
+     * method to return the ID of the country which is being clicked on within the UI
+     * @param svg contains the country svg that is being clicked
+     * @return coutnry id respective to the countries array in settings
+     */
+    private int findCountry(SVGPath svg){
+        int id = -1;
+        int counter = 0;
+        for(SVGPath s: listOfPaths){
+            if(s.getContent().equals(svg.getContent())){
+                id = counter;
+                break;
+            }
+            counter++;
+        }
+        return id;
+    }
+
     private void onBoardClick() {
         //Board Clicking
         for (SVGPath s : listOfPaths) {
@@ -277,7 +298,9 @@ public class BoardMap {
                 public void handle(MouseEvent me) {
                     if (me.getButton() == MouseButton.PRIMARY) {
                         s.setStyle("-fx-fill: #d7d7d7;");
+                        int id = findCountry(s);
                         System.out.println(s.getContent());
+                        System.out.println(Settings.countries[id]);
                     }
                 }
             });

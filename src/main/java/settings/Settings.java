@@ -14,6 +14,20 @@ public class Settings {
      * Here, the index of the country is it's ID (e.g. Alaska -> ID: 0)
      */
     public static final String[] countries = {
+            // From here Africa
+            "Congo (Central Africa)",
+            "East Africa",
+            "Egypt",
+            "Madagascar",
+            "North Africa",
+            "South Africa",
+
+            // From here Australia
+            "Eastern Australia",
+            "Indonesia",
+            "New Guinea",
+            "Western Australia",
+
             // From here North America
             "Alaska",
             "Alberta (Western Canada)",
@@ -24,9 +38,15 @@ public class Settings {
             "Ontario (Central Canada)",
             "Quebec (Eastern Canada)",
             "Western United States",
-            "Great Britain (Great Britain & Ireland)",
+
+            // From here South America
+            "Argentina",
+            "Brazil",
+            "Peru",
+            "Venezuela",
 
             // From here Europe
+            "Great Britain (Great Britain & Ireland)",
             "Iceland",
             "Northern Europe",
             "Scandinavia",
@@ -46,27 +66,7 @@ public class Settings {
             "Siam (Southeast Asia)",
             "Siberia",
             "Ural",
-            "Yakutsk",
-            "Argentina",
-
-            // From here South America
-            "Brazil",
-            "Peru",
-            "Venezuela",
-            "Congo (Central Africa)",
-
-            // From here Africa
-            "East Africa",
-            "Egypt",
-            "Madagascar",
-            "North Africa",
-            "South Africa",
-            "Eastern Australia",
-
-            // From here Australia
-            "Indonesia",
-            "New Guinea",
-            "Western Australia"};
+            "Yakutsk"};
 
     /**
      * The edges between the countries (Represents a connection from country to country)
