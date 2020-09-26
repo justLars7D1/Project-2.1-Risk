@@ -1,0 +1,22 @@
+.root {
+     -fx-background-image: url("/images/player.jpg");
+     -fx-background-size: cover;
+     -fx-background-size: 1200 700;
+}
+
+.button {
+      -fx-font-family: Vivaldi;
+      -fx-font-size: 3em;
+      -fx-text-fill: black;
+      -fx-background-color: transparent;
+      -fx-background-radius: 100px;
+}
+
+.button:hover {
+    -fx-effect: dropshadow( gaussian, black, 2, 0.2, 1, 1 );
+}
+
+.label {
+    -fx-font-family: Vivaldi;
+    -fx-font-size: 2.5em;
+}

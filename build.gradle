@@ -9,7 +9,18 @@ javafx {
 }
 
 application {
-    mainClassName = 'UI.Menu'
+    mainClassName = 'UI.MainMenu.Menu'
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs= ["src/main/java"]
+        }
+        resources {
+            srcDirs= ["src/main/res"]
+        }
+    }
 }
 
 group 'edu.um.dke'
