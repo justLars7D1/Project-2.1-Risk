@@ -61,9 +61,9 @@ public class Settings {
             "Madagascar",
             "North Africa",
             "South Africa",
-            "Eastern Australia",
 
             // From here Australia
+            "Eastern Australia",
             "Indonesia",
             "New Guinea",
             "Western Australia"};
