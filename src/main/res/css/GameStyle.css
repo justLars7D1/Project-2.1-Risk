@@ -1,0 +1,69 @@
+#main{
+    -fx-background-image: url("/images/player.jpg");
+    -fx-background-size: cover;
+    -fx-background-size: 1200 600;
+}
+
+.button {
+      -fx-font-family: Vivaldi;
+      -fx-font-size: 3em;
+      -fx-text-fill: white;
+      -fx-background-color: transparent;
+      -fx-effect: dropshadow( gaussian, black, 3, 0.3, 1, 1 );
+}
+
+.button:hover {
+    -fx-effect: dropshadow( gaussian, black, 5, 0.8, 1, 1 );
+}
+
+.button:pressed {
+    -fx-effect: dropshadow( gaussian, black, 7, 0.8, 1, 1 );
+}
+
+.hbox {
+    -fx-background-color: rgba(0,0,0,0.3);
+    -fx-width: 500px;
+    -fx-border-radius: 20;
+}
+
+.svg:hover{
+    -fx-fill: red;
+}
+
+.svg:pressed{
+    -fx-fill: #d7d7d7;
+}
+
+.label {
+    -fx-text-fill: white;
+    -fx-font-family: Vivaldi;
+    -fx-font-size: 3em;
+    -fx-effect: dropshadow( gaussian, black, 3, 0.3, 1, 1 );
+}
+
+#pauseMenu {
+     -fx-background-image: url("/images/frame.jpg");
+     -fx-background-size:  cover;
+     -fx-min-width: 400px;
+     -fx-min-height: 400px;
+     -fx-background-radius: 50px;
+    -fx-effect: dropshadow( gaussian, black, 15, 0.3, 0, 0 );
+}
+
+#pauseMenu .button {
+    -fx-text-fill: white;
+}
+
+#pauseMenu .label {
+    -fx-font-size: 5em;
+    -fx-text-fill: white;
+}
+
+#pauseMenu .button:pressed {
+    -fx-effect: dropshadow( gaussian, black, 7, 0.8, 1, 1 );
+}
+
+#pausePane {
+    -fx-background-color: rgba(0,0,0,0.5);
+    -fx-background-radius: 70px;
+}

@@ -1,13 +1,12 @@
 package UI.MainMenu;
 
+import UI.InGame.BoardMap;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 
@@ -20,6 +19,7 @@ public class PlayerSelection {
     private ArrayList<ComboBox<String>> playerList = new ArrayList<>();
     private ArrayList<ComboBox<String>> colorList = new ArrayList<>();
     private ArrayList<Color> colors;
+    public Scene scene4;
 
     public void buildScene(Menu menu) {
 
@@ -37,6 +37,10 @@ public class PlayerSelection {
         Label colorLabel = new Label("Choose Color");
         HBox hBox = new HBox(title);
         hBox.setAlignment(Pos.CENTER);
+
+        //initialising the board map
+        BoardMap board = new BoardMap();
+        board.buildScene(menu);
 
         //Label style
         grid.setConstraints(hBox, 0, 0);
@@ -64,13 +68,19 @@ public class PlayerSelection {
         back.setMinHeight(grid.getPrefHeight());
 
         //Button actions
-        start.setOnAction(e -> getPlayers());
+        start.setOnAction(e -> menu.window.setScene(menu.scene4));
         back.setOnAction(e -> menu.window.setScene(menu.scene1));
 
         grid.getChildren().addAll(title, player, colorLabel, start, back);
 
         menu.scene2 = new Scene(grid, 1200, 600);
         menu.scene2.getStylesheets().add("css/SelectionStyle.css");
+    }
+
+    public void refreshScene() {
+        for (int i = 1; i < 7; i++) {
+            createChoiceBoxes(i);
+        }
     }
 
     private void fillColors() {
@@ -168,4 +178,5 @@ public class PlayerSelection {
         return players;
 
     }
+
 }
