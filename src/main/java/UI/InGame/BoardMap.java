@@ -6,19 +6,23 @@ import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.SVGPath;
 import javafx.scene.transform.Scale;
 import settings.Settings;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-
+import java.util.Collections;
+import java.util.HashMap;
+import javafx.beans.value.ChangeListener;
 public class BoardMap {
 
     private int stage = 1;
@@ -30,9 +34,16 @@ public class BoardMap {
     private double height;
     private double offsetX; // offset of the image to move it left or right
     private Scale scale = new Scale();
-    private ActionPanel ap = new ActionPanel();
+    private Label warning;
     private BorderPane borderPane = new BorderPane();
     private ArrayList<String> countryCode = new ArrayList<String>();
+    private Button confirmB;
+    private Button attackB;
+    private Button endTurnB;
+    private ArrayList<Integer> players = new ArrayList<Integer>();
+    private String playerColor;
+    private int currentPlayer = -1;
+    private Circle playerFlag;
 
   ///*
   //Declaring all the aSVG path objects,
@@ -217,11 +228,20 @@ public class BoardMap {
         listOfPaths = new ArrayList<SVGPath>(Arrays.asList(af1,af2,af3,af4,af5,af6,aus1,aus2,aus3,aus4,na1,na2,na3,na4,na5,na6,na7,na8,na9,sa1,sa2,sa3,sa4,eu1,eu2,eu3,eu4,eu5,eu6,eu7,as1,as2,as3,as4,as5,as6,as7,as8,as9,as10,as11,as12));
 
         for(SVGPath s : listOfPaths){ // grey inside, black border
-            s.setFill(Color.color(120./255,120./255,120./255));
+            s.setStyle("-fx-fill: grey");
             s.setStrokeWidth(0.2);
             s.setStroke(Color.color(0,0,0));
             s.getStyleClass().add("svg");
             countryCode.add(s.getContent());
+            String oldStyle = s.getStyle();
+            s.hoverProperty().addListener((ChangeListener<Boolean>) (observable, oldValue, newValue) -> {
+                //System.out.println(oldStyle);
+                if (newValue) {
+                    s.setStyle("-fx-fill: " + playerColor);
+                } else {
+                    s.setStyle(oldStyle);
+                }
+            });
         }
 
 //        as4.setFill(Color.color(200./255,10./255,10./255));
@@ -233,12 +253,41 @@ public class BoardMap {
         Group board = new Group();
         board.getChildren().addAll(listOfPaths);
 
-        //Action Panel with Buttons
-        HBox hButtonBox = ap.setPanel(this, stage);
-        hButtonBox.getStyleClass().add("hbox");
-        hButtonBox.setAlignment(Pos.CENTER);
-        borderPane.setBottom(hButtonBox);
+        //Action Panel ---------------------------
+        warning = new Label("Select a land to add your troops! ");
+        confirmB = new Button("Confirm");
+        attackB = new Button("Attack");
+        endTurnB = new Button("End Phase");
+        confirmB.setUnderline(true);
+        attackB.setUnderline(true);
+        endTurnB.setUnderline(true);
 
+        HBox actionPanel = new HBox(warning, confirmB, attackB, endTurnB);
+        actionPanel.getStyleClass().add("hbox");
+        actionPanel.setAlignment(Pos.CENTER);
+
+        //Player Panel ----------------------------
+        playerFlag = new Circle(25);
+        Label player = new Label("Player Turn");
+        HBox playerPanel = new HBox(playerFlag, player);
+
+        updateWarning();
+
+        //Button Actions
+        attackB.setOnAction(e -> {
+            attackB.setDisable(true);endTurnB.setDisable(false);
+        });
+        endTurnB.setOnAction(e -> {
+            changeStage(); updateWarning();
+            updatePlayerColor();
+        });
+        confirmB.setOnAction(e -> {
+            changeStage();
+            updateWarning();
+        });
+
+        borderPane.setBottom(actionPanel);
+        borderPane.setTop(playerPanel);
         //Adding elements
         pane.getChildren().addAll(board);
         canvas.getChildren().addAll(pane, borderPane, pausePane);
@@ -301,6 +350,14 @@ public class BoardMap {
                         int id = findCountry(s);
                         System.out.println(s.getContent());
                         System.out.println(Settings.countries[id]);
+                        if (stage == 1) {
+                            confirmB.setDisable(false);
+                        } else if (stage == 2) {
+                            attackB.setDisable(false);
+                        } else {
+                            confirmB.setDisable(false);
+                        }
+                        //System.out.println(s.getContent());
                     }
                 }
             });
@@ -324,14 +381,65 @@ public class BoardMap {
         if (stage > 3) {
             stage = 1;
         }
-        updateActionPanel();
     }
 
-    public void updateActionPanel() {
-        HBox hBox = ap.setPanel(this, stage);
-        hBox.getStyleClass().add("hbox");
-        borderPane.setBottom(hBox);
-        System.out.println(stage);
+    public void updatePlayerColor() {
+        currentPlayer++;
+        if (currentPlayer >= players.size()) {
+            currentPlayer = 0;
+        }
+
+        switch (players.get(currentPlayer)) {
+            case 1: playerColor = "red";
+                break;
+            case 2: playerColor = "blue";
+                break;
+            case 3: playerColor = "green";
+                break;
+            case 4: playerColor = "yellow";
+                break;
+            case 5: playerColor = "orange";
+                break;
+            case 6: playerColor = "purple";
+                break;
+            default: playerColor = "white";
+                break;
+        }
+
+        playerFlag.setStyle("-fx-fill: " + playerColor);
+    }
+
+    public void updateWarning() {
+        switch (stage) {
+            case 1:
+                warning.setText("Select a land to add your troops! ----- ");
+                attackB.setDisable(true);
+                endTurnB.setDisable(true);
+                confirmB.setDisable(true);
+                break;
+            case 2:
+                warning.setText("Pick a land to attack! ----- ");
+                attackB.setDisable(true);
+                confirmB.setDisable(true);
+                break;
+            case 3:
+                warning.setText("Select lands to exchange troops! ----- ");
+                confirmB.setDisable(true);
+                attackB.setDisable(true);
+                endTurnB.setDisable(false);
+                break;
+            default:
+                warning.setText("");
+                break;
+        }
+    }
+
+    public void setPlayers(HashMap players) {
+
+        this.players = new ArrayList<Integer>(players.keySet());
+        Collections.shuffle(this.players);
+        updatePlayerColor();
+        //System.out.println(this.players.size());
     }
 
     /*

@@ -11,6 +11,7 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 public class PlayerSelection {
@@ -20,6 +21,7 @@ public class PlayerSelection {
     private ArrayList<ComboBox<String>> colorList = new ArrayList<>();
     private ArrayList<Color> colors;
     public Scene scene4;
+    private BoardMap board;
 
     public void buildScene(Menu menu) {
 
@@ -39,7 +41,7 @@ public class PlayerSelection {
         hBox.setAlignment(Pos.CENTER);
 
         //initialising the board map
-        BoardMap board = new BoardMap();
+        board = new BoardMap();
         board.buildScene(menu);
 
         //Label style
@@ -68,7 +70,8 @@ public class PlayerSelection {
         back.setMinHeight(grid.getPrefHeight());
 
         //Button actions
-        start.setOnAction(e -> menu.window.setScene(menu.scene4));
+        start.setOnAction(e -> {menu.window.setScene(menu.scene4);
+        board.setPlayers(getPlayers());});
         back.setOnAction(e -> menu.window.setScene(menu.scene1));
 
         grid.getChildren().addAll(title, player, colorLabel, start, back);
@@ -165,15 +168,18 @@ public class PlayerSelection {
 
         HashMap<Integer, Integer> players = new HashMap<>();
 
-        for (int i = 0; i < 6; i++) {
+        for (int i = 0; i < playerList.size(); i++) {
+            //System.out.println(playerList.get(i).getValue());
+
             if (playerList.get(i).getValue().equals("PLAYER")) {
                 players.put(getColorID(colorList.get(i).getValue()), 1);
-            } else if(playerList.get(i).getValue().equals("EASY BOT")) {
+            } else if (playerList.get(i).getValue().equals("EASY BOT")) {
                 players.put(getColorID(colorList.get(i).getValue()), 2);
             } else if (playerList.get(i).getValue().equals("HARD BOT")) {
                 players.put(getColorID(colorList.get(i).getValue()), 3);
             }
         }
+
         //System.out.println(Arrays.asList(players)); // method 1
         return players;
 
