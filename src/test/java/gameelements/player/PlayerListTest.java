@@ -4,7 +4,6 @@ import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.LinkedList;
-import java.util.Queue;
 
 import static org.junit.Assert.assertEquals;
 
@@ -20,7 +19,7 @@ public class PlayerListTest {
         int max = 8;
         for (int i = 0; i < max; i++) {
             Player curPlayer = playerList.getCurrentPlayer();
-            playerList.getNextPlayer();
+            playerList.nextPlayer();
             System.out.println(curPlayer);
             assertEquals(i % 3 + 1, curPlayer.getId());
         }
@@ -40,7 +39,7 @@ public class PlayerListTest {
         int max = 8;
         for (int i = 0; i < max; i++) {
             Player curPlayer = playerList.getCurrentPlayer();
-            playerList.getNextPlayer();
+            playerList.nextPlayer();
             if (i % 2 == 0) assertEquals(1, curPlayer.getId());
             else assertEquals(3, curPlayer.getId());
         }

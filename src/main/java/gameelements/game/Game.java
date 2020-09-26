@@ -8,7 +8,6 @@ import gameelements.phases.GamePhase;
 import gameelements.player.Player;
 import gameelements.player.PlayerFactory;
 import gameelements.player.PlayerList;
-import gameelements.player.RiskBot;
 
 import java.util.*;
 
@@ -44,7 +43,7 @@ public class Game extends GameObserver {
 
         player.onDistributionEvent(country);
 
-        players.getNextPlayer();
+        players.nextPlayer();
         checkDistributionPhase();
     }
 

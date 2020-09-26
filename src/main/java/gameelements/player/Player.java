@@ -9,27 +9,41 @@ import settings.Settings;
 
 import java.util.*;
 
+/**
+ * Represents a player in the game
+ */
 public abstract class Player {
 
+    /**
+     * The ID of the player
+     */
     protected int id;
 
+    /**
+     * The current number of troops in the player's inventory
+     */
     protected int numTroopsInInventory;
 
-    protected int[] cards = new int[4];
+    /**
+     * The number of cards the player owns
+     */
+    protected int numCards;
+
+    /**
+     * The countries that a player owns
+     */
     protected HashSet<Country> countriesOwned;
-
-    //draft=0, attack=1, fortify=2
-    private int PHASE=0;
-
-    protected final int CARDSALLOWED;
 
     protected Player(int id, int numTroopsInInventory) {
         this.countriesOwned = new HashSet<>();
         this.id = id;
         this.numTroopsInInventory = numTroopsInInventory;
-        CARDSALLOWED = Settings.CARDSALLOWED;
     }
 
+    /**
+     * Represents the action the player takes on a distribution event
+     * @param country The country to distribute troops on
+     */
     public void onDistributionEvent(Country country) {
         if (!country.hasOwner() || countriesOwned.contains(country)) {
             country.setOwner(this);
@@ -39,15 +53,32 @@ public abstract class Player {
         }
     }
 
+    /**
+     * Represents the action the player takes on a placement event
+     * @param data The data needed to take an action
+     */
     public void onPlacementEvent(PlacementEventData data) {
     }
 
+    /**
+     * Represents the action the player takes on an attack event
+     * @param data The data needed to take an action
+     */
     public void onAttackEvent(AttackEventData data) {
     }
 
+    /**
+     * Represents the action the player takes on a fortify event
+     * @param data The data needed to take an action
+     */
     public void onFortifyEvent(FortifyEventData data) {
     }
 
+    /**
+     * Represents the even of rolling dice
+     * @param dice The number of dice to roll
+     * @return The results of the roll
+     */
     private List<Integer> rollDice(int dice) {
         Random die = new Random();
         List<Integer> diceResults = new ArrayList<>();
@@ -58,23 +89,6 @@ public abstract class Player {
         return diceResults;
     }
 
-    private boolean fullHand() {
-        int sum = 0;
-        for (int card : cards) {
-            sum += card;
-        }
-        return sum >= CARDSALLOWED;
-    }
-
-    private int[] seeCards(){
-        return cards;
-    }
-
-    private void endTurn() {
-    }
-
-    private void nextPhase() {
-    }
     private void addCountry(Country country){
         countriesOwned.add(country);
     }

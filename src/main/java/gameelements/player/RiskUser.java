@@ -1,11 +1,5 @@
 package gameelements.player;
 
-import gameelements.board.Country;
-import gameelements.phases.data.AttackEventData;
-import gameelements.phases.data.FortifyEventData;
-import gameelements.phases.data.PlacementEventData;
-import settings.Settings;
-
 public class RiskUser extends Player {
 
     public String name;
