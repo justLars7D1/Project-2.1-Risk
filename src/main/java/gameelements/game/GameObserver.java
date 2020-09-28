@@ -86,10 +86,6 @@ public abstract class GameObserver {
         return this.gamePhase;
     }
 
-    public void setBattlePhase(BattlePhase battlePhase) {
-        this.battlePhase = battlePhase;
-    }
-
     public BattlePhase getBattlePhase() {
         return this.battlePhase;
     }

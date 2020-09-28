@@ -83,6 +83,7 @@ public abstract class Player {
         if (countriesOwned.contains(countryFrom) && countriesOwned.contains(countryTo) &&
                                                     countryFrom.getNumSoldiers() - numTroops >= 1) {
             boolean existsPathFromCountryToCountry = existsCountryPath(countryFrom, countryTo);
+            System.out.println(existsPathFromCountryToCountry);
             if (existsPathFromCountryToCountry) {
                 countryFrom.removeNumSoldiers(numTroops);
                 countryTo.addNumSoldiers(numTroops);

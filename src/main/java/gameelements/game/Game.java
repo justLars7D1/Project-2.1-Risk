@@ -160,7 +160,7 @@ public class Game extends GameObserver {
      * Continues to the next phase in attacking (or goes to next player if it's over)
      * Placement -> Attack -> Fortify -> New Player -> Placement -> ...
      */
-    public void finishAttackPhase() {
+    public void nextBattlePhase() {
         switch (battlePhase) {
             case PLACEMENT:
                 battlePhase = BattlePhase.ATTACK;
