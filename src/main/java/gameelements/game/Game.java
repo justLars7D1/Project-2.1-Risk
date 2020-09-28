@@ -8,6 +8,7 @@ import gameelements.phases.GamePhase;
 import gameelements.player.Player;
 import gameelements.player.PlayerFactory;
 import gameelements.player.PlayerList;
+import settings.Settings;
 
 import java.util.*;
 
@@ -56,14 +57,18 @@ public class Game extends GameObserver {
                 break;
             }
         }
-        if (isDistributionPhaseOver) gamePhase = GamePhase.BATTLE;
+        if (isDistributionPhaseOver) {
+            calcNumNewPlayerTroops();
+            gamePhase = GamePhase.BATTLE;
+        }
     }
 
     @Override
     protected void onPlacementEvent(PlacementEventData data) {
         Player player = getCurrentPlayer();
+        Country country = gameBoard.getCountryFromID(data.getCountryID());
 
-        player.onPlacementEvent(data);
+        player.onPlacementEvent(country, data.getNumTroops());
 
     }
 
@@ -71,16 +76,35 @@ public class Game extends GameObserver {
     protected void onAttackEvent(AttackEventData data) {
         Player player = getCurrentPlayer();
 
+        //TODO: Someone make this event
         player.onAttackEvent(data);
 
+        // Check for the end of the game (so one player owns all countries)
+        checkForGameEnd();
     }
 
     @Override
     protected void onFortifyEvent(FortifyEventData data) {
         Player player = getCurrentPlayer();
+        Country countryFrom = gameBoard.getCountryFromID(data.getFromCountryID());
+        Country countryTo = gameBoard.getCountryFromID(data.getToCountryID());
 
-        player.onFortifyEvent(data);
+        player.onFortifyEvent(countryFrom, countryTo, data.getNumTroops());
 
+    }
+
+    private void checkForGameEnd() {
+        boolean gameOver = false;
+        for (Player p: players.getPlayers()) {
+            if (p.getNumCountriesOwned() == Settings.countries.length) {
+                gameOver = true;
+                break;
+            }
+        }
+
+        if (gameOver) {
+            gamePhase = GamePhase.VICTORY;
+        }
     }
 
     /**
@@ -132,12 +156,46 @@ public class Game extends GameObserver {
         return numCardsPerPlayer;
     }
 
-    public GamePhase getGamePhase() {
-        return this.gamePhase;
+    /**
+     * Continues to the next phase in attacking (or goes to next player if it's over)
+     * Placement -> Attack -> Fortify -> New Player -> Placement -> ...
+     */
+    public void finishAttackPhase() {
+        switch (battlePhase) {
+            case PLACEMENT:
+                battlePhase = BattlePhase.ATTACK;
+                break;
+            case ATTACK:
+                removePlayersWithoutTerritory();
+                battlePhase = BattlePhase.FORTIFYING;
+                break;
+            case FORTIFYING:
+                calcNumNewPlayerTroops();
+                players.nextPlayer();
+                battlePhase = BattlePhase.PLACEMENT;
+                break;
+        }
     }
 
-    public BattlePhase getBattlePhase() {
-        return this.battlePhase;
+    private void removePlayersWithoutTerritory() {
+        for (Player p: players.getPlayers()) {
+            if (p.getNumCountriesOwned() == 0) {
+                players.removePlayer(p);
+            }
+        }
+    }
+
+    private void calcNumNewPlayerTroops() {
+        Player p = getCurrentPlayer();
+        int totalNewTroops = 0;
+        // Number of troops for territory owned with a minimum number of troops of 3
+        totalNewTroops += Math.max(
+                Settings.MINNUMTROOPSPERTURN,
+                p.getNumCountriesOwned() / Settings.TROOPSPERCOUNTRYDIVIDER
+        );
+        // TODO: Number of troops for continent
+        // TODO: Number of troops for cards
+        p.setNumTroopsInInventory(totalNewTroops);
     }
 
     public Board getGameBoard() {

@@ -2,8 +2,6 @@ package gameelements.player;
 
 import gameelements.board.Country;
 import gameelements.phases.data.AttackEventData;
-import gameelements.phases.data.FortifyEventData;
-import gameelements.phases.data.PlacementEventData;
 
 public class RiskBot extends Player {
 
@@ -21,21 +19,24 @@ public class RiskBot extends Player {
     }
 
     @Override
-    public void onPlacementEvent(PlacementEventData data) {
+    public void onPlacementEvent(Country country, int numTroops) {
         // Put all the code to pick the right action here
-        super.onPlacementEvent(data);
+        super.onPlacementEvent(country, numTroops);
+        // Add code for deciding end of event phase here (finish attack phase method)
     }
 
     @Override
     public void onAttackEvent(AttackEventData data) {
         // Put all the code to pick the right action here
         super.onAttackEvent(data);
+        // Add code for deciding end of event phase here (finish attack phase method)
     }
 
     @Override
-    public void onFortifyEvent(FortifyEventData data) {
+    public void onFortifyEvent(Country countryFrom, Country countryTo, int numTroops) {
         // Put all the code to pick the right action here
-        super.onFortifyEvent(data);
+        super.onFortifyEvent(countryFrom, countryTo, numTroops);
+        // Add code for deciding end of event phase here (finish attack phase method)
     }
 
     @Override

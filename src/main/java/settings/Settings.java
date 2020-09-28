@@ -10,6 +10,16 @@ public class Settings {
     public static final int CARDSALLOWED = 5;
 
     /**
+     *  The minimum number of troops a player gets each battle phase turn
+     */
+    public static final int MINNUMTROOPSPERTURN = 2;
+
+    /**
+     *  Factor at which troops are calculated based on the country each turn of the battle phase
+     */
+    public static final int TROOPSPERCOUNTRYDIVIDER = 3;
+
+    /**
      * The number of troops that are placed at once at the first phase of the game (distribution phase)
      */
     public static final int NUMTROOPSONDISTRIBUTION = 1;

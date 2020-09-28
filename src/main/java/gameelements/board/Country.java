@@ -48,12 +48,13 @@ public class Country {
         this.owner = owner;
     }
 
-    public void setNumSoldiers(int numSoldiers) {
-        this.numSoldiers = numSoldiers;
-    }
 
     public void addNumSoldiers(int numSoldiers) {
         this.numSoldiers += numSoldiers;
+    }
+
+    public void removeNumSoldiers(int numSoldiers) {
+        this.numSoldiers -= numSoldiers;
     }
 
     public String getName() {

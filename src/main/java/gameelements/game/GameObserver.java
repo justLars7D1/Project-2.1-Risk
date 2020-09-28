@@ -35,6 +35,8 @@ public abstract class GameObserver {
             case BATTLE:
                 onBattleEvent((BattleEventData) data);
                 break;
+            case VICTORY:
+                break;
         }
     }
 
@@ -79,5 +81,17 @@ public abstract class GameObserver {
      * @param data The data about the event
      */
     protected abstract void onFortifyEvent(FortifyEventData data);
+
+    public GamePhase getGamePhase() {
+        return this.gamePhase;
+    }
+
+    public void setBattlePhase(BattlePhase battlePhase) {
+        this.battlePhase = battlePhase;
+    }
+
+    public BattlePhase getBattlePhase() {
+        return this.battlePhase;
+    }
 
 }

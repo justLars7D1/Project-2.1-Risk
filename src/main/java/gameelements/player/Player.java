@@ -55,9 +55,14 @@ public abstract class Player {
 
     /**
      * Represents the action the player takes on a placement event
-     * @param data The data needed to take an action
+     * @param country The country to put troops on
+     * @param numTroops The number of troops to put on the country
      */
-    public void onPlacementEvent(PlacementEventData data) {
+    public void onPlacementEvent(Country country, int numTroops) {
+        if (countriesOwned.contains(country) && numTroopsInInventory - numTroops >= 0) {
+            country.addNumSoldiers(numTroops);
+            numTroopsInInventory -= numTroops;
+        }
     }
 
     /**
@@ -65,13 +70,52 @@ public abstract class Player {
      * @param data The data needed to take an action
      */
     public void onAttackEvent(AttackEventData data) {
+        //TODO: Implement this event
     }
 
     /**
      * Represents the action the player takes on a fortify event
-     * @param data The data needed to take an action
+     * @param countryFrom The country to move troops from
+     * @param countryTo The country to move troops to
+     * @param numTroops The number of troops to move
      */
-    public void onFortifyEvent(FortifyEventData data) {
+    public void onFortifyEvent(Country countryFrom, Country countryTo, int numTroops) {
+        if (countriesOwned.contains(countryFrom) && countriesOwned.contains(countryTo) &&
+                                                    countryFrom.getNumSoldiers() - numTroops >= 1) {
+            boolean existsPathFromCountryToCountry = existsCountryPath(countryFrom, countryTo);
+            if (existsPathFromCountryToCountry) {
+                countryFrom.removeNumSoldiers(numTroops);
+                countryTo.addNumSoldiers(numTroops);
+                //TODO: See if I'm not forgetting anything
+            }
+        }
+    }
+
+    /**
+     * Check if there exists a path from an owned country to another owned country s.t. all countries are owned
+     * by the player.
+     * (We have an undirected acyclic graph)
+     * @param countryFrom The first vertex in the path
+     * @param countryTo The last vertex in the path
+     * @return Whether the path exists
+     */
+    private boolean existsCountryPath(Country countryFrom, Country countryTo) {
+        boolean pathExists = false;
+        Queue<Country> pathQueue = new ArrayDeque<>();
+        pathQueue.add(countryFrom);
+        while (!pathQueue.isEmpty() && !pathExists) {
+            Country c = pathQueue.poll();
+            for(Country neighbor: c.getNeighboringCountries()) {
+                if (neighbor.getOwner().equals(this)) {
+                    pathQueue.add(neighbor);
+                }
+            }
+            if (c.equals(countryTo)) {
+                pathExists = true;
+            }
+        }
+
+        return pathExists;
     }
 
     /**
@@ -93,8 +137,20 @@ public abstract class Player {
         countriesOwned.add(country);
     }
 
+    private void removeCountry(Country country){
+        countriesOwned.remove(country);
+    }
+
+    public int getNumCountriesOwned() {
+        return countriesOwned.size();
+    }
+
     public int getId() {
         return id;
+    }
+
+    public void setNumTroopsInInventory(int numTroopsInInventory) {
+        this.numTroopsInInventory = numTroopsInInventory;
     }
 
     public int getNumTroopsInInventory() {
@@ -108,4 +164,5 @@ public abstract class Player {
                 ", numTroopsInInventory=" + numTroopsInInventory +
                 '}';
     }
+
 }
