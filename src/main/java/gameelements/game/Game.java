@@ -58,7 +58,7 @@ public class Game extends GameObserver {
             }
         }
         if (isDistributionPhaseOver) {
-            calcNumNewPlayerTroops();
+            for (Player p: players) calcNumNewPlayerTroops(p);
             gamePhase = GamePhase.BATTLE;
         }
     }
@@ -170,7 +170,7 @@ public class Game extends GameObserver {
                 battlePhase = BattlePhase.FORTIFYING;
                 break;
             case FORTIFYING:
-                calcNumNewPlayerTroops();
+                calcNumNewPlayerTroops(getCurrentPlayer());
                 players.nextPlayer();
                 battlePhase = BattlePhase.PLACEMENT;
                 break;
@@ -185,8 +185,7 @@ public class Game extends GameObserver {
         }
     }
 
-    private void calcNumNewPlayerTroops() {
-        Player p = getCurrentPlayer();
+    private void calcNumNewPlayerTroops(Player p) {
         int totalNewTroops = 0;
         // Number of troops for territory owned with a minimum number of troops of 3
         totalNewTroops += Math.max(
