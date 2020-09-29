@@ -43,14 +43,18 @@ public abstract class Player {
     /**
      * Represents the action the player takes on a distribution event
      * @param country The country to distribute troops on
+     * @return Whether the action was successful
      */
-    public void onDistributionEvent(Country country) {
+    public boolean onDistributionEvent(Country country) {
+        boolean success = false;
         if (!country.hasOwner() || countriesOwned.contains(country) && numTroopsInInventory - 1 >= 0) {
             country.setOwner(this);
             country.addNumSoldiers(Settings.NUMTROOPSONDISTRIBUTION);
             numTroopsInInventory -= Settings.NUMTROOPSONDISTRIBUTION;
             countriesOwned.add(country);
+            success = true;
         }
+        return success;
     }
 
     /**

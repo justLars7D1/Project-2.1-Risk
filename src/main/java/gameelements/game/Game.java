@@ -44,8 +44,9 @@ public class Game extends GameObserver {
         boolean isBoardFilled = gameBoard.isFilled();
 
         if (isBoardFilled || !country.hasOwner()) {
-            player.onDistributionEvent(country);
-            players.nextPlayer();
+            boolean success = player.onDistributionEvent(country);
+
+            if (success) players.nextPlayer();
         }
 
         checkDistributionPhase();

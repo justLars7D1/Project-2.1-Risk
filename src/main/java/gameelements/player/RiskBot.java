@@ -13,9 +13,9 @@ public class RiskBot extends Player {
     }
 
     @Override
-    public void onDistributionEvent(Country country) {
+    public boolean onDistributionEvent(Country country) {
         // Put all the code to pick the right action here
-        super.onDistributionEvent(country);
+        return super.onDistributionEvent(country);
     }
 
     @Override
