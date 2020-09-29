@@ -42,7 +42,7 @@ public class PlayerSelection {
 
         //initialising the board map
         board = new BoardMap();
-        board.buildScene(menu);
+
 
         //Label style
         grid.setConstraints(hBox, 0, 0);
@@ -70,8 +70,8 @@ public class PlayerSelection {
         back.setMinHeight(grid.getPrefHeight());
 
         //Button actions
-        start.setOnAction(e -> {menu.window.setScene(menu.scene4);
-        board.setPlayers(getPlayers());});
+        start.setOnAction(e -> { board.setPlayers(getPlayers()); board.buildScene(menu);menu.window.setScene(menu.scene4);});
+
         back.setOnAction(e -> menu.window.setScene(menu.scene1));
 
         grid.getChildren().addAll(title, player, colorLabel, start, back);

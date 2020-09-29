@@ -1,6 +1,12 @@
 package UI.InGame;
 
 import UI.MainMenu.Menu;
+import gameelements.board.Board;
+import gameelements.board.Country;
+import gameelements.game.Game;
+import gameelements.phases.BattlePhase;
+import gameelements.phases.GamePhase;
+import gameelements.phases.data.*;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
@@ -18,10 +24,8 @@ import javafx.scene.shape.SVGPath;
 import javafx.scene.transform.Scale;
 import settings.Settings;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
+import java.util.*;
+
 import javafx.beans.value.ChangeListener;
 public class BoardMap {
 
@@ -42,8 +46,12 @@ public class BoardMap {
     private Button endTurnB;
     private ArrayList<Integer> players = new ArrayList<Integer>();
     private String playerColor;
-    private int currentPlayer = -1;
     private Circle playerFlag;
+    private Game game;
+    private int fromCountryID = -1;
+    private boolean fromCountryClicked = false;
+    private HashSet<Country> playerCountries;
+    private String oldStyle = "";
 
   ///*
   //Declaring all the aSVG path objects,
@@ -227,19 +235,25 @@ public class BoardMap {
 
         listOfPaths = new ArrayList<SVGPath>(Arrays.asList(af1,af2,af3,af4,af5,af6,aus1,aus2,aus3,aus4,na1,na2,na3,na4,na5,na6,na7,na8,na9,sa1,sa2,sa3,sa4,eu1,eu2,eu3,eu4,eu5,eu6,eu7,as1,as2,as3,as4,as5,as6,as7,as8,as9,as10,as11,as12));
 
+
+
         for(SVGPath s : listOfPaths){ // grey inside, black border
             s.setStyle("-fx-fill: grey");
             s.setStrokeWidth(0.2);
             s.setStroke(Color.color(0,0,0));
             s.getStyleClass().add("svg");
             countryCode.add(s.getContent());
-            String oldStyle = s.getStyle();
+
             s.hoverProperty().addListener((ChangeListener<Boolean>) (observable, oldValue, newValue) -> {
                 //System.out.println(oldStyle);
+
                 if (newValue) {
-                    s.setStyle("-fx-fill: " + playerColor);
+                    oldStyle = s.getStyle();
+                    System.out.println(oldStyle);
+                    s.setStyle("-fx-fill: " + getPlayerColor());
                 } else {
                     s.setStyle(oldStyle);
+
                 }
             });
         }
@@ -278,11 +292,9 @@ public class BoardMap {
             attackB.setDisable(true);endTurnB.setDisable(false);
         });
         endTurnB.setOnAction(e -> {
-            changeStage(); updateWarning();
-            updatePlayerColor();
+            updateWarning();
         });
         confirmB.setOnAction(e -> {
-            changeStage();
             updateWarning();
         });
 
@@ -302,6 +314,7 @@ public class BoardMap {
         menu.scene4 = new Scene(canvas, 1200, 600);
         menu.scene4.getStylesheets().add("css/GameStyle.css");
 
+        getPlayerColor();
         onBoardClick();
         onKeyPressed(pausePane, menu);
 
@@ -342,26 +355,86 @@ public class BoardMap {
     private void onBoardClick() {
         //Board Clicking
         for (SVGPath s : listOfPaths) {
+            System.out.println("loop");
             s.setOnMousePressed(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent me) {
                     if (me.getButton() == MouseButton.PRIMARY) {
                         s.setStyle("-fx-fill: #d7d7d7;");
-                        int id = findCountry(s);
+                        int currentID = findCountry(s);
                         System.out.println(s.getContent());
-                        System.out.println(Settings.countries[id]);
-                        if (stage == 1) {
-                            confirmB.setDisable(false);
-                        } else if (stage == 2) {
+                        System.out.println(Settings.countries[currentID]);
+                        if (game.getGamePhase() == GamePhase.DISTRIBUTION) {
+                            oldStyle = "-fx-fill:" + getPlayerColor(game.getCurrentPlayer().getId());
+                            System.out.println(oldStyle);
+
+                            System.out.println(game.getCurrentPlayer().getCountriesOwned());
+                            System.out.println(game.getCurrentPlayer().getId());
+
+                            GameEventData data = new DistributionEventData(currentID);
+                            game.onGameEvent(data);
+
+                            getPlayerColor();
+
+                            updateCountries(s);
+                            //TODO refresh the board map after every event backend
+
+                        } else if (game.getGamePhase() == GamePhase.BATTLE) {
+
+                            if(game.getBattlePhase() == BattlePhase.PLACEMENT){
+                                PlacementEventData data = new PlacementEventData(currentID, 1);
+                                game.onGameEvent(data);
+
+                            } else if (game.getBattlePhase() == BattlePhase.ATTACK){
+
+                                if(!fromCountryClicked){
+                                    fromCountryID = currentID;
+                                    fromCountryClicked = true;
+                                } else { //case where previous country already clicked
+                                    AttackEventData data = new AttackEventData(fromCountryID, currentID);
+                                    game.onGameEvent(data);
+                                    fromCountryClicked = false;
+                                }
+
+                            } else { //last case would have to be fortifying
+
+                                if(!fromCountryClicked){
+                                    fromCountryID = currentID;
+                                    fromCountryClicked = true;
+                                } else { //case where previous country already clicked
+                                    FortifyEventData data = new FortifyEventData(fromCountryID, currentID, 1);
+                                    game.onGameEvent(data);
+                                    fromCountryClicked = false;
+                                }
+                            }
                             attackB.setDisable(false);
                         } else {
                             confirmB.setDisable(false);
+
+                            //TODO VICTORY SCREEN
                         }
                         //System.out.println(s.getContent());
                     }
+
                 }
+
             });
         }
+        System.out.println("out of loop");
+    }
+
+    private void updateCountries(SVGPath s){
+
+        Board board = game.getGameBoard();
+        for(String strings: Settings.countries){
+            Country c = board.getCountryFromName(strings);
+            if (findCountry(s) == c.getID()){
+                s.setStyle("-fx-fill: "+ getPlayerColor(c.getOwner().getId()));
+                break;
+            }
+        }
+
+
     }
 
     private void onKeyPressed(BorderPane pausePane, Menu menu) {
@@ -383,13 +456,9 @@ public class BoardMap {
         }
     }
 
-    public void updatePlayerColor() {
-        currentPlayer++;
-        if (currentPlayer >= players.size()) {
-            currentPlayer = 0;
-        }
+    public String getPlayerColor() {
 
-        switch (players.get(currentPlayer)) {
+        switch (game.getCurrentPlayer().getId()) {
             case 1: playerColor = "red";
                 break;
             case 2: playerColor = "blue";
@@ -407,22 +476,43 @@ public class BoardMap {
         }
 
         playerFlag.setStyle("-fx-fill: " + playerColor);
+
+        return playerColor;
+    }
+
+    public String getPlayerColor(int color) {
+
+        switch (color) {
+            case 1: playerColor = "red";
+                break;
+            case 2: playerColor = "blue";
+                break;
+            case 3: playerColor = "green";
+                break;
+            case 4: playerColor = "yellow";
+                break;
+            case 5: playerColor = "orange";
+                break;
+            case 6: playerColor = "purple";
+                break;
+            default: playerColor = "white";
+                break;
+        }
+        return playerColor;
     }
 
     public void updateWarning() {
-        switch (stage) {
-            case 1:
+        switch (game.getGamePhase()) {
+            case DISTRIBUTION:
                 warning.setText("Select a land to add your troops! ----- ");
                 attackB.setDisable(true);
                 endTurnB.setDisable(true);
                 confirmB.setDisable(true);
                 break;
-            case 2:
-                warning.setText("Pick a land to attack! ----- ");
-                attackB.setDisable(true);
-                confirmB.setDisable(true);
+            case BATTLE:
+               updateBattlePhase();
                 break;
-            case 3:
+            case VICTORY:
                 warning.setText("Select lands to exchange troops! ----- ");
                 confirmB.setDisable(true);
                 attackB.setDisable(true);
@@ -432,13 +522,30 @@ public class BoardMap {
                 warning.setText("");
                 break;
         }
+
     }
+
+    private void updateBattlePhase(){
+        switch(game.getBattlePhase()){
+            case ATTACK:
+                break;
+
+            case PLACEMENT:
+                break;
+
+            case FORTIFYING:
+                break;
+        }
+    }
+
+
 
     public void setPlayers(HashMap players) {
 
         this.players = new ArrayList<Integer>(players.keySet());
+        game = new Game(players);
         Collections.shuffle(this.players);
-        updatePlayerColor();
+//        getPlayerColor();
         //System.out.println(this.players.size());
     }
 

@@ -146,6 +146,8 @@ public abstract class Player {
         return countriesOwned.size();
     }
 
+    public HashSet<Country> getCountriesOwned(){ return countriesOwned; }
+
     public int getId() {
         return id;
     }
