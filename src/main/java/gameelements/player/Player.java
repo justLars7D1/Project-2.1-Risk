@@ -45,7 +45,7 @@ public abstract class Player {
      * @param country The country to distribute troops on
      */
     public void onDistributionEvent(Country country) {
-        if (!country.hasOwner() || countriesOwned.contains(country)) {
+        if (!country.hasOwner() || countriesOwned.contains(country) && numTroopsInInventory - 1 >= 0) {
             country.setOwner(this);
             country.addNumSoldiers(Settings.NUMTROOPSONDISTRIBUTION);
             numTroopsInInventory -= Settings.NUMTROOPSONDISTRIBUTION;

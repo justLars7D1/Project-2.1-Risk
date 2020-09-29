@@ -73,6 +73,21 @@ public class Board {
         }
     }
 
+    /**
+     * Checks if every country on the map has an owner
+     * @return Whether the map is filled or not
+     */
+    public boolean isFilled() {
+        boolean isFull = true;
+        for (Country c: nameToCountryMapping.values()) {
+            if (!c.hasOwner()) {
+                isFull = false;
+                break;
+            }
+        }
+        return isFull;
+    }
+
     @Override
     public String toString() {
         StringBuilder res = new StringBuilder("Board\n");

@@ -5,8 +5,8 @@ public class PlayerFactory {
     /**
      * create players and equip them
      */
-    private PlayerFactory(){}
-
+    private PlayerFactory() {
+    }
 
     /**
      * configure gameelements.player settings

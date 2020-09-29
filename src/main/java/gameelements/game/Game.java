@@ -41,10 +41,13 @@ public class Game extends GameObserver {
     protected void onDistributionEvent(DistributionEventData data) {
         Player player = getCurrentPlayer();
         Country country = gameBoard.getCountryFromID(data.getCountryID());
+        boolean isBoardFilled = gameBoard.isFilled();
 
-        player.onDistributionEvent(country);
+        if (isBoardFilled || !country.hasOwner()) {
+            player.onDistributionEvent(country);
+            players.nextPlayer();
+        }
 
-        players.nextPlayer();
         checkDistributionPhase();
     }
 

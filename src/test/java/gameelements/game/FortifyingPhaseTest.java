@@ -1,10 +1,7 @@
 package gameelements.game;
 
-import gameelements.board.Board;
-import gameelements.board.Country;
 import gameelements.phases.data.DistributionEventData;
 import gameelements.phases.data.FortifyEventData;
-import gameelements.phases.data.PlacementEventData;
 import gameelements.player.Player;
 import org.junit.Test;
 import settings.Settings;

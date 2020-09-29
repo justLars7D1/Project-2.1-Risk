@@ -8,7 +8,9 @@ public class test {
         players.put(0, 1);
         players.put(1, 1);
         Game game = new Game(players);
-        System.out.println(game);
+
+        System.out.println(game.getGamePhase());
+        System.out.println(game.getBattlePhase());
 
     }
 }
