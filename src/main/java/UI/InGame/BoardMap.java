@@ -162,6 +162,10 @@ public class BoardMap {
     String ass12 = "M 156.8 17 L 157 16.1 L 156.1 15.9 L 156 15.5 L 156.4 14.9 L 157.3 14.8 L 157.8 14.2 L 158.2 14.6 L 158.5 14 L 158.4 13.3 L 158 13.1 L 158.4 12.6 L 160 12.6 L 160.5 12.8 L 160.7 12.6 L 159.8 11.5 L 160.2 11.1 L 161.2 10.9 L 161.8 11.2 L 163.1 11 L 162.2 10.8 L 162.4 9.9 L 162.9 9.6 L 163.4 9.8 L 164 10 L 164.3 9.8 L 163.1 9 L 163.8 8.2 L 162.8 8.2 L 161.9 8.1 L 160.8 7.5 L 160 7.8 L 159 7.8 L 158.7 7.4 L 156.3 7.6 L 155.2 6.5 L 154.8 6.5 L 154.2 6.9 L 153.7 6.3 L 151.2 6.3 L 150.7 7.4 L 149.5 7.1 L 148.7 7.1 L 148.3 7.4 L 147.7 7.7 L 146 6.5 L 144.7 5.5 L 143 5.5 L 142.2 5.9 L 141.6 5.9 L 140.5 5.4 L 139.5 5.4 L 137.9 6 L 137.6 6.4 L 137 6.7 L 138 6.9 L 138.7 7.6 L 137.9 8.2 L 138.4 8.7 L 138.7 9.3 L 139.6 9.5 L 139.6 10.3 L 140.4 10.6 L 140.6 11.5 L 141.6 11.8 L 142.1 12.1 L 142.3 12.6 L 142.6 12.9 L 143.7 13.2 L 143.8 13.9 L 144 14.6 L 144.3 14.9 L 144.6 14.7 L 144.8 14.5 L 145 14.7 L 145.3 14.8 L 145.9 14.5 L 145.9 14.1 L 146.2 13.9 L 147 14 L 147.7 14.4 L 148.3 14.3 L 149.1 15 L 149.8 15.9 L 150.8 16.5 L 151.5 16.1 L 152.8 16.6 L 154 16.9 L 155 17 L 156.8 17";
     //*/
 
+    String troopLabel = new String("");
+    Label phase;
+    Label numOfTroops;
+
     public void buildScene(Menu menu){
         //test case to showcase the world map on the screen
 
@@ -255,8 +259,6 @@ public class BoardMap {
             });
         }
 
-//        as4.setFill(Color.color(200./255,10./255,10./255));
-
         PauseMenu p = new PauseMenu();
         VBox pause = p.pauseMenu(menu, pausePane, this);
 
@@ -280,7 +282,9 @@ public class BoardMap {
         //Player Panel ----------------------------
         playerFlag = new Circle(25);
         Label player = new Label("Player Turn");
-        HBox playerPanel = new HBox(playerFlag, player);
+        numOfTroops = new Label(troopLabel);
+        phase = new Label(game.getGamePhase().toString().toLowerCase());
+        HBox playerPanel = new HBox(playerFlag, player, numOfTroops, phase);
 
         updateWarning();
 
@@ -356,6 +360,7 @@ public class BoardMap {
                 @Override
                 public void handle(MouseEvent me) {
                     if (me.getButton() == MouseButton.PRIMARY) {
+
                         s.setStyle("-fx-fill: #d7d7d7;");
                         int currentID = findCountry(s);
                         if (game.getGamePhase() == GamePhase.DISTRIBUTION) {
@@ -364,12 +369,14 @@ public class BoardMap {
                             game.onGameEvent(data);
                             getPlayerColor();
                             updateCountries(s);
+                            updateWarning();
 
                         } else if (game.getGamePhase() == GamePhase.BATTLE) {
 
                             if(game.getBattlePhase() == BattlePhase.PLACEMENT){
                                 PlacementEventData data = new PlacementEventData(currentID, 1);
                                 game.onGameEvent(data);
+                                updateWarning();
 
                             } else if (game.getBattlePhase() == BattlePhase.ATTACK){
 
@@ -399,6 +406,7 @@ public class BoardMap {
 
                             //TODO VICTORY SCREEN
                         }
+                        updateWarning();
                     }
 
                 }
@@ -489,6 +497,8 @@ public class BoardMap {
     public void updateWarning() {
         switch (game.getGamePhase()) {
             case DISTRIBUTION:
+                phase.setText("DISTRIBUTION");
+                numOfTroops.setText("Troops left: " + game.getCurrentPlayer().getNumTroopsInInventory());
                 warning.setText("Select a land to add your troops! ----- ");
                 attackB.setDisable(true);
                 endTurnB.setDisable(true);
