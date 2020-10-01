@@ -245,12 +245,9 @@ public class BoardMap {
             countryCode.add(s.getContent());
 
             s.hoverProperty().addListener((ChangeListener<Boolean>) (observable, oldValue, newValue) -> {
-                //System.out.println(oldStyle);
-
                 if (newValue) {
                     oldStyle = s.getStyle();
-                    System.out.println(oldStyle);
-                    s.setStyle("-fx-fill: " + getPlayerColor());
+                    s.setStyle("-fx-fill: " + getPlayerColor(game.getCurrentPlayer().getId()));
                 } else {
                     s.setStyle(oldStyle);
 
@@ -355,29 +352,18 @@ public class BoardMap {
     private void onBoardClick() {
         //Board Clicking
         for (SVGPath s : listOfPaths) {
-            System.out.println("loop");
             s.setOnMousePressed(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent me) {
                     if (me.getButton() == MouseButton.PRIMARY) {
                         s.setStyle("-fx-fill: #d7d7d7;");
                         int currentID = findCountry(s);
-                        System.out.println(s.getContent());
-                        System.out.println(Settings.countries[currentID]);
                         if (game.getGamePhase() == GamePhase.DISTRIBUTION) {
                             oldStyle = "-fx-fill:" + getPlayerColor(game.getCurrentPlayer().getId());
-                            System.out.println(oldStyle);
-
-                            System.out.println(game.getCurrentPlayer().getCountriesOwned());
-                            System.out.println(game.getCurrentPlayer().getId());
-
                             GameEventData data = new DistributionEventData(currentID);
                             game.onGameEvent(data);
-
                             getPlayerColor();
-
                             updateCountries(s);
-                            //TODO refresh the board map after every event backend
 
                         } else if (game.getGamePhase() == GamePhase.BATTLE) {
 
@@ -413,14 +399,12 @@ public class BoardMap {
 
                             //TODO VICTORY SCREEN
                         }
-                        //System.out.println(s.getContent());
                     }
 
                 }
 
             });
         }
-        System.out.println("out of loop");
     }
 
     private void updateCountries(SVGPath s){
@@ -430,6 +414,7 @@ public class BoardMap {
             Country c = board.getCountryFromName(strings);
             if (findCountry(s) == c.getID()){
                 s.setStyle("-fx-fill: "+ getPlayerColor(c.getOwner().getId()));
+                oldStyle = s.getStyle();
                 break;
             }
         }
@@ -545,8 +530,6 @@ public class BoardMap {
         this.players = new ArrayList<Integer>(players.keySet());
         game = new Game(players);
         Collections.shuffle(this.players);
-//        getPlayerColor();
-        //System.out.println(this.players.size());
     }
 
     /*
