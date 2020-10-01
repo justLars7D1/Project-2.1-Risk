@@ -23,6 +23,7 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.SVGPath;
 import javafx.scene.transform.Scale;
 import settings.Settings;
+import javafx.scene.input.MouseEvent;
 
 import java.util.*;
 
@@ -44,7 +45,6 @@ public class BoardMap {
     private Button confirmB;
     private Button attackB;
     private Button endTurnB;
-    private ArrayList<Integer> players = new ArrayList<Integer>();
     private String playerColor;
     private Circle playerFlag;
     private Game game;
@@ -52,6 +52,8 @@ public class BoardMap {
     private boolean fromCountryClicked = false;
     private HashSet<Country> playerCountries;
     private String oldStyle = "";
+    private LandInfo lI = new LandInfo();
+    private VBox lIBox;
 
   ///*
   //Declaring all the aSVG path objects,
@@ -172,6 +174,8 @@ public class BoardMap {
         Pane pane = new Pane();
         StackPane canvas = new StackPane();
         BorderPane pausePane = new BorderPane();
+        Pane landInfoPane = new Pane();
+        landInfoPane.setId("landInfoPane");
         pausePane.setId("pausePane");
 
 
@@ -239,22 +243,30 @@ public class BoardMap {
 
         listOfPaths = new ArrayList<SVGPath>(Arrays.asList(af1,af2,af3,af4,af5,af6,aus1,aus2,aus3,aus4,na1,na2,na3,na4,na5,na6,na7,na8,na9,sa1,sa2,sa3,sa4,eu1,eu2,eu3,eu4,eu5,eu6,eu7,as1,as2,as3,as4,as5,as6,as7,as8,as9,as10,as11,as12));
 
-
-
         for(SVGPath s : listOfPaths){ // grey inside, black border
             s.setStyle("-fx-fill: grey");
             s.setStrokeWidth(0.2);
             s.setStroke(Color.color(0,0,0));
             s.getStyleClass().add("svg");
             countryCode.add(s.getContent());
-
+            lIBox = lI.landInfo(game);
+            s.setOnMouseMoved(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent me) {
+                    double x = me.getX() * 4;
+                    double y = me.getY() * 4;
+                    lIBox.setTranslateX(x);
+                    lIBox.setTranslateY(y);
+                }
+            });
             s.hoverProperty().addListener((ChangeListener<Boolean>) (observable, oldValue, newValue) -> {
                 if (newValue) {
                     oldStyle = s.getStyle();
+                    landInfoPane.setVisible(true);
                     s.setStyle("-fx-fill: " + getPlayerColor(game.getCurrentPlayer().getId()));
                 } else {
+                    landInfoPane.setVisible(false);
                     s.setStyle(oldStyle);
-
                 }
             });
         }
@@ -303,7 +315,7 @@ public class BoardMap {
         borderPane.setTop(playerPanel);
         //Adding elements
         pane.getChildren().addAll(board);
-        canvas.getChildren().addAll(pane, borderPane, pausePane);
+        canvas.getChildren().addAll(pane, borderPane, pausePane, landInfoPane);
 
         //Settings ------------------------
         borderPane.setPickOnBounds(false);
@@ -311,6 +323,9 @@ public class BoardMap {
         canvas.setPickOnBounds(false);
         pausePane.setVisible(false);
         pausePane.setCenter(pauseM);
+        landInfoPane.getChildren().add(lIBox);
+        landInfoPane.setVisible(false);
+        landInfoPane.setPickOnBounds(false);
 
         menu.scene4 = new Scene(canvas, 1200, 600);
         menu.scene4.getStylesheets().add("css/GameStyle.css");
@@ -360,37 +375,37 @@ public class BoardMap {
                 @Override
                 public void handle(MouseEvent me) {
                     if (me.getButton() == MouseButton.PRIMARY) {
-
                         s.setStyle("-fx-fill: #d7d7d7;");
                         int currentID = findCountry(s);
+
                         if (game.getGamePhase() == GamePhase.DISTRIBUTION) {
                             oldStyle = "-fx-fill:" + getPlayerColor(game.getCurrentPlayer().getId());
                             GameEventData data = new DistributionEventData(currentID);
                             game.onGameEvent(data);
                             getPlayerColor();
                             updateCountries(s);
-                            updateWarning();
 
                         } else if (game.getGamePhase() == GamePhase.BATTLE) {
-
+                            System.out.println("Battle");
                             if(game.getBattlePhase() == BattlePhase.PLACEMENT){
+                                System.out.println("placement");
                                 PlacementEventData data = new PlacementEventData(currentID, 1);
                                 game.onGameEvent(data);
-                                updateWarning();
 
                             } else if (game.getBattlePhase() == BattlePhase.ATTACK){
-
+                                System.out.println("Attack1");
                                 if(!fromCountryClicked){
                                     fromCountryID = currentID;
                                     fromCountryClicked = true;
                                 } else { //case where previous country already clicked
+                                    System.out.println("Attack2");
                                     AttackEventData data = new AttackEventData(fromCountryID, currentID);
                                     game.onGameEvent(data);
                                     fromCountryClicked = false;
                                 }
 
                             } else { //last case would have to be fortifying
-
+                                System.out.println("Fortifying");
                                 if(!fromCountryClicked){
                                     fromCountryID = currentID;
                                     fromCountryClicked = true;
@@ -408,9 +423,7 @@ public class BoardMap {
                         }
                         updateWarning();
                     }
-
                 }
-
             });
         }
     }
@@ -523,11 +536,10 @@ public class BoardMap {
     private void updateBattlePhase(){
         switch(game.getBattlePhase()){
             case ATTACK:
-                break;
 
+                break;
             case PLACEMENT:
                 break;
-
             case FORTIFYING:
                 break;
         }
@@ -536,10 +548,7 @@ public class BoardMap {
 
 
     public void setPlayers(HashMap players) {
-
-        this.players = new ArrayList<Integer>(players.keySet());
         game = new Game(players);
-        Collections.shuffle(this.players);
     }
 
     /*

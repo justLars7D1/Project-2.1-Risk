@@ -60,3 +60,18 @@
 #pausePane {
     -fx-background-color: rgba(0,0,0,0.5);
 }
+
+#landInfo {
+    -fx-background-color: rgba(255,255,255,0.8);
+    -fx-min-width: 100px;
+    -fx-min-height: 100px;
+    -fx-background-radius: 5px;
+    -fx-effect: dropshadow( gaussian, black, 10, 0.3, 0, 0 );
+}
+
+#landInfo .label {
+    -fx-effect: none;
+    -fx-text-fill: black;
+    -fx-font-size: 15px;
+    -fx-font-family: Tahoma;
+}
