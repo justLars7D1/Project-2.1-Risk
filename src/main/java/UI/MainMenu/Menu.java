@@ -2,10 +2,13 @@ package UI.MainMenu;
 
 import javafx.application.Application;
 import javafx.geometry.Insets;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.*;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 
 public class Menu extends Application {
@@ -48,10 +51,13 @@ public class Menu extends Application {
         vBox.getChildren().addAll(play, instructions, quit);
         grid.getChildren().addAll(vBox);
 
-        scene1 = new Scene(grid, 1200, 600);
+        Rectangle2D screenSize = Screen.getPrimary().getVisualBounds();
+        scene1 = new Scene(grid, screenSize.getWidth(), screenSize.getHeight());
         scene1.getStylesheets().add("css/MainStyle.css");
+
         window.setTitle("Risk");
         window.setScene(scene1);
+        window.initStyle(StageStyle.UNDECORATED);
         window.setResizable(false);
         window.show();
     }

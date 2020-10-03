@@ -1,7 +1,6 @@
 #main{
     -fx-background-image: url("/images/player.jpg");
     -fx-background-size: cover;
-    -fx-background-size: 1200 600;
 }
 
 .button {

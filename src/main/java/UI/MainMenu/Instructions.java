@@ -1,6 +1,7 @@
 package UI.MainMenu;
 
 import javafx.geometry.Pos;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -8,6 +9,7 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
+import javafx.stage.Screen;
 
 import java.util.ArrayList;
 
@@ -61,7 +63,8 @@ public class Instructions {
 
         root.getChildren().addAll(grid);
 
-        menu.scene3 = new Scene(root, 1200, 600);
+        Rectangle2D screenSize = Screen.getPrimary().getVisualBounds();
+        menu.scene3 = new Scene(root, screenSize.getWidth(), screenSize.getHeight());
         menu.scene3.getStylesheets().add("css/InstrStyle.css");
     }
 

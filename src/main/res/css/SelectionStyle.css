@@ -1,7 +1,6 @@
 .root {
      -fx-background-image: url("/images/instr.jpg");
      -fx-background-size: cover;
-     -fx-background-size: 1200 700;
 }
 
 .button {

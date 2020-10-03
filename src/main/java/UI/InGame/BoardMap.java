@@ -9,6 +9,7 @@ import gameelements.phases.GamePhase;
 import gameelements.phases.data.*;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -22,6 +23,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.SVGPath;
 import javafx.scene.transform.Scale;
+import javafx.stage.Screen;
 import settings.Settings;
 import javafx.scene.input.MouseEvent;
 
@@ -33,7 +35,7 @@ public class BoardMap {
     private int stage = 1;
 
     private SVGPath path1 = new SVGPath();
-    private double scaleFactor = 5.3;
+    private double scaleFactor = 7;
     private ArrayList<SVGPath> listOfPaths;
     private double width;
     private double height;
@@ -50,7 +52,7 @@ public class BoardMap {
     private Game game;
     private int fromCountryID = -1;
     private boolean fromCountryClicked = false;
-    private HashSet<Country> playerCountries;
+    private HashMap<Integer, Integer> players;
     private String oldStyle = "";
     private LandInfo lI = new LandInfo();
     private VBox lIBox;
@@ -168,6 +170,12 @@ public class BoardMap {
     Label phase;
     Label numOfTroops;
 
+    public BoardMap(HashMap<Integer, Integer> players, Menu menu) {
+        this.players = players;
+        this.game = new Game(players);
+        buildScene(menu);
+    }
+
     public void buildScene(Menu menu){
         //test case to showcase the world map on the screen
 
@@ -180,7 +188,6 @@ public class BoardMap {
 
 
         canvas.setId("main");
-        canvas.setPrefSize(1200,600);
 
         path1.setContent(wholeWorld);
         path1.setFill(Color.GREY);
@@ -327,7 +334,8 @@ public class BoardMap {
         landInfoPane.setVisible(false);
         landInfoPane.setPickOnBounds(false);
 
-        menu.scene4 = new Scene(canvas, 1200, 600);
+        Rectangle2D screenSize = Screen.getPrimary().getVisualBounds();
+        menu.scene4 = new Scene(canvas, screenSize.getWidth(), screenSize.getHeight());
         menu.scene4.getStylesheets().add("css/GameStyle.css");
 
         getPlayerColor();
@@ -346,7 +354,7 @@ public class BoardMap {
 
         board.getTransforms().add(scale);
         board.setTranslateX(100);
-        board.setTranslateY(10);
+        board.setTranslateY(50);
 
     }
 
@@ -508,9 +516,9 @@ public class BoardMap {
     }
 
     public void updateWarning() {
+        phase.setText(game.getGamePhase().toString());
         switch (game.getGamePhase()) {
             case DISTRIBUTION:
-                phase.setText("DISTRIBUTION");
                 numOfTroops.setText("Troops left: " + game.getCurrentPlayer().getNumTroopsInInventory());
                 warning.setText("Select a land to add your troops! ----- ");
                 attackB.setDisable(true);
@@ -545,17 +553,16 @@ public class BoardMap {
         }
     }
 
-
-
-    public void setPlayers(HashMap players) {
-        game = new Game(players);
-    }
-
-    /*
+    /**
     * Restart the current game.
     * */
     public void restart() {
-
+        game = new Game(this.players);
+        getPlayerColor();
+        updateWarning();
+        for(SVGPath s : listOfPaths) {
+            s.setStyle("-fx-fill: grey");
+        }
     }
 
     public double getScaleFactor(){

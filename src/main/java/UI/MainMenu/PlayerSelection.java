@@ -5,10 +5,12 @@ import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.stage.Screen;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -40,10 +42,6 @@ public class PlayerSelection {
         HBox hBox = new HBox(title);
         hBox.setAlignment(Pos.CENTER);
 
-        //initialising the board map
-        board = new BoardMap();
-
-
         //Label style
         grid.setConstraints(hBox, 0, 0);
         grid.setConstraints(player, 0, 1);
@@ -70,13 +68,16 @@ public class PlayerSelection {
         back.setMinHeight(grid.getPrefHeight());
 
         //Button actions
-        start.setOnAction(e -> { board.setPlayers(getPlayers()); board.buildScene(menu);menu.window.setScene(menu.scene4);});
+        start.setOnAction(e -> { //initialising the board map
+            board = new BoardMap(getPlayers(), menu);
+            menu.window.setScene(menu.scene4);});
 
         back.setOnAction(e -> menu.window.setScene(menu.scene1));
 
         grid.getChildren().addAll(title, player, colorLabel, start, back);
 
-        menu.scene2 = new Scene(grid, 1200, 600);
+        Rectangle2D screenSize = Screen.getPrimary().getVisualBounds();
+        menu.scene2 = new Scene(grid, screenSize.getWidth(), screenSize.getHeight());
         menu.scene2.getStylesheets().add("css/SelectionStyle.css");
     }
 
