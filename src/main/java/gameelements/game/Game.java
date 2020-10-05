@@ -198,9 +198,30 @@ public class Game extends GameObserver {
                 Settings.MINNUMTROOPSPERTURN,
                 p.getNumCountriesOwned() / Settings.TROOPSPERCOUNTRYDIVIDER
         );
-        // TODO: Number of troops for continent
+        // Number of troops for owning continents
+        totalNewTroops += numTroopsForContinents(p);
         // TODO: Number of troops for cards
         p.setNumTroopsInInventory(totalNewTroops);
+    }
+
+    private int numTroopsForContinents(Player p) {
+        HashSet<Country> playerCountries = p.getCountriesOwned();
+        int numTroops = 0;
+        // Iterate over all continents
+        continentLoop: for (Map.Entry<String, Integer> continent: Settings.continentIndicesToTroops.entrySet()) {
+            String[] split = continent.getKey().split("-");
+            int fromCountryIndex = Integer.parseInt(split[0]);
+            int toCountryIndex = Integer.parseInt(split[0]);
+            // Iterate over all countries in one continent. If the player doesn't own one, continue to the next continent
+            for (int i = fromCountryIndex; i <= toCountryIndex; i++) {
+                if (!playerCountries.contains(gameBoard.getCountryFromID(i))) {
+                    continue continentLoop;
+                }
+            }
+            // If the player owns all countries of the continent, add the number of troops for owning that continent
+            numTroops += continent.getValue();
+        }
+        return numTroops;
     }
 
     public Board getGameBoard() {

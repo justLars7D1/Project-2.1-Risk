@@ -1,5 +1,7 @@
 package settings;
 
+import java.util.HashMap;
+
 /**
  * Settings class that provides easy access to all game constants used (for easy modification / access)
  */
@@ -35,13 +37,13 @@ public class Settings {
             "Egypt",
             "Madagascar",
             "North Africa",
-            "South Africa",
+            "South Africa",  // Index = 5
 
             // From here Australia
             "Eastern Australia",
             "Indonesia",
             "New Guinea",
-            "Western Australia",
+            "Western Australia", // Index = 9
 
             // From here North America
             "Alaska",
@@ -52,13 +54,13 @@ public class Settings {
             "Northwest Territory",
             "Ontario (Central Canada)",
             "Quebec (Eastern Canada)",
-            "Western United States",
+            "Western United States", // Index = 18
 
             // From here South America
             "Argentina",
             "Brazil",
             "Peru",
-            "Venezuela",
+            "Venezuela", // Index = 22
 
             // From here Europe
             "Great Britain (Great Britain & Ireland)",
@@ -67,7 +69,7 @@ public class Settings {
             "Scandinavia",
             "Southern Europe",
             "Ukraine (Eastern Europe, Russia)",
-            "Western Europe",
+            "Western Europe", // Index = 29
 
             // From here Asia
             "Afghanistan",
@@ -81,7 +83,19 @@ public class Settings {
             "Siam (Southeast Asia)",
             "Siberia",
             "Ural",
-            "Yakutsk"};
+            "Yakutsk" // Index = 41
+
+    };
+
+    public static final HashMap<String, Integer> continentIndicesToTroops = new HashMap<>();
+    static {
+        continentIndicesToTroops.put("0-5", 3);
+        continentIndicesToTroops.put("6-9", 2);
+        continentIndicesToTroops.put("10-18", 5);
+        continentIndicesToTroops.put("19-22", 2);
+        continentIndicesToTroops.put("23-29", 5);
+        continentIndicesToTroops.put("30-41", 7);
+    }
 
     /**
      * The edges between the countries (Represents a connection from country to country)
