@@ -108,12 +108,15 @@ public class Settings {
             {"Alaska", "Alberta (Western Canada)"},
             {"Northwest Territory", "Alberta (Western Canada)"},
             {"Northwest Territory", "Greenland"},
+            {"Northwest Territory", "Ontario (Central Canada)"},
             {"Alberta (Western Canada)","Western United States"},
             {"Alberta (Western Canada)","Ontario (Central Canada)"},
             {"Ontario (Central Canada)", "Greenland"},
             {"Ontario (Central Canada)", "Eastern United States" },
+            {"Ontario (Central Canada)", "Quebec (Eastern Canada)" },
             {"Eastern United States", "Western United States"},
             {"Eastern United States", "Quebec (Eastern Canada)"},
+            {"Eastern United States", "Central America"},
             {"Quebec (Eastern Canada)", "Greenland"},
             {"Western United States", "Central America" },
             {"Western United States", "Ontario (Central Canada)"},
@@ -122,6 +125,7 @@ public class Settings {
             {"Venezuela", "Brazil"},
             {"Venezuela", "Peru"},
             {"Peru", "Argentina"},
+            {"Peru", "Brazil"},
             {"Brazil", "Argentina"},
 
             //Edges within Africa
@@ -132,6 +136,7 @@ public class Settings {
             {"Congo (Central Africa)", "East Africa" },
             {"Congo (Central Africa)", "South Africa"},
             {"East Africa", "Madagascar"},
+            {"East Africa", "South Africa"},
             {"South Africa","Madagascar"},
 
             //Edges within Europe
