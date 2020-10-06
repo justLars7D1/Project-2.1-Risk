@@ -249,14 +249,14 @@ public class BoardMap {
        // */
 
         listOfPaths = new ArrayList<SVGPath>(Arrays.asList(af1,af2,af3,af4,af5,af6,aus1,aus2,aus3,aus4,na1,na2,na3,na4,na5,na6,na7,na8,na9,sa1,sa2,sa3,sa4,eu1,eu2,eu3,eu4,eu5,eu6,eu7,as1,as2,as3,as4,as5,as6,as7,as8,as9,as10,as11,as12));
-
+        lIBox = lI.landInfo(game);
         for(SVGPath s : listOfPaths){ // grey inside, black border
             s.setStyle("-fx-fill: grey");
             s.setStrokeWidth(0.2);
             s.setStroke(Color.color(0,0,0));
             s.getStyleClass().add("svg");
             countryCode.add(s.getContent());
-            lIBox = lI.landInfo(game);
+
             s.setOnMouseMoved(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent me) {
@@ -268,10 +268,13 @@ public class BoardMap {
             });
             s.hoverProperty().addListener((ChangeListener<Boolean>) (observable, oldValue, newValue) -> {
                 if (newValue) {
+                    lIBox = lI.landInfo(game);
+                    landInfoPane.getChildren().add(lIBox);
                     oldStyle = s.getStyle();
                     landInfoPane.setVisible(true);
                     s.setStyle("-fx-fill: " + getPlayerColor(game.getCurrentPlayer().getId()));
                 } else {
+                    landInfoPane.getChildren().clear();
                     landInfoPane.setVisible(false);
                     s.setStyle(oldStyle);
                 }
@@ -330,7 +333,6 @@ public class BoardMap {
         canvas.setPickOnBounds(false);
         pausePane.setVisible(false);
         pausePane.setCenter(pauseM);
-        landInfoPane.getChildren().add(lIBox);
         landInfoPane.setVisible(false);
         landInfoPane.setPickOnBounds(false);
 
@@ -399,7 +401,7 @@ public class BoardMap {
                                 System.out.println("placement");
                                 PlacementEventData data = new PlacementEventData(currentID, 1);
                                 game.onGameEvent(data);
-
+                                game.nextBattlePhase();
                             } else if (game.getBattlePhase() == BattlePhase.ATTACK){
                                 System.out.println("Attack1");
                                 if(!fromCountryClicked){

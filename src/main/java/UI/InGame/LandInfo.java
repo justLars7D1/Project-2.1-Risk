@@ -8,7 +8,7 @@ import javafx.scene.layout.VBox;
 public class LandInfo {
 
     public VBox landInfo(Game game) {
-        Label name = new Label("name");
+        Label name = new Label("name" + game.getCurrentPlayer());
         Label owner = new Label("owner");
         Label troops = new Label("troops");
 
