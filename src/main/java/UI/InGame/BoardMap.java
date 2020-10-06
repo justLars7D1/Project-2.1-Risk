@@ -56,6 +56,7 @@ public class BoardMap {
     private String oldStyle = "";
     private LandInfo lI = new LandInfo();
     private VBox lIBox;
+    private BorderPane victoryPane;
 
   ///*
   //Declaring all the aSVG path objects,
@@ -182,10 +183,11 @@ public class BoardMap {
         Pane pane = new Pane();
         StackPane canvas = new StackPane();
         BorderPane pausePane = new BorderPane();
+        victoryPane = new BorderPane();
         Pane landInfoPane = new Pane();
         landInfoPane.setId("landInfoPane");
         pausePane.setId("pausePane");
-
+        victoryPane.setId("victoryPane");
 
         canvas.setId("main");
 
@@ -268,8 +270,10 @@ public class BoardMap {
             });
             s.hoverProperty().addListener((ChangeListener<Boolean>) (observable, oldValue, newValue) -> {
                 if (newValue) {
-                    lIBox = lI.landInfo(game);
-                    landInfoPane.getChildren().add(lIBox);
+                    if (findCountry(s) != -1) {
+                        lIBox = lI.landInfo(game, findCountry(s));
+                        landInfoPane.getChildren().add(lIBox);
+                    }
                     oldStyle = s.getStyle();
                     landInfoPane.setVisible(true);
                     s.setStyle("-fx-fill: " + getPlayerColor(game.getCurrentPlayer().getId()));
@@ -308,14 +312,20 @@ public class BoardMap {
         phase = new Label(game.getGamePhase().toString().toLowerCase());
         HBox playerPanel = new HBox(playerFlag, player, numOfTroops, phase);
 
+        //Victory Panel -----------------------------
+        Label victory = new Label("victory");
+        victoryPane.setCenter(victory);
         updateWarning();
 
         //Button Actions
         attackB.setOnAction(e -> {
-            attackB.setDisable(true);endTurnB.setDisable(false);
+            attackB.setDisable(true);
+            endTurnB.setDisable(false);
         });
         endTurnB.setOnAction(e -> {
+            game.nextBattlePhase();
             updateWarning();
+            getPlayerColor();
         });
         confirmB.setOnAction(e -> {
             updateWarning();
@@ -325,7 +335,7 @@ public class BoardMap {
         borderPane.setTop(playerPanel);
         //Adding elements
         pane.getChildren().addAll(board);
-        canvas.getChildren().addAll(pane, borderPane, pausePane, landInfoPane);
+        canvas.getChildren().addAll(pane, borderPane, victoryPane, pausePane, landInfoPane);
 
         //Settings ------------------------
         borderPane.setPickOnBounds(false);
@@ -335,6 +345,8 @@ public class BoardMap {
         pausePane.setCenter(pauseM);
         landInfoPane.setVisible(false);
         landInfoPane.setPickOnBounds(false);
+        victoryPane.setVisible(false);
+        victoryPane.setPickOnBounds(false);
 
         Rectangle2D screenSize = Screen.getPrimary().getVisualBounds();
         menu.scene4 = new Scene(canvas, screenSize.getWidth(), screenSize.getHeight());
@@ -401,7 +413,7 @@ public class BoardMap {
                                 System.out.println("placement");
                                 PlacementEventData data = new PlacementEventData(currentID, 1);
                                 game.onGameEvent(data);
-                                game.nextBattlePhase();
+
                             } else if (game.getBattlePhase() == BattlePhase.ATTACK){
                                 System.out.println("Attack1");
                                 if(!fromCountryClicked){
@@ -428,9 +440,10 @@ public class BoardMap {
                             attackB.setDisable(false);
                         } else {
                             confirmB.setDisable(false);
-
+                            victoryPane.setVisible(true);
                             //TODO VICTORY SCREEN
                         }
+                        updateAllCountries(s);
                         updateWarning();
                     }
                 }
@@ -449,8 +462,18 @@ public class BoardMap {
                 break;
             }
         }
+    }
 
+    private void updateAllCountries(SVGPath s) {
 
+        Board board = game.getGameBoard();
+        for(String strings: Settings.countries){
+            Country c = board.getCountryFromName(strings);
+            if (findCountry(s) == c.getID()){
+                s.setStyle("-fx-fill: "+ getPlayerColor(c.getOwner().getId()));
+                oldStyle = s.getStyle();
+            }
+        }
     }
 
     private void onKeyPressed(BorderPane pausePane, Menu menu) {
@@ -524,7 +547,7 @@ public class BoardMap {
                 numOfTroops.setText("Troops left: " + game.getCurrentPlayer().getNumTroopsInInventory());
                 warning.setText("Select a land to add your troops! ----- ");
                 attackB.setDisable(true);
-                endTurnB.setDisable(true);
+                //endTurnB.setDisable(true);
                 confirmB.setDisable(true);
                 break;
             case BATTLE:
@@ -534,7 +557,7 @@ public class BoardMap {
                 warning.setText("Select lands to exchange troops! ----- ");
                 confirmB.setDisable(true);
                 attackB.setDisable(true);
-                endTurnB.setDisable(false);
+                //endTurnB.setDisable(false);
                 break;
             default:
                 warning.setText("");
@@ -546,11 +569,13 @@ public class BoardMap {
     private void updateBattlePhase(){
         switch(game.getBattlePhase()){
             case ATTACK:
-
+                warning.setText("Select country to attack (from / to) ");
                 break;
             case PLACEMENT:
+                warning.setText("Place your troop(s) ");
                 break;
             case FORTIFYING:
+                warning.setText("Fortify your countries (from / to) ");
                 break;
         }
     }

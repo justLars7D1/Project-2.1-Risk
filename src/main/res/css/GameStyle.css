@@ -74,3 +74,13 @@
     -fx-font-size: 15px;
     -fx-font-family: Tahoma;
 }
+
+#victoryPane {
+     -fx-background-color: rgba(0,0,0,0.5);
+}
+
+#victoryPane .label {
+    -fx-effect: none;
+    -fx-text-fill: white;
+    -fx-font-size: 50px;
+}
