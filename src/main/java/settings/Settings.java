@@ -127,6 +127,7 @@ public class Settings {
             //Edges within Africa
             {"North Africa", "Egypt"},
             {"North Africa", "Congo (Central Africa)"},
+            {"North Africa", "East Africa"},
             {"Egypt", "East Africa" },
             {"Congo (Central Africa)", "East Africa" },
             {"Congo (Central Africa)", "South Africa"},

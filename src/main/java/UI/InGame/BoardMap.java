@@ -268,7 +268,7 @@ public class BoardMap {
             });
             s.hoverProperty().addListener((ChangeListener<Boolean>) (observable, oldValue, newValue) -> {
                 if (newValue) {
-                    lIBox = lI.landInfo(game);
+                    lIBox = lI.landInfo(game, findCountry(s));
                     landInfoPane.getChildren().add(lIBox);
                     oldStyle = s.getStyle();
                     landInfoPane.setVisible(true);
