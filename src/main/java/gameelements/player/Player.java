@@ -85,8 +85,8 @@ public abstract class Player {
              *  Making sure that the countries are adjacent.
              */
             if(countryFrom.getNeighboringCountries().contains(countryTo)){
-                int attackers = 0;
-                int defenders = 0;
+                int attackers = countryFrom.getNumSoldiers() -1;
+                int defenders = countryTo.getNumSoldiers();
                 int attack = 0;
                 int defend = 0;
                 /**
