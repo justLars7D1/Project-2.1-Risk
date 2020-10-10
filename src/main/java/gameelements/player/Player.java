@@ -235,7 +235,13 @@ public abstract class Player {
          * the attack was successful and the country goes to the atacker.
          */
         if(countryTo.getNumSoldiers() == 0){
+            Player oldOwner = countryFrom.getOwner();
+            oldOwner.countriesOwned.remove(countryTo);
+            countriesOwned.add(countryTo);
             countryTo.setOwner(countryFrom.getOwner());
+            
+            countryFrom.removeNumSoldiers(1);
+            countryTo.addNumSoldiers(1);
         }
         //TODO: Test this event
     }
@@ -269,13 +275,16 @@ public abstract class Player {
      */
     private boolean existsCountryPath(Country countryFrom, Country countryTo) {
         boolean pathExists = false;
+        HashSet<Country> seenCountries = new HashSet<>();
         Queue<Country> pathQueue = new ArrayDeque<>();
         pathQueue.add(countryFrom);
+        seenCountries.add(countryFrom);
         while (!pathQueue.isEmpty() && !pathExists) {
             Country c = pathQueue.poll();
             for(Country neighbor: c.getNeighboringCountries()) {
-                if (neighbor.getOwner().equals(this)) {
+                if (neighbor.getOwner().equals(this) && !seenCountries.contains(neighbor)) {
                     pathQueue.add(neighbor);
+                    seenCountries.add(neighbor);
                 }
             }
             if (c.equals(countryTo)) {

@@ -209,7 +209,7 @@ public class Game extends GameObserver {
         continentLoop: for (Map.Entry<String, Integer> continent: Settings.continentIndicesToTroops.entrySet()) {
             String[] split = continent.getKey().split("-");
             int fromCountryIndex = Integer.parseInt(split[0]);
-            int toCountryIndex = Integer.parseInt(split[0]);
+            int toCountryIndex = Integer.parseInt(split[1]);
             // Iterate over all countries in one continent. If the player doesn't own one, continue to the next continent
             for (int i = fromCountryIndex; i <= toCountryIndex; i++) {
                 if (!playerCountries.contains(gameBoard.getCountryFromID(i))) {
