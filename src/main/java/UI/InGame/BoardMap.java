@@ -307,13 +307,13 @@ public class BoardMap {
 
         //Player Panel ----------------------------
         playerFlag = new Circle(25);
-        Label player = new Label("Player Turn");
+        Label player = new Label(" Player Turn --- ");
         numOfTroops = new Label(troopLabel);
         phase = new Label(game.getGamePhase().toString().toLowerCase());
         HBox playerPanel = new HBox(playerFlag, player, numOfTroops, phase);
 
         //Victory Panel -----------------------------
-        Label victory = new Label("victory");
+        Label victory = new Label("Player " + game.getCurrentPlayer().getId() + " Wins !\n Congratulations");
         victoryPane.setCenter(victory);
         updateWarning();
 
@@ -437,11 +437,9 @@ public class BoardMap {
                                     fromCountryClicked = false;
                                 }
                             }
-                            attackB.setDisable(false);
+                            //attackB.setDisable(false);
                         } else {
-                            confirmB.setDisable(false);
-                            victoryPane.setVisible(true);
-                            //TODO VICTORY SCREEN
+                            //confirmB.setDisable(false);
                         }
                         updateAllCountries(s);
                         updateWarning();
@@ -541,23 +539,22 @@ public class BoardMap {
     }
 
     public void updateWarning() {
-        phase.setText(game.getGamePhase().toString());
+        String str = game.getGamePhase().toString().toLowerCase();
+        phase.setText(" ---- " + str.substring(0, 1).toUpperCase() + str.substring(1));
         switch (game.getGamePhase()) {
             case DISTRIBUTION:
                 numOfTroops.setText("Troops left: " + game.getCurrentPlayer().getNumTroopsInInventory());
                 warning.setText("Select a land to add your troops! ----- ");
                 attackB.setDisable(true);
-                //endTurnB.setDisable(true);
+                endTurnB.setDisable(true);
                 confirmB.setDisable(true);
                 break;
             case BATTLE:
-               updateBattlePhase();
+                endTurnB.setDisable(false);
+                updateBattlePhase();
                 break;
             case VICTORY:
-                warning.setText("Select lands to exchange troops! ----- ");
-                confirmB.setDisable(true);
-                attackB.setDisable(true);
-                //endTurnB.setDisable(false);
+                victoryPane.setVisible(true);
                 break;
             default:
                 warning.setText("");
@@ -568,13 +565,16 @@ public class BoardMap {
 
     private void updateBattlePhase(){
         switch(game.getBattlePhase()){
-            case ATTACK:
-                warning.setText("Select country to attack (from / to) ");
-                break;
             case PLACEMENT:
+                numOfTroops.setText("Troops left: " + game.getCurrentPlayer().getNumTroopsInInventory());
                 warning.setText("Place your troop(s) ");
                 break;
+            case ATTACK:
+                numOfTroops.setText("Troops left: " + game.getCurrentPlayer().getNumTroopsInInventory());
+                warning.setText("Select country to attack (from / to) ");
+                break;
             case FORTIFYING:
+                numOfTroops.setText("Troops left: " + game.getCurrentPlayer().getNumTroopsInInventory());
                 warning.setText("Fortify your countries (from / to) ");
                 break;
         }

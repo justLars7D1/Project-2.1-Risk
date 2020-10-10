@@ -82,5 +82,5 @@
 #victoryPane .label {
     -fx-effect: none;
     -fx-text-fill: white;
-    -fx-font-size: 50px;
+    -fx-font-size: 7em;
 }
