@@ -235,7 +235,13 @@ public abstract class Player {
          * the attack was successful and the country goes to the atacker.
          */
         if(countryTo.getNumSoldiers() == 0){
+            Player oldOwner = countryFrom.getOwner();
+            oldOwner.countriesOwned.remove(countryTo);
+            countriesOwned.add(countryTo);
             countryTo.setOwner(countryFrom.getOwner());
+            
+            countryFrom.removeNumSoldiers(1);
+            countryTo.addNumSoldiers(1);
         }
         //TODO: Test this event
     }
