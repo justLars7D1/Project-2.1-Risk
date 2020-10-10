@@ -57,6 +57,8 @@ public class BoardMap {
     private LandInfo lI = new LandInfo();
     private VBox lIBox;
     private BorderPane victoryPane;
+    private Pane landInfoPane;
+    private Pane pane;
 
   ///*
   //Declaring all the aSVG path objects,
@@ -180,11 +182,11 @@ public class BoardMap {
     public void buildScene(Menu menu){
         //test case to showcase the world map on the screen
 
-        Pane pane = new Pane();
+        pane = new Pane();
         StackPane canvas = new StackPane();
         BorderPane pausePane = new BorderPane();
         victoryPane = new BorderPane();
-        Pane landInfoPane = new Pane();
+        landInfoPane = new Pane();
         landInfoPane.setId("landInfoPane");
         pausePane.setId("pausePane");
         victoryPane.setId("victoryPane");
@@ -259,31 +261,20 @@ public class BoardMap {
             s.getStyleClass().add("svg");
             countryCode.add(s.getContent());
 
-            pane.setOnMouseMoved(new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent me) {
-                    double x = me.getX() - 150;
-                    double y = me.getY()- 150;
-                    lIBox.setTranslateX(x);
-                    lIBox.setTranslateY(y);
-                }
-            });
             s.hoverProperty().addListener((ChangeListener<Boolean>) (observable, oldValue, newValue) -> {
                 if (newValue) {
-                    if (findCountry(s) != -1) {
-                        lIBox = lI.landInfo(game, findCountry(s));
-                        landInfoPane.getChildren().add(lIBox);
-                    }
+                    updateInfo(s);
                     oldStyle = s.getStyle();
                     landInfoPane.setVisible(true);
                     s.setStyle("-fx-fill: " + getPlayerColor(game.getCurrentPlayer().getId()));
                 } else {
-                    landInfoPane.getChildren().clear();
                     landInfoPane.setVisible(false);
                     s.setStyle(oldStyle);
                 }
             });
         }
+
+
 
         PauseMenu p = new PauseMenu();
         VBox pause = p.pauseMenu(menu, pausePane, this);
@@ -443,12 +434,41 @@ public class BoardMap {
                         } else {
                             //confirmB.setDisable(false);
                         }
+                        updateInfo(s);
                         updateAllCountries(s);
                         updateWarning();
                     }
                 }
             });
         }
+    }
+
+    private void updateInfo(SVGPath s) {
+
+        landInfoPane.getChildren().clear();
+        if (findCountry(s) != -1) {
+            lIBox = lI.landInfo(game, findCountry(s));
+        }
+        landInfoPane.getChildren().add(lIBox);
+        pane.setOnMousePressed(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent me) {
+                double x = me.getX() - 150;
+                double y = me.getY() - 150;
+                lIBox.setTranslateX(x);
+                lIBox.setTranslateY(y);
+            }
+        });
+        pane.setOnMouseMoved(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent me) {
+                double x = me.getX() - 150;
+                double y = me.getY() - 150;
+                lIBox.setTranslateX(x);
+                lIBox.setTranslateY(y);
+            }
+        });
+
     }
 
     private boolean isOwner(int id) {
@@ -583,7 +603,11 @@ public class BoardMap {
                 break;
             case FORTIFYING:
                 numOfTroops.setText("Troops left: " + game.getCurrentPlayer().getNumTroopsInInventory());
-                warning.setText("Fortify your countries (from / to) ");
+                if (fromCountryClicked) {
+                    warning.setText("Fortify your countries to !");
+                } else {
+                    warning.setText("Fortify your countries from !");
+                }
                 break;
         }
     }
