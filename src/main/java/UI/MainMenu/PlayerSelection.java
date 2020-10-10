@@ -18,7 +18,7 @@ import java.util.HashMap;
 
 public class PlayerSelection {
 
-    private final GridPane grid = new GridPane();
+    private GridPane grid = new GridPane();
     private ArrayList<ComboBox<String>> playerList = new ArrayList<>();
     private ArrayList<ComboBox<String>> colorList = new ArrayList<>();
     private ArrayList<Color> colors;
@@ -26,13 +26,15 @@ public class PlayerSelection {
     private BoardMap board;
 
     public void buildScene(Menu menu) {
-
+        BorderPane pane = new BorderPane();
+        Rectangle2D screenSize = Screen.getPrimary().getVisualBounds();
         fillColors();
 
-        grid.setPadding(new Insets(50, 0, 0, 120));
+        grid.setPadding(new Insets(100, 0, 0, screenSize.getWidth()/2-400));
         grid.setVgap(10);
-        grid.setPrefWidth(80);
+        grid.setPrefWidth(400);
         grid.setPrefHeight(30);
+
 
         //Column labels
         Label title = new Label("Player Selection");
@@ -75,9 +77,9 @@ public class PlayerSelection {
         back.setOnAction(e -> menu.window.setScene(menu.scene1));
 
         grid.getChildren().addAll(title, player, colorLabel, start, back);
+        pane.setCenter(grid);
 
-        Rectangle2D screenSize = Screen.getPrimary().getVisualBounds();
-        menu.scene2 = new Scene(grid, screenSize.getWidth(), screenSize.getHeight());
+        menu.scene2 = new Scene(pane, screenSize.getWidth(), screenSize.getHeight());
         menu.scene2.getStylesheets().add("css/SelectionStyle.css");
     }
 
