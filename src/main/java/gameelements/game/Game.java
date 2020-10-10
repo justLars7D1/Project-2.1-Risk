@@ -82,8 +82,6 @@ public class Game extends GameObserver {
         Country countryFrom = gameBoard.getCountryFromID(data.getFromCountry());
         Country countryTo = gameBoard.getCountryFromID(data.getToCountry());
 
-        //TODO: When troops are chosen, the attacker needs to have one more troop in his country than he intends to attack with.
-
         player.onAttackEvent(countryFrom,countryTo);
         // Check for the end of the game (so one player owns all countries)
         checkForGameEnd();
