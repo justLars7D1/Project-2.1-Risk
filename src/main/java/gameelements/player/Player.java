@@ -167,7 +167,7 @@ public abstract class Player {
                  *  The lower two dice of the attacker are discarded.
                  */
                 else if(attackers > 2 && defenders == 1){
-                    List<Integer> attackDice = countryFrom.getOwner().rollDice(2);
+                    List<Integer> attackDice = countryFrom.getOwner().rollDice(3);
                     List<Integer> defendDice = countryTo.getOwner().rollDice(1);
 
                     defend = defendDice.get(0);
