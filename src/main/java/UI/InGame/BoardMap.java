@@ -259,11 +259,11 @@ public class BoardMap {
             s.getStyleClass().add("svg");
             countryCode.add(s.getContent());
 
-            s.setOnMouseMoved(new EventHandler<MouseEvent>() {
+            pane.setOnMouseMoved(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent me) {
-                    double x = me.getX() * 4;
-                    double y = me.getY() * 4;
+                    double x = me.getX() - 150;
+                    double y = me.getY()- 150;
                     lIBox.setTranslateX(x);
                     lIBox.setTranslateY(y);
                 }
@@ -294,14 +294,14 @@ public class BoardMap {
 
         //Action Panel ---------------------------
         warning = new Label("Select a land to add your troops! ");
-        confirmB = new Button("Confirm");
-        attackB = new Button("Attack");
+        //confirmB = new Button("Confirm");
+        //attackB = new Button("Attack");
         endTurnB = new Button("End Phase");
-        confirmB.setUnderline(true);
-        attackB.setUnderline(true);
+        //confirmB.setUnderline(true);
+        //attackB.setUnderline(true);
         endTurnB.setUnderline(true);
 
-        HBox actionPanel = new HBox(warning, confirmB, attackB, endTurnB);
+        HBox actionPanel = new HBox(warning, endTurnB);
         actionPanel.getStyleClass().add("hbox");
         actionPanel.setAlignment(Pos.CENTER);
 
@@ -313,23 +313,24 @@ public class BoardMap {
         HBox playerPanel = new HBox(playerFlag, player, numOfTroops, phase);
 
         //Victory Panel -----------------------------
-        Label victory = new Label("Player " + game.getCurrentPlayer().getId() + " Wins !\n Congratulations");
+        String str = getPlayerColor().substring(0, 1).toUpperCase() + getPlayerColor().substring(1);
+        Label victory = new Label("Player " + str +" Wins !\n Congratulations");
         victoryPane.setCenter(victory);
         updateWarning();
 
         //Button Actions
-        attackB.setOnAction(e -> {
-            attackB.setDisable(true);
-            endTurnB.setDisable(false);
-        });
+//        attackB.setOnAction(e -> {
+//            attackB.setDisable(true);
+//            endTurnB.setDisable(false);
+//        });
         endTurnB.setOnAction(e -> {
             game.nextBattlePhase();
             updateWarning();
             getPlayerColor();
         });
-        confirmB.setOnAction(e -> {
-            updateWarning();
-        });
+//        confirmB.setOnAction(e -> {
+//            updateWarning();
+//        });
 
         borderPane.setBottom(actionPanel);
         borderPane.setTop(playerPanel);
@@ -410,16 +411,17 @@ public class BoardMap {
                         } else if (game.getGamePhase() == GamePhase.BATTLE) {
                             System.out.println("Battle");
                             if(game.getBattlePhase() == BattlePhase.PLACEMENT){
-                                System.out.println("placement");
+                               // System.out.println("placement");
                                 PlacementEventData data = new PlacementEventData(currentID, 1);
                                 game.onGameEvent(data);
 
                             } else if (game.getBattlePhase() == BattlePhase.ATTACK){
-                                System.out.println("Attack1");
-                                if(!fromCountryClicked){
+                                //System.out.println("Attack1");
+                                if (!fromCountryClicked && isOwner(currentID)) {
+                                    System.out.println("picked from");
                                     fromCountryID = currentID;
                                     fromCountryClicked = true;
-                                } else { //case where previous country already clicked
+                                } else if (fromCountryClicked && !isOwner(currentID)) { //case where previous country already clicked
                                     System.out.println("Attack2");
                                     AttackEventData data = new AttackEventData(fromCountryID, currentID);
                                     game.onGameEvent(data);
@@ -427,7 +429,7 @@ public class BoardMap {
                                 }
 
                             } else { //last case would have to be fortifying
-                                System.out.println("Fortifying");
+                                //System.out.println("Fortifying");
                                 if(!fromCountryClicked){
                                     fromCountryID = currentID;
                                     fromCountryClicked = true;
@@ -447,6 +449,15 @@ public class BoardMap {
                 }
             });
         }
+    }
+
+    private boolean isOwner(int id) {
+        String name = Settings.countries[id];
+        Country c = game.getGameBoard().getCountryFromName(name);
+        if (c.getOwner() != null && c.getOwner().getId() == game.getCurrentPlayer().getId()) {
+            return true;
+        }
+        return false;
     }
 
     private void updateCountries(SVGPath s){
@@ -484,13 +495,6 @@ public class BoardMap {
                 }
             }
         });
-    }
-
-    public void changeStage() {
-        stage++;
-        if (stage > 3) {
-            stage = 1;
-        }
     }
 
     public String getPlayerColor() {
@@ -540,14 +544,14 @@ public class BoardMap {
 
     public void updateWarning() {
         String str = game.getGamePhase().toString().toLowerCase();
-        phase.setText(" ---- " + str.substring(0, 1).toUpperCase() + str.substring(1));
+        phase.setText(" ---- " + str.substring(0, 1).toUpperCase() + str.substring(1) + " Phase");
         switch (game.getGamePhase()) {
             case DISTRIBUTION:
                 numOfTroops.setText("Troops left: " + game.getCurrentPlayer().getNumTroopsInInventory());
                 warning.setText("Select a land to add your troops! ----- ");
-                attackB.setDisable(true);
+                //attackB.setDisable(true);
                 endTurnB.setDisable(true);
-                confirmB.setDisable(true);
+                //confirmB.setDisable(true);
                 break;
             case BATTLE:
                 endTurnB.setDisable(false);
@@ -571,7 +575,11 @@ public class BoardMap {
                 break;
             case ATTACK:
                 numOfTroops.setText("Troops left: " + game.getCurrentPlayer().getNumTroopsInInventory());
-                warning.setText("Select country to attack (from / to) ");
+                if (fromCountryClicked) {
+                    warning.setText("Select country to attack to !");
+                } else {
+                    warning.setText("Select country to attack from !");
+                }
                 break;
             case FORTIFYING:
                 numOfTroops.setText("Troops left: " + game.getCurrentPlayer().getNumTroopsInInventory());
@@ -587,6 +595,7 @@ public class BoardMap {
         game = new Game(this.players);
         getPlayerColor();
         updateWarning();
+        victoryPane.setVisible(false);
         for(SVGPath s : listOfPaths) {
             s.setStyle("-fx-fill: grey");
         }
