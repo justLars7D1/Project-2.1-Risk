@@ -129,7 +129,6 @@ public abstract class Player {
             if (existsPathFromCountryToCountry) {
                 countryFrom.removeNumSoldiers(numTroops);
                 countryTo.addNumSoldiers(numTroops);
-                //TODO: See if I'm not forgetting anything
             }
         }
     }
