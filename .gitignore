@@ -4,6 +4,7 @@
 .gradle
 build
 out
+submissions
 
 # Compiled class file
 *.class
