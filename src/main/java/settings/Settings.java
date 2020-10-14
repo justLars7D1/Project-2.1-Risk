@@ -6,6 +6,17 @@ import java.util.HashMap;
  * Settings class that provides easy access to all game constants used (for easy modification / access)
  */
 public class Settings {
+
+    /**
+     * Maximum number of rolled dices in attack for the attacker
+     */
+    public static int MAXNUMDICESROLLEDATTACKER = 3;
+
+    /**
+     * Maximum number of rolled dices in attack for the defender
+     */
+    public static int MAXNUMDICESROLLEDDEFENDER = 2;
+
     /**
      *  Defines the maximum number of cards that can be held on hand by a gameelements.player.
      */

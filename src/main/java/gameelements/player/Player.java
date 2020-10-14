@@ -76,178 +76,48 @@ public abstract class Player {
      * @param countryTo The country the attack is directed to.
      */
     public void onAttackEvent(Country countryFrom, Country countryTo){
-        /**
-         * Making sure that the origin country belongs to the attacker and that
-         * the destination country belongs to the defender.
-         */
-        if(countriesOwned.contains(countryFrom) && !countriesOwned.contains(countryTo)){
-            /**
-             *  Making sure that the countries are adjacent.
-             */
-            if(countryFrom.getNeighboringCountries().contains(countryTo)){
-                int attackers = countryFrom.getNumSoldiers() -1;
-                int defenders = countryTo.getNumSoldiers();
-                int attack = 0;
-                int defend = 0;
+        System.out.println("------- Method Called ---------");
+        System.out.println(countriesOwned.contains(countryFrom) + " - " + countriesOwned.contains(countryTo));
 
-                if(countryFrom.getNumSoldiers() > 1){
-                    /**
-                     * The case that both attacker and defender choose to use 1 Troop.
-                     * In this case both players role exactly 1 die.
-                     */
-                    if(attackers == 1 && defenders == 1){
-                        List<Integer> attackDice = countryFrom.getOwner().rollDice(1);
-                        List<Integer> defendDice = countryTo.getOwner().rollDice(1);
+        // Ensure countries are owned and not owned, and if they're adjacent
+        if(countriesOwned.contains(countryFrom) && !countriesOwned.contains(countryTo) && countryFrom.getNeighboringCountries().contains(countryTo)){
 
-                        // Since only one die is rolled, addressing index 0 is sufficient.
-                        attack = attackDice.get(0);
-                        defend = defendDice.get(0);
+            // Calculate the number of attackers
+            int attackers = countryFrom.getNumSoldiers() - 1;
+            int defenders = countryTo.getNumSoldiers();
 
-                        //Check for success, failure or draw. Draw counts as failure for attacker.
-                        if(attack > defend){
-                            countryTo.removeNumSoldiers(1);
-                        }
-                        else if(attack < defend){
-                            countryFrom.removeNumSoldiers(1);
-                        }
-                        else if(attack == defend){
-                            countryFrom.removeNumSoldiers(1);
-                        }
-                    }
-                    /**
-                     * The case that the attacker chooses 1 troop and the defender chooses 2 or more.
-                     * In this case, the attacker rolls 1 die, whereas the defender rolls 2 dice,
-                     * of which the lower one is discarded.
-                     */
-                    else if (attackers == 1 && defenders > 1){
-                        List<Integer> attackDice = countryFrom.getOwner().rollDice(1);
-                        List<Integer> defendDice = countryTo.getOwner().rollDice(2);
+            // Check if there's enough troops to attack/defend with (should be true by default for defenders)
+            if (attackers > 0 && defenders > 0) {
 
-                        attack= attackDice.get(0);
-                        Collections.sort(defendDice); // Sorting the dice in ascending order.
-                        defend = defendDice.get(1); // Choosing the second die as it is now the higher one.
+                // Find the number of dices to be rolled
+                int numDiceAttacker = Math.min(attackers, Settings.MAXNUMDICESROLLEDATTACKER);
+                int numDiceDefender = Math.min(defenders, Settings.MAXNUMDICESROLLEDDEFENDER);
+                int minNumDiceRolled = Math.min(numDiceAttacker, numDiceDefender);
 
-                        //Check for success, failure or draw. Draw counts as failure for attacker.
-                        if(attack > defend){
-                            countryTo.removeNumSoldiers(1);
-                        }
-                        else if(attack < defend){
-                            countryFrom.removeNumSoldiers(1);
-                        }
-                        else if(attack == defend){
-                            countryFrom.removeNumSoldiers(1);
-                        }
-                    }
-                    /**
-                     *  The case that the attacker chooses exactly 2 troops, whereas the defender chooses 1 troop.
-                     *  In this case, the attacker rolls 2 dice and the defender rolls 1 die. The lower die of the
-                     *  attacker is discarded.
-                     */
-                    else if(attackers == 2 && defenders == 1){
-                        List<Integer> attackDice = countryFrom.getOwner().rollDice(2);
-                        List<Integer> defendDice = countryTo.getOwner().rollDice(1);
+                // Create list of uniformly distributed dice rolls for attacker and defender
+                // Here the number of attacker dice range from 1 to 3 and for the defenders from 1 to 2
+                List<Integer> attackerDiceRolls = rollDice(numDiceAttacker);
+                List<Integer> defenderDiceRolls = rollDice(numDiceDefender);
+                attackerDiceRolls.sort(Collections.reverseOrder());
+                defenderDiceRolls.sort(Collections.reverseOrder());
 
-                        defend = defendDice.get(0);
-                        Collections.sort(attackDice); // Sorting the dice in ascending order.
-                        attack = attackDice.get(1); // Choosing the second die since it is the highest now.
-
-                        //Check for success, failure or draw. Draw counts as failure for attacker.
-                        if(attack > defend){
-                            countryTo.removeNumSoldiers(1);
-                        }
-                        else if(attack < defend){
-                            countryFrom.removeNumSoldiers(1);
-                        }
-                        else if(attack == defend){
-                            countryFrom.removeNumSoldiers(1);
-                        }
-                    }
-                    /**
-                     *  The case that the attacker chooses more than 2 troops and the defender chooses
-                     *  ecatly 1.
-                     *  In this case, the attacker rolls 3 dice, whereas the defender rolls 1 die.
-                     *  The lower two dice of the attacker are discarded.
-                     */
-                    else if(attackers > 2 && defenders == 1){
-                        List<Integer> attackDice = countryFrom.getOwner().rollDice(3);
-                        List<Integer> defendDice = countryTo.getOwner().rollDice(1);
-
-                        defend = defendDice.get(0);
-                        Collections.sort(attackDice); // Sort the dice in ascending order
-                        attack = attackDice.get(2); // Pick the highest die
-
-                        //Check for success, failure or draw. Draw counts as failure for attacker.
-                        if(attack > defend){
-                            countryTo.removeNumSoldiers(1);
-                        }
-                        else if(attack < defend){
-                            countryFrom.removeNumSoldiers(1);
-                        }
-                        else if(attack == defend){
-                            countryFrom.removeNumSoldiers(1);
-                        }
-                    }
-                    /**
-                     *  The case that the attacker chooses more than 2 troops and the defender chooses more than 1 troop.
-                     *  In this case, the attacker rolls 3 dice and the defender rolls 2 dice.
-                     *  The lower die of the attacker is discarded and there will be two comparisons of dice.
-                     */
-                    else if(attackers > 2 && defenders > 1){
-                        List<Integer> attackDice = countryFrom.getOwner().rollDice(3);
-                        List<Integer> defendDice = countryTo.getOwner().rollDice(2);
-
-                        // Sort dice of both in ascending order
-                        Collections.sort(attackDice);
-                        Collections.sort(defendDice);
-
-                        // Take highest die for both players into comparison
-                        attack = attackDice.get(2);
-                        defend = defendDice.get(1);
-
-                        //Check for success, failure or draw. Draw counts as failure for attacker.
-                        if(attack > defend){
-                            countryTo.removeNumSoldiers(1);
-                        }
-                        else if(attack < defend){
-                            countryFrom.removeNumSoldiers(1);
-                        }
-                        else if(attack == defend){
-                            countryFrom.removeNumSoldiers(1);
-                        }
-
-                        // Second die comparisson. Take second highest dice of players.
-                        attack = attackDice.get(1);
-                        defend = defendDice.get(0);
-
-                        //Check for success, failure or draw. Draw counts as failure for attacker.
-                        if(attack > defend){
-                            countryTo.removeNumSoldiers(1);
-                        }
-                        else if(attack < defend){
-                            countryFrom.removeNumSoldiers(1);
-                        }
-                        else if(attack == defend){
-                            countryFrom.removeNumSoldiers(1);
-                        }
+                for (int i = 0; i < minNumDiceRolled; i++) {
+                    int attackerRoll = attackerDiceRolls.get(i);
+                    int defenderRoll = defenderDiceRolls.get(i);
+                    if (attackerRoll > defenderRoll) {
+                        countryTo.removeNumSoldiers(1);
+                    } else {
+                        countryFrom.removeNumSoldiers(1);
                     }
                 }
 
             }
+
         }
-        /**
-         * Check the number of troops remaining on the defendants country. If it is 0,
-         * the attack was successful and the country goes to the atacker.
-         */
-        if(countryTo.getNumSoldiers() == 0){
-            Player oldOwner = countryFrom.getOwner();
-            oldOwner.countriesOwned.remove(countryTo);
-            countriesOwned.add(countryTo);
-            countryTo.setOwner(countryFrom.getOwner());
-            
-            countryFrom.removeNumSoldiers(1);
-            countryTo.addNumSoldiers(1);
-        }
-        //TODO: Test this event
+
+        checkCountryConquer(countryFrom, countryTo);
+
+        System.out.println("------- Method Call ended ---------");
     }
 
     /**
@@ -297,6 +167,27 @@ public abstract class Player {
         }
 
         return pathExists;
+    }
+
+    /**
+     * Checks if a country has been conquered by the player
+     * @param countryFrom The country the attack came from
+     * @param countryTo The country that was attacked
+     */
+    private void checkCountryConquer(Country countryFrom, Country countryTo) {
+        if(countryTo.getNumSoldiers() == 0){
+            // Remove from countries owned of old owner and add it for the new owner
+            countryTo.getOwner().countriesOwned.remove(countryTo);
+            countriesOwned.add(countryTo);
+
+            // Set the owner in the country object
+            countryTo.setOwner(this);
+
+            // Note - This is okay, since the attacker must've won in this case, so there's at least one troop left
+            // Transfer one troop from country
+            countryFrom.removeNumSoldiers(1);
+            countryTo.addNumSoldiers(1);
+        }
     }
 
     /**
