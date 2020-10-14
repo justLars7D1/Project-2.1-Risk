@@ -303,10 +303,6 @@ public class BoardMap {
         phase = new Label(game.getGamePhase().toString().toLowerCase());
         HBox playerPanel = new HBox(playerFlag, player, numOfTroops, phase);
 
-        //Victory Panel -----------------------------
-        String str = getPlayerColor().substring(0, 1).toUpperCase() + getPlayerColor().substring(1);
-        Label victory = new Label("Player " + str +" Wins !\n Congratulations");
-        victoryPane.setCenter(victory);
         updateWarning();
 
         //Button Actions
@@ -578,6 +574,9 @@ public class BoardMap {
                 updateBattlePhase();
                 break;
             case VICTORY:
+                String winner = getPlayerColor().substring(0, 1).toUpperCase() + getPlayerColor().substring(1);
+                Label victory = new Label("Player " + winner +" Wins !\n Congratulations");
+                victoryPane.setCenter(victory);
                 victoryPane.setVisible(true);
                 break;
             default:
