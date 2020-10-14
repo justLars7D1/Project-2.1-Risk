@@ -76,9 +76,6 @@ public abstract class Player {
      * @param countryTo The country the attack is directed to.
      */
     public void onAttackEvent(Country countryFrom, Country countryTo){
-        System.out.println("------- Method Called ---------");
-        System.out.println(countriesOwned.contains(countryFrom) + " - " + countriesOwned.contains(countryTo));
-
         // Ensure countries are owned and not owned, and if they're adjacent
         if(countriesOwned.contains(countryFrom) && !countriesOwned.contains(countryTo) && countryFrom.getNeighboringCountries().contains(countryTo)){
 
@@ -116,8 +113,6 @@ public abstract class Player {
         }
 
         checkCountryConquer(countryFrom, countryTo);
-
-        System.out.println("------- Method Call ended ---------");
     }
 
     /**
