@@ -124,6 +124,14 @@ public class Game extends GameObserver {
 
         int numTroopsInInventory = getNumStartingTroops(playerIDs.size());
 
+        // If we're playing with a bot, enable that every attack is either a win or lose
+        for (int playerType: playerSelection.values()) {
+            if (playerType != 1) {
+                Settings.ATTACKUNTILWINORLOSE = true;
+                break;
+            }
+        }
+
         for (int id: playerIDs) {
             Player p;
             // 1 == user

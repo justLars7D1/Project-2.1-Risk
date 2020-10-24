@@ -8,6 +8,11 @@ import java.util.HashMap;
 public class Settings {
 
     /**
+     * Sets
+     */
+    public static boolean ATTACKUNTILWINORLOSE = false;
+
+    /**
      * Maximum number of rolled dices in attack for the attacker
      */
     public static int MAXNUMDICESROLLEDATTACKER = 3;

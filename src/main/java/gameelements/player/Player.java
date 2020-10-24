@@ -108,11 +108,13 @@ public abstract class Player {
                     }
                 }
 
+                boolean conquered = checkCountryConquer(countryFrom, countryTo);
+                if (Settings.ATTACKUNTILWINORLOSE && !conquered) onAttackEvent(countryFrom, countryTo);
+
             }
 
         }
 
-        checkCountryConquer(countryFrom, countryTo);
     }
 
     /**
@@ -168,7 +170,7 @@ public abstract class Player {
      * @param countryFrom The country the attack came from
      * @param countryTo The country that was attacked
      */
-    private void checkCountryConquer(Country countryFrom, Country countryTo) {
+    private boolean checkCountryConquer(Country countryFrom, Country countryTo) {
         if(countryTo.getNumSoldiers() == 0){
             // Remove from countries owned of old owner and add it for the new owner
             countryTo.getOwner().countriesOwned.remove(countryTo);
@@ -181,7 +183,11 @@ public abstract class Player {
             // Transfer one troop from country
             countryFrom.removeNumSoldiers(1);
             countryTo.addNumSoldiers(1);
+
+            return true;
         }
+
+        return false;
     }
 
     /**
