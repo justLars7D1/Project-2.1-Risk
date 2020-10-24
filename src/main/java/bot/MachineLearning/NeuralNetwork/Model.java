@@ -1,9 +1,9 @@
-package MachineLearning.NeuralNetwork;
+package bot.MachineLearning.NeuralNetwork;
 
-import MachineLearning.NeuralNetwork.Activations.Activation;
-import MachineLearning.NeuralNetwork.Layers.Layer;
-import MachineLearning.NeuralNetwork.Losses.Loss;
-import MachineLearning.NeuralNetwork.Optimizers.Optimizer;
+import bot.MachineLearning.NeuralNetwork.Activations.Activation;
+import bot.MachineLearning.NeuralNetwork.Layers.Layer;
+import bot.MachineLearning.NeuralNetwork.Losses.Loss;
+import bot.MachineLearning.NeuralNetwork.Optimizers.Optimizer;
 import bot.Mathematics.LinearAlgebra.Matrix;
 import bot.Mathematics.LinearAlgebra.Vector;
 

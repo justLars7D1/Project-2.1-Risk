@@ -1,9 +1,9 @@
-package MachineLearning.NeuralNetwork;
+package bot.MachineLearning.NeuralNetwork;
 
-import MachineLearning.NeuralNetwork.Activations.Sigmoid;
-import MachineLearning.NeuralNetwork.Layers.Layer;
-import MachineLearning.NeuralNetwork.Losses.MSE;
-import MachineLearning.NeuralNetwork.Optimizers.SGD;
+import bot.MachineLearning.NeuralNetwork.Activations.Sigmoid;
+import bot.MachineLearning.NeuralNetwork.Layers.Layer;
+import bot.MachineLearning.NeuralNetwork.Losses.MSE;
+import bot.MachineLearning.NeuralNetwork.Optimizers.SGD;
 import bot.Mathematics.LinearAlgebra.Vector;
 
 import java.util.List;

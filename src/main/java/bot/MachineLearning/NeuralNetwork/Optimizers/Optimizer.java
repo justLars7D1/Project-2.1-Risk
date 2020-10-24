@@ -1,6 +1,6 @@
-package MachineLearning.NeuralNetwork.Optimizers;
+package bot.MachineLearning.NeuralNetwork.Optimizers;
 
-import MachineLearning.NeuralNetwork.Model;
+import bot.MachineLearning.NeuralNetwork.Model;
 
 public abstract class Optimizer {
 

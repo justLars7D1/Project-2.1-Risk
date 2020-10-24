@@ -1,4 +1,4 @@
-package MachineLearning.NeuralNetwork.Activations;
+package bot.MachineLearning.NeuralNetwork.Activations;
 
 import bot.Mathematics.LinearAlgebra.Vector;
 

@@ -1,7 +1,7 @@
-package MachineLearning.NeuralNetwork.Optimizers;
+package bot.MachineLearning.NeuralNetwork.Optimizers;
 
-import MachineLearning.NeuralNetwork.Layers.Layer;
-import MachineLearning.NeuralNetwork.Model;
+import bot.MachineLearning.NeuralNetwork.Layers.Layer;
+import bot.MachineLearning.NeuralNetwork.Model;
 import bot.Mathematics.LinearAlgebra.Matrix;
 import bot.Mathematics.LinearAlgebra.Vector;
 

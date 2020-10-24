@@ -1,4 +1,4 @@
-package MachineLearning.KMeans;
+package bot.MachineLearning.KMeans;
 
 import bot.Mathematics.LinearAlgebra.Vector;
 

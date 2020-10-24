@@ -1,4 +1,4 @@
-package MachineLearning.NeuralNetwork;
+package bot.MachineLearning.NeuralNetwork;
 
 import java.io.*;
 import java.util.*;

@@ -1,4 +1,4 @@
-package MachineLearning.NeuralNetwork.Losses;
+package bot.MachineLearning.NeuralNetwork.Losses;
 
 import bot.Mathematics.LinearAlgebra.Vector;
 

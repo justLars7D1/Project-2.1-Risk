@@ -1,6 +1,6 @@
-package MachineLearning.NeuralNetwork.Layers;
+package bot.MachineLearning.NeuralNetwork.Layers;
 
-import MachineLearning.NeuralNetwork.Activations.Activation;
+import bot.MachineLearning.NeuralNetwork.Activations.Activation;
 import bot.Mathematics.LinearAlgebra.Matrix;
 import bot.Mathematics.LinearAlgebra.Vector;
 
