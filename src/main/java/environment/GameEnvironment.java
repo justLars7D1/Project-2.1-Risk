@@ -42,6 +42,10 @@ public class GameEnvironment {
         this(2, type);
     }
 
+    public void train() {
+        
+    }
+
     /**
      * Creates the back-end of the game setting
      */
