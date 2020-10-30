@@ -14,7 +14,6 @@ import javafx.scene.paint.Color;
 import javafx.stage.Screen;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 
 public class PlayerSelection {
@@ -106,7 +105,7 @@ public class PlayerSelection {
         ComboBox<String> playerBox = new ComboBox<>();
         playerList.add(playerBox);
 
-        playerBox.getItems().addAll("EMPTY", "PLAYER", "EASY BOT", "HARD BOT");
+        playerBox.getItems().addAll("EMPTY", "USER", "EASY BOT", "HARD BOT");
         playerBox.setValue("EMPTY");
         grid.setConstraints(playerBox, 0, i + 1);
 
@@ -176,8 +175,8 @@ public class PlayerSelection {
             //System.out.println(playerList.get(i).getValue());
 
             switch (playerList.get(i).getValue()) {
-                case "PLAYER":
-                    players.put(getColorID(colorList.get(i).getValue()), PlayerType.PLAYER);
+                case "USER":
+                    players.put(getColorID(colorList.get(i).getValue()), PlayerType.USER);
                     break;
                 case "EASY BOT":
                     players.put(getColorID(colorList.get(i).getValue()), PlayerType.TD);

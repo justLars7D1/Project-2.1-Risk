@@ -127,23 +127,14 @@ public class Game extends GameObserver {
 
         // If we're playing with a bot, enable that every attack is either a win or lose
         for (PlayerType playerType: playerSelection.values()) {
-            if (playerType != PlayerType.PLAYER) {
+            if (playerType != PlayerType.USER) {
                 Settings.ATTACKUNTILWINORLOSE = true;
                 break;
             }
         }
 
         for (int id: playerIDs) {
-            Player p;
-            if (playerSelection.get(id) == PlayerType.PLAYER) {
-                p = PlayerFactory.createHumanPlayer(id, numTroopsInInventory);
-            } else if (playerSelection.get(id) == PlayerType.TD
-                        || playerSelection.get(id) == PlayerType.DQN) {
-                p = PlayerFactory.createAIPlayer(id, numTroopsInInventory);
-            } else {
-                p = PlayerFactory.createAIPlayer(id, numTroopsInInventory);
-            }
-            players.add(p);
+            players.add(PlayerFactory.createPlayer(id, numTroopsInInventory, playerSelection.get(id)));
         }
 
         this.players = new PlayerList(players);

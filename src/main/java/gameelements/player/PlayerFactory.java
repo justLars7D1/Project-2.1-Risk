@@ -3,22 +3,17 @@ package gameelements.player;
 public class PlayerFactory {
 
     /**
-     * create players and equip them
-     */
-    private PlayerFactory() {
-    }
-
-    /**
      * configure gameelements.player settings
      */
-    public static Player createHumanPlayer(int id, int numTroopsInInventory) {
-        return new RiskUser(id, numTroopsInInventory);
+    public static Player createPlayer(int id, int numTroopsInInventory, PlayerType type) {
+        switch (type) {
+            case USER:
+                return new RiskUser(id, numTroopsInInventory);
+            case TD:
+                return new LinearTDBot(id, numTroopsInInventory);
+            default:
+                return new DQNNBot(id, numTroopsInInventory);
+        }
     }
-
-    /**
-     * set strategies and algorithms of our bot
-     */
-    public static Player createAIPlayer(int id, int numTroopsInInventory) {
-        return new RiskBot(id, numTroopsInInventory);
-    }
+    
 }

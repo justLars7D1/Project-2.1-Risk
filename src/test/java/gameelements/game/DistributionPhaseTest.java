@@ -42,8 +42,8 @@ public class DistributionPhaseTest {
 
     private Game setupGame() {
         HashMap<Integer, PlayerType> players = new HashMap<>();
-        players.put(0, PlayerType.PLAYER);
-        players.put(1, PlayerType.PLAYER);
+        players.put(0, PlayerType.USER);
+        players.put(1, PlayerType.USER);
         return new Game(players);
     }
 

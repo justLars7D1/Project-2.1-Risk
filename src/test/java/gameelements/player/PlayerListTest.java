@@ -11,9 +11,9 @@ public class PlayerListTest {
 
     @Test
     public void testPlayerIteration(){
-        LinkedList<Player> queue = new LinkedList<>(Arrays.asList(PlayerFactory.createHumanPlayer(1, 0),
-                                                            PlayerFactory.createHumanPlayer(2, 0),
-                                                            PlayerFactory.createHumanPlayer(3, 0)));
+        LinkedList<Player> queue = new LinkedList<>(Arrays.asList(PlayerFactory.createPlayer(1, 0),
+                                                            PlayerFactory.createPlayer(2, 0),
+                                                            PlayerFactory.createPlayer(3, 0)));
         PlayerList playerList = new PlayerList(queue);
 
         int max = 8;
@@ -28,9 +28,9 @@ public class PlayerListTest {
 
     @Test
     public void testPlayerRemoval(){
-        Player p1 = PlayerFactory.createHumanPlayer(1, 0),
-                p2 = PlayerFactory.createHumanPlayer(2, 0),
-                p3 = PlayerFactory.createHumanPlayer(3, 0);
+        Player p1 = PlayerFactory.createPlayer(1, 0),
+                p2 = PlayerFactory.createPlayer(2, 0),
+                p3 = PlayerFactory.createPlayer(3, 0);
         LinkedList<Player> queue = new LinkedList<>(Arrays.asList(p1, p2, p3));
         PlayerList playerList = new PlayerList(queue);
 

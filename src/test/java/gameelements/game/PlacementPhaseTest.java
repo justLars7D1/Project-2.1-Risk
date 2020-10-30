@@ -1,7 +1,5 @@
 package gameelements.game;
 
-import gameelements.board.Board;
-import gameelements.board.Country;
 import gameelements.phases.data.DistributionEventData;
 import gameelements.phases.data.PlacementEventData;
 import gameelements.player.Player;
@@ -37,8 +35,8 @@ public class PlacementPhaseTest {
 
     private Game setupGame() {
         HashMap<Integer, PlayerType> players = new HashMap<>();
-        players.put(0, PlayerType.PLAYER);
-        players.put(1, PlayerType.PLAYER);
+        players.put(0, PlayerType.USER);
+        players.put(1, PlayerType.USER);
         return new Game(players);
     }
 

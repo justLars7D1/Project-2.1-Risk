@@ -1,7 +1,7 @@
 package gameelements.player;
 
 public enum PlayerType {
-    PLAYER,
+    USER,
     TD,
     DQN
 }
