@@ -7,6 +7,7 @@ import gameelements.game.Game;
 import gameelements.phases.BattlePhase;
 import gameelements.phases.GamePhase;
 import gameelements.phases.data.*;
+import gameelements.player.PlayerType;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
@@ -52,7 +53,7 @@ public class BoardMap {
     private Game game;
     private int fromCountryID = -1;
     private boolean fromCountryClicked = false;
-    private HashMap<Integer, Integer> players;
+    private HashMap<Integer, PlayerType> players;
     private String oldStyle = "";
     private LandInfo lI = new LandInfo();
     private VBox lIBox;
@@ -173,7 +174,7 @@ public class BoardMap {
     Label phase;
     Label numOfTroops;
 
-    public BoardMap(HashMap<Integer, Integer> players, Menu menu) {
+    public BoardMap(HashMap<Integer, PlayerType> players, Menu menu) {
         this.players = players;
         this.game = new Game(players);
         buildScene(menu);

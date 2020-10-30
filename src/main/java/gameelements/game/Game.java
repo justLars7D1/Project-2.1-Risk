@@ -8,6 +8,7 @@ import gameelements.phases.GamePhase;
 import gameelements.player.Player;
 import gameelements.player.PlayerFactory;
 import gameelements.player.PlayerList;
+import gameelements.player.PlayerType;
 import settings.Settings;
 
 import java.util.*;
@@ -32,7 +33,7 @@ public class Game extends GameObserver {
      * Sets selection of players and sets up starting game phases
      * @param playerSelection The player selection
      */
-    public Game(HashMap<Integer, Integer> playerSelection) {
+    public Game(HashMap<Integer, PlayerType> playerSelection) {
         super(GamePhase.DISTRIBUTION, BattlePhase.PLACEMENT);
         buildPlayerSetup(playerSelection);
     }
@@ -116,7 +117,7 @@ public class Game extends GameObserver {
      * Builds a random order for turns
      * @param playerSelection The hashmap containing gameelements.player configurations
      */
-    private void buildPlayerSetup(HashMap<Integer, Integer> playerSelection) {
+    private void buildPlayerSetup(HashMap<Integer, PlayerType> playerSelection) {
         LinkedList<Player> players = new LinkedList<>();
 
         List<Integer> playerIDs = Arrays.asList(playerSelection.keySet().toArray(new Integer[0]));
@@ -125,8 +126,8 @@ public class Game extends GameObserver {
         int numTroopsInInventory = getNumStartingTroops(playerIDs.size());
 
         // If we're playing with a bot, enable that every attack is either a win or lose
-        for (int playerType: playerSelection.values()) {
-            if (playerType != 1) {
+        for (PlayerType playerType: playerSelection.values()) {
+            if (playerType != PlayerType.PLAYER) {
                 Settings.ATTACKUNTILWINORLOSE = true;
                 break;
             }
@@ -134,9 +135,11 @@ public class Game extends GameObserver {
 
         for (int id: playerIDs) {
             Player p;
-            // 1 == user
-            if (playerSelection.get(id) == 1) {
+            if (playerSelection.get(id) == PlayerType.PLAYER) {
                 p = PlayerFactory.createHumanPlayer(id, numTroopsInInventory);
+            } else if (playerSelection.get(id) == PlayerType.TD
+                        || playerSelection.get(id) == PlayerType.DQN) {
+                p = PlayerFactory.createAIPlayer(id, numTroopsInInventory);
             } else {
                 p = PlayerFactory.createAIPlayer(id, numTroopsInInventory);
             }

@@ -5,6 +5,7 @@ import gameelements.board.Country;
 import gameelements.phases.data.DistributionEventData;
 import gameelements.phases.data.PlacementEventData;
 import gameelements.player.Player;
+import gameelements.player.PlayerType;
 import org.junit.Test;
 import settings.Settings;
 
@@ -35,9 +36,9 @@ public class PlacementPhaseTest {
     }
 
     private Game setupGame() {
-        HashMap<Integer, Integer> players = new HashMap<>();
-        players.put(0, 1);
-        players.put(1, 1);
+        HashMap<Integer, PlayerType> players = new HashMap<>();
+        players.put(0, PlayerType.PLAYER);
+        players.put(1, PlayerType.PLAYER);
         return new Game(players);
     }
 

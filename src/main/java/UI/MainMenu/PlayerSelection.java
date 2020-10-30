@@ -1,6 +1,7 @@
 package UI.MainMenu;
 
 import UI.InGame.BoardMap;
+import gameelements.player.PlayerType;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
@@ -167,19 +168,23 @@ public class PlayerSelection {
         }
     }
 
-    public HashMap<Integer, Integer> getPlayers() {
+    public HashMap<Integer, PlayerType> getPlayers() {
 
-        HashMap<Integer, Integer> players = new HashMap<>();
+        HashMap<Integer, PlayerType> players = new HashMap<>();
 
         for (int i = 0; i < playerList.size(); i++) {
             //System.out.println(playerList.get(i).getValue());
 
-            if (playerList.get(i).getValue().equals("PLAYER")) {
-                players.put(getColorID(colorList.get(i).getValue()), 1);
-            } else if (playerList.get(i).getValue().equals("EASY BOT")) {
-                players.put(getColorID(colorList.get(i).getValue()), 2);
-            } else if (playerList.get(i).getValue().equals("HARD BOT")) {
-                players.put(getColorID(colorList.get(i).getValue()), 3);
+            switch (playerList.get(i).getValue()) {
+                case "PLAYER":
+                    players.put(getColorID(colorList.get(i).getValue()), PlayerType.PLAYER);
+                    break;
+                case "EASY BOT":
+                    players.put(getColorID(colorList.get(i).getValue()), PlayerType.TD);
+                    break;
+                case "HARD BOT":
+                    players.put(getColorID(colorList.get(i).getValue()), PlayerType.DQN);
+                    break;
             }
         }
 

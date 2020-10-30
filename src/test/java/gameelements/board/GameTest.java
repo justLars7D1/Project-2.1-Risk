@@ -1,6 +1,7 @@
 package gameelements.board;
 
 import gameelements.game.Game;
+import gameelements.player.PlayerType;
 import org.junit.Test;
 
 import java.util.HashMap;
@@ -11,10 +12,10 @@ public class GameTest {
 
     @Test
     public void testBuildSetup() {
-        HashMap<Integer, Integer> playerConfig = new HashMap<>();
-        playerConfig.put(1, 1);
-        playerConfig.put(2, 2);
-        playerConfig.put(3, 3);
+        HashMap<Integer, PlayerType> playerConfig = new HashMap<>();
+        playerConfig.put(1, PlayerType.PLAYER);
+        playerConfig.put(2, PlayerType.TD);
+        playerConfig.put(3, PlayerType.DQN);
         Game game = new Game(playerConfig);
         //System.out.print(game.getProxy().players);
     }
