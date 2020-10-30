@@ -7,7 +7,7 @@ public class PlayerFactoryTest {
 
     @Test
     public void testCreateHumanPlayer(){
-        Player user = PlayerFactory.createPlayer(0, 0);
+        Player user = PlayerFactory.createPlayer(0, 0, PlayerType.USER);
         assertNotNull(user);
     }
 }
