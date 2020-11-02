@@ -31,9 +31,30 @@ public class BattlePhaseEstimator {
     };
 
     /*
+    * transition matrix fAD[k]
+    * i: number of attacking troops in range [1,3]-1
+    * j: number of defending troops in range [1,2]-1
+    * k: number of lost troops either 1 or 2
+    */
+    private final double [][][][] transitionProbabilities= {
+        {//i=1
+            {{0.583},{0.0},{0.417}},
+            {{0.746},{0.0},{0.254}}
+        },
+        {//i=2
+            {{0.422},{0.0},{0.578}},
+            {{0.373},{0.475},{0.152}}
+        },
+        {//i=3
+            {{0.341},{0.0},{0.659}},
+            {{0.237},{0.504},{0.259}}
+        }
+    };
+
+    /*
     * Chance to win a territory by attacking continuously
     */
     public double winChance(int against, int with){
-        return attackMatrix.get(against, with);
+        return attackMatrix.get(against-1, with-1);
     }
 }
