@@ -31,23 +31,24 @@ public class BattlePhaseEstimator {
     };
 
     /*
-    * transition matrix fAD[k]
+    * transition matrix pi[i,j,k]
     * i: number of attacking troops in range [1,3]-1
     * j: number of defending troops in range [1,2]-1
-    * k: number of lost troops either 1 or 2
+    * k: troops lost attacker, both and defender
     */
-    private final double [][][][] transitionProbabilities= {
+    private final double [][][] transitionProbabilities = {
         {//i=1
-            {{0.583},{0.0},{0.417}},
-            {{0.746},{0.0},{0.254}}
+            {0.583, 0.0, 0.417},
+            {0.746, 0.0, 0.254}
         },
         {//i=2
-            {{0.422},{0.0},{0.578}},
-            {{0.373},{0.475},{0.152}}
+            {0.422, 0.0, 0.578},
+            {0.373, 0.475, 0.152}
         },
         {//i=3
-            {{0.341},{0.0},{0.659}},
-            {{0.237},{0.504},{0.259}}
+            {0.341, 0.0, 0.659},
+            //to transient states
+            {0.237, 0.504, 0.259}
         }
     };
 
@@ -56,5 +57,31 @@ public class BattlePhaseEstimator {
     */
     public double winChance(int against, int with){
         return attackMatrix.get(against-1, with-1);
+    }
+
+    /*
+    * Chance to defeat at least a certain number of troops in battle
+    */
+    public double winChance(int against, int with, int defeatedTroops){
+        return (defeatedTroops < against) ? chainProbability(against, with, defeatedTroops, 1.0) : 0.0;
+    }
+
+    public double chainProbability(int against, int with, int remainingTroops, double p){
+        if(remainingTroops<=0 || against<=0 || with <=0){return 1.0;}
+        //going to transient state
+        if(against>=2 && with>=3){
+            //attacker looses one troop
+            p *= transitionProbabilities[2][1][0] * chainProbability(against, with-1, remainingTroops, p)
+            //both loose one troop
+            + transitionProbabilities[2][1][1] * chainProbability(against-1, with-1, remainingTroops-1, p)
+            //defender looses two troops
+            + transitionProbabilities[2][1][2] * chainProbability(against-2, with, remainingTroops-2, p);
+        }
+        //going to absorbant state
+        else if(against<=2 && with >=1){
+            //probability of the defender losing the last troops
+            p *= transitionProbabilities[with-1][against-1][2];
+        }
+        return p;
     }
 }
