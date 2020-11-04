@@ -2,7 +2,9 @@ package gameelements.board;
 
 import settings.Settings;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Represents the gameelements.board of the game, which functions as a simple mapping to countries / continents
@@ -86,6 +88,14 @@ public class Board {
             }
         }
         return isFull;
+    }
+
+    /**
+     * Returns all countries
+     * @return The countries
+     */
+    public List<Country> getCountries() {
+        return new ArrayList<>(nameToCountryMapping.values());
     }
 
     @Override
