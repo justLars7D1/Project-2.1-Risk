@@ -1,6 +1,8 @@
 package bot.Mathematics.LinearAlgebra;
 
-public class Vector implements Cloneable {
+import java.io.Serializable;
+
+public class Vector implements Cloneable, Serializable {
 
     private final double[] coordinates;
 

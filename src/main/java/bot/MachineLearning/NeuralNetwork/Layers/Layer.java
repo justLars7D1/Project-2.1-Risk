@@ -4,9 +4,10 @@ import bot.MachineLearning.NeuralNetwork.Activations.Activation;
 import bot.Mathematics.LinearAlgebra.Matrix;
 import bot.Mathematics.LinearAlgebra.Vector;
 
+import java.io.Serializable;
 import java.util.Random;
 
-public class Layer {
+public class Layer implements Serializable {
 
     private Activation activation;
     private Matrix representation;

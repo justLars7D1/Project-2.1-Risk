@@ -2,7 +2,9 @@ package bot.MachineLearning.NeuralNetwork.Optimizers;
 
 import bot.MachineLearning.NeuralNetwork.Model;
 
-public abstract class Optimizer {
+import java.io.Serializable;
+
+public abstract class Optimizer implements Serializable {
 
     protected final double learningRate;
     protected final double l2factor;

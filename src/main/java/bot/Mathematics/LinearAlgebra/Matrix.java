@@ -1,6 +1,8 @@
 package bot.Mathematics.LinearAlgebra;
 
-public class Matrix {
+import java.io.Serializable;
+
+public class Matrix implements Serializable {
 
     private final double[][] grid;
 

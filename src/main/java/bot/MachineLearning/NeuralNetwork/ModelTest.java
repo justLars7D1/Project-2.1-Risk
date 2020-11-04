@@ -49,6 +49,14 @@ public class ModelTest extends Model {
 
         System.out.println(m.evaluate(xs[0]));
 
+        String path = "D:\\Projects\\Project-2.1---Game\\src\\main\\java\\gameelements\\player\\botWeights\\test.txt";
+        boolean success = m.save(path);
+        System.out.println("\nSaved model to file: " + success + "\n");
+
+        Model loadedModel = Model.loadModel(path);
+        System.out.println("Model has been loaded:\n");
+        System.out.println(loadedModel);
+
     }
 
     public List<Layer> getLayers() {

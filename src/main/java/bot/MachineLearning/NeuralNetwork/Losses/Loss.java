@@ -2,7 +2,9 @@ package bot.MachineLearning.NeuralNetwork.Losses;
 
 import bot.Mathematics.LinearAlgebra.Vector;
 
-public interface Loss {
+import java.io.Serializable;
+
+public interface Loss extends Serializable {
 
     Vector evaluate(Vector yPred, Vector yActual);
 

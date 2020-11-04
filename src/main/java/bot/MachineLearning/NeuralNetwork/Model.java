@@ -7,11 +7,12 @@ import bot.MachineLearning.NeuralNetwork.Optimizers.Optimizer;
 import bot.Mathematics.LinearAlgebra.Matrix;
 import bot.Mathematics.LinearAlgebra.Vector;
 
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class Model {
+public class Model implements Serializable {
 
     private static final double L2REGULARIZATIONFACTOR = 0;
 
@@ -243,7 +244,30 @@ public class Model {
         layers.add(new Layer(lastOutputSize, numNeurons, activation));
     }
 
-    @Override
+    public boolean save(String fileAndPath) {
+        try {
+            FileOutputStream fileOut = new FileOutputStream(fileAndPath);
+            ObjectOutputStream objectOut = new ObjectOutputStream(fileOut);
+            objectOut.writeObject(this);
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public static Model loadModel(String fileAndPath) {
+        try {
+            FileInputStream fileIn = new FileInputStream(fileAndPath);
+            ObjectInputStream objectOut = new ObjectInputStream(fileIn);
+            return (Model) objectOut.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+        @Override
     public String toString() {
         StringBuilder res = new StringBuilder("Model Overview\n");
         int idCounter = 0;

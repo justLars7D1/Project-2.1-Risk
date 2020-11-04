@@ -2,7 +2,9 @@ package bot.MachineLearning.NeuralNetwork.Activations;
 
 import bot.Mathematics.LinearAlgebra.Vector;
 
-public interface Activation {
+import java.io.Serializable;
+
+public interface Activation extends Serializable {
 
     Vector evaluate(Vector x);
     Vector evalDerivative(Vector x);
