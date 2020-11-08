@@ -1,3 +1,5 @@
+package environment;
+
 import gameelements.game.Game;
 import gameelements.board.Country;
 import gameelements.player.Player;
