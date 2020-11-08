@@ -6,7 +6,7 @@ import gameelements.player.Player;
 import java.util.*;
 
 public class WolfFeatures {
-    public static double Hinterland(Player player){
+    public static double hinterland(Player player){
         int hinterland = 0;
         HashSet<Country> countries = player.getCountriesOwned();
         boolean conflict = false;
@@ -27,6 +27,19 @@ public class WolfFeatures {
             conflict = false;
         }
         double result = (numcountries / hinterland);
+        return result;
+    }
+    public static double moreThanOneArmy(Player player){
+        HashSet<Country> countries = player.getCountriesOwned();
+        int counter = 0;
+        int numcountries = 0;
+        for(Country c:countries){
+            numcountries++;
+            if (c.getNumSoldiers() > 1){
+                counter++;
+            }
+        }
+        double result = counter/numcountries;
         return result;
     }
 }
