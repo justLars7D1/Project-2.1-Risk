@@ -5,10 +5,7 @@ import gameelements.board.Country;
 import gameelements.phases.data.*;
 import gameelements.phases.BattlePhase;
 import gameelements.phases.GamePhase;
-import gameelements.player.Player;
-import gameelements.player.PlayerFactory;
-import gameelements.player.PlayerList;
-import gameelements.player.PlayerType;
+import gameelements.player.*;
 import settings.Settings;
 
 import java.util.*;
@@ -29,24 +26,29 @@ public class Game extends GameObserver {
     private PlayerList players;
 
     /**
+     * The initial number of players in the game
+     */
+    private int numPlayers;
+
+    /**
      * Constructor
      * Sets selection of players and sets up starting game phases
      * @param playerSelection The player selection
      */
     public Game(HashMap<Integer, PlayerType> playerSelection) {
         super(GamePhase.DISTRIBUTION, BattlePhase.PLACEMENT);
+        this.numPlayers = playerSelection.size();
         buildPlayerSetup(playerSelection);
     }
 
     @Override
     protected void onDistributionEvent(DistributionEventData data) {
         Player player = getCurrentPlayer();
-        Country country = gameBoard.getCountryFromID(data.getCountryID());
+        Country country = getCountryFromID(data.getCountryID());
         boolean isBoardFilled = gameBoard.isFilled();
 
-        if (isBoardFilled || !country.hasOwner()) {
+        if (isBoardFilled || country == null || !country.hasOwner()) {
             boolean success = player.onDistributionEvent(country);
-
             if (success) players.nextPlayer();
         }
 
@@ -71,17 +73,17 @@ public class Game extends GameObserver {
     @Override
     protected void onPlacementEvent(PlacementEventData data) {
         Player player = getCurrentPlayer();
-        Country country = gameBoard.getCountryFromID(data.getCountryID());
+
+        Country country = getCountryFromID(data.getCountryID());
 
         player.onPlacementEvent(country, data.getNumTroops());
-
     }
 
     @Override
     protected void onAttackEvent(AttackEventData data) {
         Player player = getCurrentPlayer();
-        Country countryFrom = gameBoard.getCountryFromID(data.getFromCountry());
-        Country countryTo = gameBoard.getCountryFromID(data.getToCountry());
+        Country countryFrom = getCountryFromID(data.getFromCountry());
+        Country countryTo = getCountryFromID(data.getToCountry());
 
         player.onAttackEvent(countryFrom,countryTo);
         // Check for the end of the game (so one player owns all countries)
@@ -91,11 +93,23 @@ public class Game extends GameObserver {
     @Override
     protected void onFortifyEvent(FortifyEventData data) {
         Player player = getCurrentPlayer();
-        Country countryFrom = gameBoard.getCountryFromID(data.getFromCountryID());
-        Country countryTo = gameBoard.getCountryFromID(data.getToCountryID());
+        Country countryFrom = getCountryFromID(data.getFromCountryID());
+        Country countryTo = getCountryFromID(data.getToCountryID());
 
         player.onFortifyEvent(countryFrom, countryTo, data.getNumTroops());
+    }
 
+    /**
+     * The country ID equals -1 iff the bot is playing
+     * @param countryID The id of the country
+     * @return The country
+     */
+    private Country getCountryFromID(int countryID) {
+        if (countryID == -1) {
+            return null;
+        } else {
+            return gameBoard.getCountryFromID(countryID);
+        }
     }
 
     private void checkForGameEnd() {
@@ -134,7 +148,7 @@ public class Game extends GameObserver {
         }
 
         for (int id: playerIDs) {
-            players.add(PlayerFactory.createPlayer(id, numTroopsInInventory, playerSelection.get(id)));
+            players.add(PlayerFactory.createPlayer(id, numTroopsInInventory, this, playerSelection.get(id)));
         }
 
         this.players = new PlayerList(players);
@@ -200,7 +214,6 @@ public class Game extends GameObserver {
         );
         // Number of troops for owning continents
         totalNewTroops += numTroopsForContinents(p);
-        // TODO: Number of troops for cards
         p.setNumTroopsInInventory(totalNewTroops);
     }
 
@@ -224,12 +237,20 @@ public class Game extends GameObserver {
         return numTroops;
     }
 
+    public int getNumPlayers() {
+        return numPlayers;
+    }
+
     public Board getGameBoard() {
         return gameBoard;
     }
 
     public Player getCurrentPlayer() {
         return players.getCurrentPlayer();
+    }
+
+    public boolean isCurrentPlayerBot() {
+        return (players.getCurrentPlayer() instanceof RiskBot);
     }
 
     @Override

@@ -1,6 +1,8 @@
 package environment;
 
 import gameelements.game.Game;
+import gameelements.phases.GamePhase;
+import gameelements.phases.data.DistributionEventData;
 import gameelements.player.PlayerType;
 
 import java.util.HashMap;
@@ -40,6 +42,13 @@ public class GameEnvironment {
      */
     public GameEnvironment(PlayerType type) {
         this(2, type);
+    }
+
+    public void finishDistributionPhase() {
+        while (game.getGamePhase().equals(GamePhase.DISTRIBUTION)) {
+            game.onGameEvent(new DistributionEventData(-1));
+        }
+        System.out.println(game.getGameBoard());
     }
 
     public void train() {

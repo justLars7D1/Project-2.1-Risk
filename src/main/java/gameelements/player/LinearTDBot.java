@@ -1,14 +1,26 @@
 package gameelements.player;
 
+import bot.MachineLearning.NeuralNetwork.Activations.Pass;
+import bot.MachineLearning.NeuralNetwork.Model;
+import bot.Mathematics.LinearAlgebra.Vector;
 import gameelements.board.Country;
+import gameelements.game.Game;
 
 public class LinearTDBot extends RiskBot {
+
+    Model linearEvalFunction;
 
     /**
      * algorithm and strategies for our risk bot
      */
-    public LinearTDBot(int id, int numTroopsInInventory) {
-        super(id, numTroopsInInventory);
+    public LinearTDBot(int id, int numTroopsInInventory, Game game) {
+        super(id, numTroopsInInventory, game);
+        setupModel();
+    }
+
+    private void setupModel() {
+        this.linearEvalFunction = new Model(1);
+        this.linearEvalFunction.addLayer(1, new Pass());
     }
 
     @Override

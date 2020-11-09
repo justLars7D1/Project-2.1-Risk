@@ -1,14 +1,15 @@
 package gameelements.player;
 
 import gameelements.board.Country;
+import gameelements.game.Game;
 
 public class DQNNBot extends RiskBot {
 
     /**
      * algorithm and strategies for our risk bot
      */
-    public DQNNBot(int id, int numTroopsInInventory) {
-        super(id, numTroopsInInventory);
+    public DQNNBot(int id, int numTroopsInInventory, Game game) {
+        super(id, numTroopsInInventory, game);
     }
 
     @Override

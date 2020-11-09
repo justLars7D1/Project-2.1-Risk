@@ -6,6 +6,7 @@ public class EnvironmentTest {
 
     public static void main(String[] args) {
         GameEnvironment environment = new GameEnvironment(PlayerType.TD);
+        environment.finishDistributionPhase();
     }
 
 }

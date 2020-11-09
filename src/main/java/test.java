@@ -19,9 +19,9 @@ public class test {
         Game game = new Game(players);
 
         // Initialize Test Case
-        Player player3 = PlayerFactory.createPlayer(3,20,PlayerType.USER);
-        Player player4 = PlayerFactory.createPlayer(4,20,PlayerType.USER);
-        Player player5 = PlayerFactory.createPlayer(5,20,PlayerType.USER);
+        Player player3 = PlayerFactory.createPlayer(3,20,game,PlayerType.USER);
+        Player player4 = PlayerFactory.createPlayer(4,20,game,PlayerType.USER);
+        Player player5 = PlayerFactory.createPlayer(5,20,game,PlayerType.USER);
 
         Board game_board = game.getGameBoard();
 
