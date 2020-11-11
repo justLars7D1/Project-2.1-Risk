@@ -50,7 +50,7 @@ public class WolfFeatures {
         double threat=0.0;
         for(Country neighbor: country.getNeighboringCountries()){
             if(neighbor.getOwner().getId()!=country.getOwner().getId()){
-                BattlePhaseEstimator.winChance(country.getNumSoldiers(), neighbor.getNumSoldiers()); n++;
+                threat += BattlePhaseEstimator.winChance(country.getNumSoldiers(), neighbor.getNumSoldiers()); n++;
             }
         }
         return n==0 ? 0.0 : threat/n;
