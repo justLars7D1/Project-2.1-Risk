@@ -5,6 +5,8 @@ import gameelements.player.Player;
 
 import java.util.*;
 
+import bot.Algorithms.MarkovChain.BattlePhaseEstimator;
+
 public class WolfFeatures {
     public static double hinterland(Player player){
         int hinterland = 0;
@@ -41,5 +43,16 @@ public class WolfFeatures {
         }
         double result = counter/numcountries;
         return result;
+    }
+
+    public static double averageThreatOn(Country country){
+        int n=0;
+        double threat=0.0;
+        for(Country neighbor: country.getNeighboringCountries()){
+            if(neighbor.getOwner().getId()!=country.getOwner().getId()){
+                BattlePhaseEstimator.winChance(country.getNumSoldiers(), neighbor.getNumSoldiers()); n++;
+            }
+        }
+        return n==0 ? 0.0 : threat/n;
     }
 }
