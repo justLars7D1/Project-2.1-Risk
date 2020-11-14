@@ -261,16 +261,17 @@ public class BoardMap {
             s.setStroke(Color.color(0,0,0));
             s.getStyleClass().add("svg");
             countryCode.add(s.getContent());
-
             s.hoverProperty().addListener((ChangeListener<Boolean>) (observable, oldValue, newValue) -> {
                 if (newValue) {
                     updateInfo(s);
                     oldStyle = s.getStyle();
                     landInfoPane.setVisible(true);
-                    s.setStyle("-fx-fill: " + getPlayerColor(game.getCurrentPlayer().getId()));
+                    s.setStyle("-fx-fill: " + getPlayerColor(game.getCurrentPlayer().getId()) + ";-fx-effect: dropshadow(gaussian,black,2,0.2,0,0);");
+                    s.toFront();
                 } else {
                     landInfoPane.setVisible(false);
                     s.setStyle(oldStyle);
+                    s.toBack();
                 }
             });
         }
@@ -316,9 +317,6 @@ public class BoardMap {
             updateWarning();
             getPlayerColor();
         });
-//        confirmB.setOnAction(e -> {
-//            updateWarning();
-//        });
 
         borderPane.setBottom(actionPanel);
         borderPane.setTop(playerPanel);
@@ -386,7 +384,7 @@ public class BoardMap {
                 @Override
                 public void handle(MouseEvent me) {
                     if (me.getButton() == MouseButton.PRIMARY) {
-                        s.setStyle("-fx-fill: #d7d7d7;");
+
                         int currentID = findCountry(s);
 
                         if (game.getGamePhase() == GamePhase.DISTRIBUTION) {
@@ -407,6 +405,8 @@ public class BoardMap {
                                 //System.out.println("Attack1");
                                 if (!fromCountryClicked && isOwner(currentID)) {
                                     System.out.println("picked from");
+                                    s.setStyle("-fx-stroke: white");
+                                    oldStyle = s.getStyle();
                                     fromCountryID = currentID;
                                     fromCountryClicked = true;
                                 } else if (fromCountryClicked && !isOwner(currentID)) { //case where previous country already clicked
@@ -414,6 +414,23 @@ public class BoardMap {
                                     AttackEventData data = new AttackEventData(fromCountryID, currentID);
                                     game.onGameEvent(data);
                                     fromCountryClicked = false;
+
+//                                    if (game.getCurrentPlayer().getCheckCountryConquer(game.getGameBoard().getCountryFromID(fromCountryID), game.getGameBoard().getCountryFromID(currentID))) {
+//                                        Label victory = new Label("Player " + getPlayerColor() + " took over " + game.getGameBoard().getCountryFromID(findCountry(s)).getName());
+//                                        Button confirm = new Button("Continue...");
+//                                        confirm.setUnderline(true);
+//                                        VBox box = new VBox(victory, confirm);
+//                                        box.setAlignment(Pos.CENTER);
+//                                        victoryPane.setCenter(box);
+//
+//                                        confirm.setOnAction(e -> {
+//                                            updateWarning();
+//                                            victoryPane.getChildren().clear();
+//                                            victoryPane.setVisible(false);
+//                                        });
+//                                        victoryPane.setVisible(true);
+//                                    }
+
                                 }
 
                             } else { //last case would have to be fortifying
@@ -441,7 +458,6 @@ public class BoardMap {
     }
 
     private void updateInfo(SVGPath s) {
-
         landInfoPane.getChildren().clear();
         if (findCountry(s) != -1) {
             lIBox = lI.landInfo(game, findCountry(s));
@@ -557,6 +573,21 @@ public class BoardMap {
                 break;
         }
         return playerColor;
+    }
+
+    private void tookOverWarning(SVGPath s) {
+        Label victory = new Label("Player " + getPlayerColor() + " took over " + game.getGameBoard().getCountryFromID(findCountry(s)).getName());
+        Button confirm = new Button("Continue");
+        confirm.setUnderline(true);
+        VBox box = new VBox(victory, confirm);
+        box.setAlignment(Pos.CENTER);
+        victoryPane.setCenter(box);
+
+        confirm.setOnAction(e -> {
+            updateWarning();
+            victoryPane.setVisible(false);
+        });
+        victoryPane.setVisible(true);
     }
 
     public void updateWarning() {
