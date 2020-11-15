@@ -5,10 +5,7 @@ import gameelements.board.Country;
 import gameelements.phases.data.*;
 import gameelements.phases.BattlePhase;
 import gameelements.phases.GamePhase;
-import gameelements.player.Player;
-import gameelements.player.PlayerFactory;
-import gameelements.player.PlayerList;
-import gameelements.player.PlayerType;
+import gameelements.player.*;
 import settings.Settings;
 
 import java.util.*;
@@ -226,6 +223,10 @@ public class Game extends GameObserver {
 
     public Board getGameBoard() {
         return gameBoard;
+    }
+
+    public boolean isBot() {
+        return players.getCurrentPlayer() instanceof RiskBot;
     }
 
     public Player getCurrentPlayer() {
