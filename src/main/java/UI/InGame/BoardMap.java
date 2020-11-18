@@ -26,6 +26,9 @@ import javafx.scene.shape.SVGPath;
 import javafx.scene.transform.Scale;
 import javafx.stage.Screen;
 import settings.Settings;
+import javafx.scene.robot.Robot;
+import java.awt.*;
+
 import javafx.scene.input.MouseEvent;
 
 import java.io.*;
@@ -36,6 +39,7 @@ public class BoardMap {
 
     private int stage = 1;
 
+    private static Robot robot = null;
     private SVGPath path1 = new SVGPath();
     private double scaleFactor = 7;
     private ArrayList<SVGPath> listOfPaths;
@@ -78,6 +82,7 @@ public class BoardMap {
     public void buildScene(Menu menu){
         //test case to showcase the world map on the screen
 
+        robot = new Robot();
         pane = new Pane();
         StackPane canvas = new StackPane();
         BorderPane pausePane = new BorderPane();
@@ -105,7 +110,7 @@ public class BoardMap {
 
             while((pathLine=br.readLine()) != null){
                 String[] splitData = pathLine.split("=");
-                System.out.println(splitData[0] + " " + splitData[1]);
+                //System.out.println(splitData[0] + " " + splitData[1]);
                 SVGPath country = new SVGPath();
                 String path = splitData[1];
                 country.setContent(path);
@@ -124,21 +129,26 @@ public class BoardMap {
             s.setStroke(Color.color(0,0,0));
             s.getStyleClass().add("svg");
             countryCode.add(s.getContent());
+
+            //Player hover
             s.hoverProperty().addListener((ChangeListener<Boolean>) (observable, oldValue, newValue) -> {
                 if (newValue) {
                     updateInfo(s);
-                    oldStyle = s.getStyle();
                     landInfoPane.setVisible(true);
-                    s.setStyle("-fx-fill: " + getPlayerColor(game.getCurrentPlayer().getId()) + ";-fx-effect: dropshadow(gaussian,black,2,0.2,0,0);");
-                    s.toFront();
+                    if (!game.isBot()) {
+                        oldStyle = s.getStyle();
+                        s.setStyle("-fx-fill: " + getPlayerColor(game.getCurrentPlayer().getId()) + ";-fx-effect: dropshadow(gaussian,black,2,0.2,0,0);");
+                        s.toFront();
+                    }
                 } else {
                     landInfoPane.setVisible(false);
-                    s.setStyle(oldStyle);
-                    s.toBack();
+                    if (!game.isBot()) {
+                        s.setStyle(oldStyle);
+                        s.toBack();
+                    }
                 }
             });
         }
-
 
         PauseMenu p = new PauseMenu();
         VBox pause = p.pauseMenu(menu, pausePane, this);
@@ -175,6 +185,7 @@ public class BoardMap {
 //            endTurnB.setDisable(false);
 //        });
         endTurnB.setOnAction(e -> {
+
             game.nextBattlePhase();
             updateWarning();
             getPlayerColor();
@@ -218,7 +229,11 @@ public class BoardMap {
         board.getTransforms().add(scale);
         board.setTranslateX(100);
         board.setTranslateY(50);
+    }
 
+    public static void click() {
+        robot.mouseClick(MouseButton.PRIMARY);
+        System.out.println("CLICK");
     }
 
     /**
@@ -250,11 +265,18 @@ public class BoardMap {
                         int currentID = findCountry(s);
 
                         if (game.getGamePhase() == GamePhase.DISTRIBUTION) {
+                            //when bot starts first turn doesnt execute because waits MOUSE PRESSED
+                            //click automaticaly applies color on bot because the mouse is there
                             oldStyle = "-fx-fill:" + getPlayerColor(game.getCurrentPlayer().getId());
-                            GameEventData data = new DistributionEventData(currentID);
-                            game.onGameEvent(data);
+                            if (game.isBot()) {
+                                System.out.println("distribution bot");
+                                GameEventData data = new DistributionEventData(-1);
+                                game.onGameEvent(data);
+                            } else {
+                                GameEventData data = new DistributionEventData(currentID);
+                                game.onGameEvent(data);
+                            }
                             getPlayerColor();
-                            updateCountries(s);
 
                         } else if (game.getGamePhase() == GamePhase.BATTLE) {
                             System.out.println("Battle");
@@ -393,7 +415,7 @@ public class BoardMap {
     }
 
     public String getPlayerColor() {
-
+        System.out.println("current player id " +game.getCurrentPlayer().getId() );
         switch (game.getCurrentPlayer().getId()) {
             case 1: playerColor = "red";
                 break;
@@ -412,6 +434,10 @@ public class BoardMap {
         }
 
         playerFlag.setStyle("-fx-fill: " + playerColor);
+
+        if (game.isBot()) {
+            click();
+        }
 
         return playerColor;
     }
