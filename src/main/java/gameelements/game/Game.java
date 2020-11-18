@@ -217,6 +217,19 @@ public class Game extends GameObserver {
         p.setNumTroopsInInventory(totalNewTroops);
     }
 
+    /** class needed for game feature  equal to calcNumNewPlayerTroops */
+    public int getNumReinforcement(Player p){
+        int totalNewTroops = 0;
+        // Number of troops for territory owned with a minimum number of troops of 3
+        totalNewTroops += Math.max(
+                Settings.MINNUMTROOPSPERTURN,
+                p.getNumCountriesOwned() / Settings.TROOPSPERCOUNTRYDIVIDER
+        );
+        // Number of troops for owning continents
+        totalNewTroops += numTroopsForContinents(p);
+        return totalNewTroops;
+    }
+
     private int numTroopsForContinents(Player p) {
         HashSet<Country> playerCountries = p.getCountriesOwned();
         int numTroops = 0;
@@ -252,6 +265,8 @@ public class Game extends GameObserver {
     public Player getCurrentPlayer() {
         return players.getCurrentPlayer();
     }
+
+    public ArrayList<Player>  getAllPlayer(){return players.getPlayers();}
 
     public boolean isCurrentPlayerBot() {
         return (players.getCurrentPlayer() instanceof RiskBot);
