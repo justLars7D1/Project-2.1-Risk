@@ -1,23 +1,15 @@
 package bot.Algorithms.MarkovChain;
 
-import bot.Mathematics.LinearAlgebra.Matrix;
-
 /* 
 * Probabilistic model of battles in the RISK game
 */
 public class BattlePhaseEstimator {
 
-    private Matrix attackMatrix;
-
-    public BattlePhaseEstimator(){
-        attackMatrix = new Matrix(attackerWins);
-    }
-
     /*
     * i: number of attacking troops
     * j: number of defending troops
     */
-    private final double[][] attackerWins = {
+    private static final double[][] attackerWins = {
         {0.417, 0.754, 0.916, 0.972, 0.99,  0.997, 0.999, 1.0,   1.0,   1.0},
         {0.106, 0.363, 0.656, 0.785, 0.89,  0.934, 0.967, 0.98,  0.99,  0.994},
         {0.027, 0.206, 0.47,  0.642, 0.769, 0.857, 0.91,  0.947, 0.967, 0.981},
@@ -55,8 +47,8 @@ public class BattlePhaseEstimator {
     /*
     * Chance to win a territory by attacking continuously
     */
-    public double winChance(int against, int with){
-        return attackMatrix.get(against-1, with-1);
+    public static double winChance(int against, int with){
+        return attackerWins[against-1][with-1];
     }
 
     /*

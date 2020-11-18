@@ -1,21 +1,47 @@
 package gameelements.player;
 
 import gameelements.board.Country;
+import gameelements.game.Game;
 import gameelements.phases.data.AttackEventData;
+import settings.BotSettings;
+
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 public class RiskBot extends Player {
+
+    protected Game currentGame;
+
+    private List<List<Country>> countryDistributionList;
 
     /**
      * algorithm and strategies for our risk bot
      */
-    public RiskBot(int id, int numTroopsInInventory) {
+    public RiskBot(int id, int numTroopsInInventory, Game game) {
         super(id, numTroopsInInventory);
+        this. countryDistributionList = BotSettings.setupDistributionPriorityList(game.getGameBoard(), game.getNumPlayers());
+        this.currentGame = game;
     }
 
     @Override
     public boolean onDistributionEvent(Country country) {
-        // Put all the code to pick the right action here
+        country = selectBestCountry();
         return super.onDistributionEvent(country);
+    }
+
+    private Country selectBestCountry() {
+        for (List<Country> continent: countryDistributionList) {
+            for (Country country: continent) {
+                if (!country.hasOwner()) {
+                    return country;
+                }
+            }
+        }
+
+        // TODO: Part 2 - All countries have an owner (maybe something with border troops)
+        return (new ArrayList<>(countriesOwned)).get(0);
+
     }
 
     @Override
