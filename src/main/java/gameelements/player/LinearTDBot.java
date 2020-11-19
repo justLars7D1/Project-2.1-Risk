@@ -19,7 +19,7 @@ public class LinearTDBot extends RiskBot {
     }
 
     private void setupModel() {
-        this.linearEvalFunction = new Model(1);
+        this.linearEvalFunction = new Model(8);
         this.linearEvalFunction.addLayer(1, new Pass());
     }
 
