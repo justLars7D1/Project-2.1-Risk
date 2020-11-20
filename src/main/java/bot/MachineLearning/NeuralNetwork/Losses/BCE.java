@@ -8,7 +8,6 @@ public class BCE implements Loss {
         /*
         * BCE = -t*log(sig(o)) - (1-t)*log(1-sig(o))
         */
-        yPred.sigmoid();
 
         //left-hand side
         Vector posPred = yPred.getLog();
@@ -27,7 +26,6 @@ public class BCE implements Loss {
         /*
         * dBCE/doj = - tj/oj + (1-tj)/(1-oj)
         */
-        yPred.sigmoid();
 
         Vector firstTerm = yActual.getDivided(yPred).getScaled(-1.0);
 
