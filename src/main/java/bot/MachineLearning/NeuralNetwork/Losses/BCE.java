@@ -24,6 +24,19 @@ public class BCE implements Loss {
 
     @Override
     public Vector evalDerivative(Vector yPred, Vector yActual) {
-        
+        /*
+        * dBCE/doj = - tj/oj + (1-tj)/(1-oj)
+        */
+        yPred.sigmoid();
+
+        Vector firstTerm = yActual.getDivided(yPred).getScaled(-1.0);
+
+        // complements
+        Vector complPred = yPred.getScaled(-1.0).getAdded(1.0);
+        Vector complActual = yActual.getScaled(-1.0).getAdded(1.0);
+
+        Vector secondTerm = complActual.getDivided(complPred);
+
+        return firstTerm.getAdded(secondTerm);
     }
 }
