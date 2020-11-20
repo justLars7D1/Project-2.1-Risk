@@ -213,6 +213,19 @@ public class Vector implements Cloneable, Serializable {
         return norm;
     }
 
+    public void log() {
+        int dimensions = getDimensions();
+        for (int i = 0; i < dimensions; i++) {
+            coordinates[i] = Math.log(coordinates[i]);
+        }
+    }
+
+    public Vector getLog() {
+        Vector copyOfCurrentVector = (Vector) clone();
+        copyOfCurrentVector.log();
+        return copyOfCurrentVector;
+    }
+
     public void sigmoid(){
         int dimensions = getDimensions();
         for (int i = 0; i < dimensions; i++) {
