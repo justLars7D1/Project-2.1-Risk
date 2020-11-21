@@ -32,21 +32,21 @@ public class LinearTDBot extends RiskBot {
     @Override
     public void onPlacementEvent(Country country, int numTroops) {
         // Put all the code to pick the right action here
-        super.onPlacementEvent(country, numTroops);
+        //super.onPlacementEvent(country, numTroops);
         // Add code for deciding end of event phase here (finish attack phase method)
     }
 
     @Override
     public void onAttackEvent(Country countryFrom, Country countryTo) {
         // Put all the code to pick the right action here
-        super.onAttackEvent(countryFrom, countryTo);
+        //super.onAttackEvent(countryFrom, countryTo);
         // Add code for deciding end of event phase here (finish attack phase method)
     }
 
     @Override
     public void onFortifyEvent(Country countryFrom, Country countryTo, int numTroops) {
         // Put all the code to pick the right action here
-        super.onFortifyEvent(countryFrom, countryTo, numTroops);
+        //super.onFortifyEvent(countryFrom, countryTo, numTroops);
         // Add code for deciding end of event phase here (finish attack phase method)
     }
 
