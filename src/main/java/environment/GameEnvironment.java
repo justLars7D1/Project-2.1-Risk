@@ -1,8 +1,10 @@
 package environment;
 
 import gameelements.game.Game;
+import gameelements.phases.BattlePhase;
 import gameelements.phases.GamePhase;
 import gameelements.phases.data.DistributionEventData;
+import gameelements.phases.data.PlacementEventData;
 import gameelements.player.PlayerType;
 
 import java.util.HashMap;
@@ -47,6 +49,13 @@ public class GameEnvironment {
     public void finishDistributionPhase() {
         while (game.getGamePhase().equals(GamePhase.DISTRIBUTION)) {
             game.onGameEvent(new DistributionEventData(-1));
+        }
+        System.out.println(game.getGameBoard());
+    }
+
+    public void finishPlacementPhase() {
+        while (game.getBattlePhase().equals(BattlePhase.PLACEMENT)) {
+            game.onGameEvent(new PlacementEventData(-1, 0));
         }
         System.out.println(game.getGameBoard());
     }

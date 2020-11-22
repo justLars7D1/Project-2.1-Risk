@@ -19,7 +19,7 @@ public class LinearTDBot extends RiskBot {
     }
 
     private void setupModel() {
-        this.linearEvalFunction = new Model(1);
+        this.linearEvalFunction = new Model(8);
         this.linearEvalFunction.addLayer(1, new Pass());
     }
 
@@ -39,14 +39,14 @@ public class LinearTDBot extends RiskBot {
     @Override
     public void onAttackEvent(Country countryFrom, Country countryTo) {
         // Put all the code to pick the right action here
-        super.onAttackEvent(countryFrom, countryTo);
+        //super.onAttackEvent(countryFrom, countryTo);
         // Add code for deciding end of event phase here (finish attack phase method)
     }
 
     @Override
     public void onFortifyEvent(Country countryFrom, Country countryTo, int numTroops) {
         // Put all the code to pick the right action here
-        super.onFortifyEvent(countryFrom, countryTo, numTroops);
+        //super.onFortifyEvent(countryFrom, countryTo, numTroops);
         // Add code for deciding end of event phase here (finish attack phase method)
     }
 

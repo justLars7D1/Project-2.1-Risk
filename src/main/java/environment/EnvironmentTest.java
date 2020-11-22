@@ -5,8 +5,11 @@ import gameelements.player.PlayerType;
 public class EnvironmentTest {
 
     public static void main(String[] args) {
-        GameEnvironment environment = new GameEnvironment(PlayerType.TD);
+        GameEnvironment environment = new GameEnvironment(PlayerType.DQN);
+        System.out.println("--- Distribution ---");
         environment.finishDistributionPhase();
+        System.out.println("--- Placement ---");
+        environment.finishPlacementPhase();
     }
 
 }

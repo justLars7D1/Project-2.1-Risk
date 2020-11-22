@@ -49,7 +49,8 @@ public abstract class Player {
      */
     public boolean onDistributionEvent(Country country) {
         boolean success = false;
-        if (!country.hasOwner() || countriesOwned.contains(country) && numTroopsInInventory - 1 >= 0) {
+        boolean hasLessTroopsThanLimit = country.getNumSoldiers() < Settings.TROOPSLIMIT;
+        if ((!country.hasOwner() || countriesOwned.contains(country) && numTroopsInInventory - 1 >= 0) && hasLessTroopsThanLimit) {
             country.setOwner(this);
             country.addNumSoldiers(Settings.NUMTROOPSONDISTRIBUTION);
             numTroopsInInventory -= Settings.NUMTROOPSONDISTRIBUTION;
@@ -65,7 +66,8 @@ public abstract class Player {
      * @param numTroops The number of troops to put on the country
      */
     public void onPlacementEvent(Country country, int numTroops) {
-        if (countriesOwned.contains(country) && numTroopsInInventory - numTroops >= 0) {
+        boolean hasLessTroopsThanLimit = country.getNumSoldiers() + numTroops <= Settings.TROOPSLIMIT;
+        if (countriesOwned.contains(country) && numTroopsInInventory - numTroops >= 0 && hasLessTroopsThanLimit) {
             country.addNumSoldiers(numTroops);
             numTroopsInInventory -= numTroops;
         }

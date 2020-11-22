@@ -18,8 +18,9 @@ public class WolfFeatures {
             numcountries++;
             ArrayList<Country> neighbours = (ArrayList<Country>)c.getNeighboringCountries();
             for(int j = 0; j < neighbours.size(); j++){
-                if(neighbours.get(j).getOwner() != player){
+                if (neighbours.get(j).getOwner() != player) {
                     conflict = true;
+                    break;
                 }
             }
         }
@@ -28,8 +29,7 @@ public class WolfFeatures {
         } else {
             conflict = false;
         }
-        double result = (numcountries / hinterland);
-        return result;
+        return (((double) numcountries) / hinterland);
     }
     public static double moreThanOneArmy(Player player){
         HashSet<Country> countries = player.getCountriesOwned();
@@ -41,8 +41,7 @@ public class WolfFeatures {
                 counter++;
             }
         }
-        double result = counter/numcountries;
-        return result;
+        return ((double) counter)/numcountries;
     }
 
     public static double averageThreatOn(Country country){
