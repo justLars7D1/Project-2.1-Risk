@@ -55,7 +55,7 @@ public abstract class Player {
             country.addNumSoldiers(Settings.NUMTROOPSONDISTRIBUTION);
             numTroopsInInventory -= Settings.NUMTROOPSONDISTRIBUTION;
             countriesOwned.add(country);
-            BoardMap.updateCountryLabel(country);
+            //TODO: Delegate this to the UI --- BoardMap.updateCountryLabel(country);
             success = true;
         }
         return success;
@@ -67,11 +67,11 @@ public abstract class Player {
      * @param numTroops The number of troops to put on the country
      */
     public void onPlacementEvent(Country country, int numTroops) {
-        boolean hasLessTroopsThanLimit = country.getNumSoldiers() < Settings.TROOPSLIMIT;
+        boolean hasLessTroopsThanLimit = country.getNumSoldiers() + numTroops <= Settings.TROOPSLIMIT;
         if (countriesOwned.contains(country) && numTroopsInInventory - numTroops >= 0 && hasLessTroopsThanLimit) {
             country.addNumSoldiers(numTroops);
             numTroopsInInventory -= numTroops;
-            BoardMap.updateCountryLabel(country);
+            //TODO: Delegate this to the UI --- BoardMap.updateCountryLabel(country);
         }
     }
 
