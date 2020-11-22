@@ -8,6 +8,11 @@ import java.util.HashMap;
 public class Settings {
 
     /**
+     * Limit on number of troops per country
+     */
+    public static int TROOPSLIMIT = 10;
+
+    /**
      * Sets
      */
     public static boolean ATTACKUNTILWINORLOSE = false;
