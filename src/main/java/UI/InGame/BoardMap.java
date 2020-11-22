@@ -234,214 +234,50 @@ public class BoardMap {
         board.setTranslateX(100);
         board.setTranslateY(50);
 
-        /**  Army Labels for Boardmap*/
-        // Australia Labels
-        Label aus1_l = new Label();
-        aus1_l.setTranslateY(52);
-        aus1_l.setTranslateX(139);
-
-        Label aus2_l = new Label();
-        aus2_l.setTranslateY(55);
-        aus2_l.setTranslateX(129);
-
-        Label aus3_l = new Label();
-        aus3_l.setTranslateY(37);
-        aus3_l.setTranslateX(147);
-
-        Label aus4_l = new Label();
-        aus4_l.setTranslateY(35.5);
-        aus4_l.setTranslateX(125.5);
-
-        // Asia Labels
-        Label ass12_l = new Label();
-        ass12_l.setTranslateY(-13);
-        ass12_l.setTranslateX(113);
-
-        Label ass11_l = new Label();
-        ass11_l.setTranslateY(-10);
-        ass11_l.setTranslateX(88);
-
-        Label ass10_l = new Label();
-        ass10_l.setTranslateY(-13);
-        ass10_l.setTranslateX(97);
-
-        Label ass9_l = new Label();
-        ass9_l.setTranslateY(20.5);
-        ass9_l.setTranslateX(114);
-
-        Label ass8_l = new Label();
-        ass8_l.setTranslateY(0);
-        ass8_l.setTranslateX(112.5);
-
-        Label ass7_l = new Label();
-        ass7_l.setTranslateY(15);
-        ass7_l.setTranslateX(77);
-
-        Label ass6_l = new Label();
-        ass6_l.setTranslateY(-12.5);
-        ass6_l.setTranslateX(127);
-
-        Label ass5_l = new Label();
-        ass5_l.setTranslateY(7);
-        ass5_l.setTranslateX(137);
-
-        Label ass4_l = new Label();
-        ass4_l.setTranslateY(-7);
-        ass4_l.setTranslateX(109);
-
-        Label ass3_l = new Label();
-        ass3_l.setTranslateY(14);
-        ass3_l.setTranslateX(97);
-
-        Label ass2_l = new Label();
-        ass2_l.setTranslateY(9);
-        ass2_l.setTranslateX(111);
-
-        Label ass1_l = new Label();
-        ass1_l.setTranslateY(1);
-        ass1_l.setTranslateX(88);
-
-        // Europe
-        Label eus7_l = new Label();
-        eus7_l.setTranslateY(1);
-        eus7_l.setTranslateX(49.5);
-
-        Label eus6_l = new Label();
-        eus6_l.setTranslateY(-5);
-        eus6_l.setTranslateX(71);
-
-        Label eus5_l = new Label();
-        eus5_l.setTranslateY(2.5);
-        eus5_l.setTranslateX(62);
-
-        Label eus4_l = new Label();
-        eus4_l.setTranslateY(-9);
-        eus4_l.setTranslateX(56);
-
-        Label eus3_l = new Label();
-        eus3_l.setTranslateY(-2);
-        eus3_l.setTranslateX(55);
-
-        Label eus2_l = new Label();
-        eus2_l.setTranslateY(-8.5);
-        eus2_l.setTranslateX(37);
-
-        Label eus1_l = new Label();
-        eus1_l.setTranslateY(-2);
-        eus1_l.setTranslateX(42);
-
-        // South America
-        Label sas4_l = new Label();
-        sas4_l.setTranslateY(30);
-        sas4_l.setTranslateX(2);
-
-        Label sas3_l = new Label();
-        sas3_l.setTranslateY(45);
-        sas3_l.setTranslateX(5);
-
-        Label sas2_l = new Label();
-        sas2_l.setTranslateY(43);
-        sas2_l.setTranslateX(16);
-
-        Label sas1_l = new Label();
-        sas1_l.setTranslateY(59);
-        sas1_l.setTranslateX(9);
-
-        // North America
-        Label nas9_l = new Label();
-        nas9_l.setTranslateY(5);
-        nas9_l.setTranslateX(-18);
-
-        Label nas8_l = new Label();
-        nas8_l.setTranslateY(-5);
-        nas8_l.setTranslateX(15);
-
-        Label nas7_l = new Label();
-        nas7_l.setTranslateY(-4);
-        nas7_l.setTranslateX(2);
-
-        Label nas6_l = new Label();
-        nas6_l.setTranslateY(-11);
-        nas6_l.setTranslateX(-5);
-
-        Label nas5_l = new Label();
-        nas5_l.setTranslateY(-17);
-        nas5_l.setTranslateX(36);
-
-        Label nas4_l = new Label();
-        nas4_l.setTranslateY(8);
-        nas4_l.setTranslateX(-3);
-
-        Label nas3_l = new Label();
-        nas3_l.setTranslateY(17);
-        nas3_l.setTranslateX(-15);
-
-        Label nas2_l = new Label();
-        nas2_l.setTranslateY(-5);
-        nas2_l.setTranslateX(-13);
-
-        Label nas1_l = new Label();
-        nas1_l.setTranslateY(-12);
-        nas1_l.setTranslateX(-22);
-
-        //Africa
-        Label afs6_l = new Label();
-        afs6_l.setTranslateY(51);
-        afs6_l.setTranslateX(65);
-
-        Label afs5_l = new Label();
-        afs5_l.setTranslateY(23);
-        afs5_l.setTranslateX(49);
-
-        Label afs4_l = new Label();
-        afs4_l.setTranslateY(55);
-        afs4_l.setTranslateX(77);
-
-        Label afs3_l = new Label();
-        afs3_l.setTranslateY(17);
-        afs3_l.setTranslateX(63);
-
-        Label afs2_l = new Label();
-        afs2_l.setTranslateY(31);
-        afs2_l.setTranslateX(74);
-
-        Label afs1_l = new Label();
-        afs1_l.setTranslateY(36);
-        afs1_l.setTranslateX(64);
-
-        // List containing all country lables -> Order important for creating hashmap
-        List<Label> country_labels = new ArrayList<Label>();
-        country_labels.addAll(Arrays.asList(eus1_l, ass3_l, ass11_l, aus2_l, nas3_l, ass1_l, nas7_l, afs3_l, afs4_l, afs5_l, eus4_l, eus2_l, nas2_l, ass7_l, ass12_l, ass8_l, nas8_l, ass2_l, ass9_l, ass10_l, sas2_l, nas1_l, ass6_l, aus1_l, sas1_l, eus3_l, nas6_l, nas4_l, ass5_l, afs1_l, eus6_l, eus7_l, sas4_l, aus3_l, ass4_l,afs6_l , eus5_l, nas9_l, sas3_l, afs2_l, nas5_l, aus4_l));
-
-        // Scale and set transparent for mouse actions
-        double label_scalefactor = (double) 1 / (getScaleFactor()+2);
-        for(Label label : country_labels){
-            label.setMouseTransparent(true);
-            label.setScaleY(label_scalefactor);
-            label.setScaleX(label_scalefactor);
-            // Set width to fit three digit numbers -> would otherwise mess up the position
-            label.setPrefWidth(75);
-            label.setAlignment(Pos.CENTER);
-        }
-
-        // Hashmap for linking labels to country ID's
+        // Create country labels from properties file
         country_label_link = new HashMap<Integer, Label>();
         List<Country> all_countries = game.getGameBoard().getCountries();
-        for(int i= 0; i < all_countries.size(); i++){
-            country_label_link.put(all_countries.get(i).getID(), country_labels.get(i));
+        double label_scalefactor = (double) 1 / (getScaleFactor()+2);
+        int i = 0;
+
+        try (BufferedReader br = new BufferedReader(new FileReader("src/main/res/properties/country_label.properties"))) {
+
+            String pathLine;
+
+            while((pathLine=br.readLine()) != null){
+                String[] splitData = pathLine.split("=");
+                String[] coordinates = splitData[1].split(",");
+                Label country_label = new Label();
+                // Set position of labels
+                country_label.setTranslateY(Double.parseDouble(coordinates[0]));
+                country_label.setTranslateX(Double.parseDouble(coordinates[1]));
+                // Scale labels
+                country_label.setMouseTransparent(true);
+                country_label.setScaleY(label_scalefactor);
+                country_label.setScaleX(label_scalefactor);
+                // Set width to fit three digit numbers -> would otherwise mess up the position
+                country_label.setPrefWidth(75);
+                country_label.setAlignment(Pos.CENTER);
+                // Hashmap for linking labels to country ID's
+                country_label_link.put(all_countries.get(i).getID(), country_label);
+                i++;
+            };
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
         }
 
-
-        board.getChildren().addAll(country_labels);
+        board.getChildren().addAll(country_label_link.values());
     }
 
     /** method for updating the counrtry labels which display the army number
      */
-    public static void updateCountryLabel(Country country){
+    public void updateCountryLabel(int id){
         // Get the Label that corresponds to country id
         // set the text to num soldiers
-        country_label_link.get(country.getID()).setText(Integer.toString(country.getNumSoldiers()));
+        country_label_link.get(id).setText(Integer.toString(game.getGameBoard().getCountryFromID(id).getNumSoldiers()));
     }
+
 
     public static void click() {
         robot.mouseClick(MouseButton.PRIMARY);
@@ -465,6 +301,7 @@ public class BoardMap {
         }
         return id;
     }
+    private int lastCountryFromId;
 
     private void onBoardClick() {
         //Board Clicking
@@ -505,11 +342,14 @@ public class BoardMap {
                                     oldStyle = s.getStyle();
                                     fromCountryID = currentID;
                                     fromCountryClicked = true;
+                                    lastCountryFromId= currentID;
                                 } else if (fromCountryClicked && !isOwner(currentID)) { //case where previous country already clicked
                                     System.out.println("Attack2");
                                     AttackEventData data = new AttackEventData(fromCountryID, currentID);
                                     game.onGameEvent(data);
                                     fromCountryClicked = false;
+                                    updateCountryLabel(lastCountryFromId);
+
 
 //                                    if (game.getCurrentPlayer().getCheckCountryConquer(game.getGameBoard().getCountryFromID(fromCountryID), game.getGameBoard().getCountryFromID(currentID))) {
 //                                        Label victory = new Label("Player " + getPlayerColor() + " took over " + game.getGameBoard().getCountryFromID(findCountry(s)).getName());
@@ -534,10 +374,12 @@ public class BoardMap {
                                 if(!fromCountryClicked){
                                     fromCountryID = currentID;
                                     fromCountryClicked = true;
+                                    lastCountryFromId = currentID;
                                 } else { //case where previous country already clicked
                                     FortifyEventData data = new FortifyEventData(fromCountryID, currentID, 1);
                                     game.onGameEvent(data);
                                     fromCountryClicked = false;
+                                    updateCountryLabel(lastCountryFromId);
                                 }
                             }
                             //attackB.setDisable(false);
@@ -547,6 +389,7 @@ public class BoardMap {
                         updateInfo(s);
                         updateAllCountries(s);
                         updateWarning();
+                        updateCountryLabel(findCountry(s));
                     }
                 }
             });
@@ -753,6 +596,9 @@ public class BoardMap {
         victoryPane.setVisible(false);
         for(SVGPath s : listOfPaths) {
             s.setStyle("-fx-fill: grey");
+        }
+        for(Label label : country_label_link.values()){
+            label.setText("");
         }
     }
 

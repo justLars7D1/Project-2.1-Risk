@@ -54,7 +54,6 @@ public abstract class Player {
             country.addNumSoldiers(Settings.NUMTROOPSONDISTRIBUTION);
             numTroopsInInventory -= Settings.NUMTROOPSONDISTRIBUTION;
             countriesOwned.add(country);
-            BoardMap.updateCountryLabel(country);
             success = true;
         }
         return success;
@@ -69,7 +68,6 @@ public abstract class Player {
         if (countriesOwned.contains(country) && numTroopsInInventory - numTroops >= 0) {
             country.addNumSoldiers(numTroops);
             numTroopsInInventory -= numTroops;
-            BoardMap.updateCountryLabel(country);
         }
     }
 
@@ -117,8 +115,6 @@ public abstract class Player {
             }
 
         }
-        BoardMap.updateCountryLabel(countryFrom);
-        BoardMap.updateCountryLabel(countryTo);
     }
 
     /**
@@ -135,8 +131,6 @@ public abstract class Player {
             if (existsPathFromCountryToCountry) {
                 countryFrom.removeNumSoldiers(numTroops);
                 countryTo.addNumSoldiers(numTroops);
-                BoardMap.updateCountryLabel(countryTo);
-                BoardMap.updateCountryLabel(countryFrom);
             }
         }
     }
@@ -189,8 +183,6 @@ public abstract class Player {
             // Transfer one troop from country
             countryFrom.removeNumSoldiers(1);
             countryTo.addNumSoldiers(1);
-            BoardMap.updateCountryLabel(countryTo);
-            BoardMap.updateCountryLabel(countryFrom);
 
             return true;
         }
