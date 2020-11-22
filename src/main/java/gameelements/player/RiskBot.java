@@ -86,6 +86,10 @@ public class RiskBot extends Player {
         // Place at most the number of troops that are left in the inventory
         numTroops = Math.min(numTroopsInInventory, Math.abs(troopDifference));
 
+        if (country == null) {
+            currentGame.nextBattlePhase();
+        }
+
         // Execute the action
         super.onPlacementEvent(country, numTroops);
 
