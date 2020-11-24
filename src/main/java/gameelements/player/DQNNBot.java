@@ -3,13 +3,47 @@ package gameelements.player;
 import gameelements.board.Country;
 import gameelements.game.Game;
 
+import bot.MachineLearning.NeuralNetwork.Model;
+import bot.MachineLearning.NeuralNetwork.Activations.*;
+
 public class DQNNBot extends RiskBot {
+    /*
+    * Double Q-Learning (Hasselt, 2010)
+    *
+    * The weights of the online network are transfered to the
+    * target network every n steps.
+    *
+    * sequential attack decision
+    * state = (from, to, threat, ...) -> decision = (from, to, attack)
+    *
+    * predicts q values for a binary attack decision
+    */
+
+    int n;
+
+    Model targetNetwork;
+
+    Model estimatorNetwork;
 
     /**
      * algorithm and strategies for our risk bot
      */
-    public DQNNBot(int id, int numTroopsInInventory, Game game) {
+    public DQNNBot(int id, int numTroopsInInventory, Game game, int numFeatures, int lag) {
         super(id, numTroopsInInventory, game);
+
+        this.n = lag;
+
+        // target approximation
+        targetNetwork = new Model(numFeatures);
+        targetNetwork.addLayer(3, new ReLu());
+        targetNetwork.addLayer(3, new ReLu());
+        targetNetwork.addLayer(1, new Sigmoid());
+
+        // dynamic network
+        estimatorNetwork = new Model(numFeatures);
+        estimatorNetwork.addLayer(3, new ReLu());
+        estimatorNetwork.addLayer(3, new ReLu());
+        estimatorNetwork.addLayer(1, new Sigmoid());
     }
 
     @Override
