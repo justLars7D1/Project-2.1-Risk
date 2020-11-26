@@ -1,6 +1,7 @@
 package gameelements.player;
 
 import gameelements.board.Country;
+
 import gameelements.game.Game;
 
 import bot.MachineLearning.NeuralNetwork.Model;
@@ -28,6 +29,10 @@ public class DQNNBot extends RiskBot {
     /**
      * algorithm and strategies for our risk bot
      */
+    public DQNNBot(int id, int numTroopsInInventory, Game game) {
+        this(id, numTroopsInInventory, game, 5, 1);
+    }
+
     public DQNNBot(int id, int numTroopsInInventory, Game game, int numFeatures, int lag) {
         super(id, numTroopsInInventory, game);
 
