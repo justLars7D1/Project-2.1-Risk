@@ -86,7 +86,7 @@ public class BattlePhaseEstimator {
             //calculated the expected loss over the end states
             cachedExpectedLoss[with][against] = cache.stream()
                     .mapToDouble(s->(with-s.attacker)*s.prob)
-                    .average().orElse(0.0);
+                    .sum();
         }
         return cachedExpectedLoss[with][against];
     }
@@ -147,6 +147,12 @@ public class BattlePhaseEstimator {
         }
     }
     public static void main(String[] args){
+        long startTime = System.nanoTime();
+        System.out.println("EXPECTED LOSS: "+BattlePhaseEstimator.expectedLoss(3,3));
+        System.out.println("time: "+(double)(System.nanoTime()-startTime)/1_000_000_000.0+"ms");
+        startTime = System.nanoTime();
+        System.out.println("EXPECTED LOSS: "+BattlePhaseEstimator.expectedLoss(3,3));
+        System.out.println("time: "+(double)(System.nanoTime()-startTime)/1_000_000_000.0+"ms");
         System.out.println("EXPECTED LOSS: "+BattlePhaseEstimator.expectedLoss(3,3));
     }
 }
