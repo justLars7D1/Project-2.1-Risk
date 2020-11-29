@@ -110,7 +110,7 @@ public class BattlePhaseEstimator {
                 //defender looses two troops
                 cacheEndStatesFor(against-2, with, prob * transitionProbabilities[2][1][2], cache);
             }
-            else if(against<=2 && with>=1){
+            else if(against<=2 && with<=3){
                 if(against==1 && with==1){
                     //defender looses one
                     cacheEndStatesFor(against-1, with, prob * transitionProbabilities[0][0][2], cache);
@@ -144,6 +144,12 @@ public class BattlePhaseEstimator {
                     cacheEndStatesFor(against, with-1, prob * transitionProbabilities[2][0][0], cache);
                 }
             }
+            else if(with>3 && against==1){
+                //defender looses one
+                cacheEndStatesFor(against-1, with, prob * transitionProbabilities[2][0][2], cache);
+                //attacker looses one
+                cacheEndStatesFor(against, with-1, prob * transitionProbabilities[2][0][0], cache);
+            }
         }
     }
     public static void main(String[] args){
@@ -153,6 +159,7 @@ public class BattlePhaseEstimator {
         startTime = System.nanoTime();
         System.out.println("EXPECTED LOSS: "+BattlePhaseEstimator.expectedLoss(3,3));
         System.out.println("time: "+(double)(System.nanoTime()-startTime)/1_000_000_000.0+"ms");
-        System.out.println("EXPECTED LOSS: "+BattlePhaseEstimator.expectedLoss(10,2));
+        System.out.println("EXPECTED LOSS: "+BattlePhaseEstimator.expectedLoss(8,7));
+        //TODO remove duplicated states
     }
 }
