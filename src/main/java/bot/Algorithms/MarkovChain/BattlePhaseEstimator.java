@@ -153,6 +153,6 @@ public class BattlePhaseEstimator {
         startTime = System.nanoTime();
         System.out.println("EXPECTED LOSS: "+BattlePhaseEstimator.expectedLoss(3,3));
         System.out.println("time: "+(double)(System.nanoTime()-startTime)/1_000_000_000.0+"ms");
-        System.out.println("EXPECTED LOSS: "+BattlePhaseEstimator.expectedLoss(3,10));
+        System.out.println("EXPECTED LOSS: "+BattlePhaseEstimator.expectedLoss(10,2));
     }
 }
