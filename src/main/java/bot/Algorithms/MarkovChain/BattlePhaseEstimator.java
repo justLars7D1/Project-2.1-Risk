@@ -1,5 +1,7 @@
 package bot.Algorithms.MarkovChain;
 
+import java.util.*;
+
 /* 
 * Probabilistic model of battles in the RISK game
 */
@@ -28,21 +30,36 @@ public class BattlePhaseEstimator {
     * j: number of defending troops in range [1,2]-1
     * k: troops lost attacker, both and defender
     */
-    private final double [][][] transitionProbabilities = {
+    private static final double [][][] transitionProbabilities = {
         {//i=1
             {0.583, 0.0, 0.417},
             {0.746, 0.0, 0.254}
         },
         {//i=2
             {0.422, 0.0, 0.578},
-            {0.373, 0.475, 0.152}
+            {0.448, 0.324, 0.228}
         },
         {//i=3
-            {0.341, 0.0, 0.659},
+            {0.34, 0.0, 0.66},
             //to transient states
             {0.237, 0.504, 0.259}
+
         }
     };
+
+    private static double[][] cachedExpectedLoss = new double[10][10];
+
+    private static class State{
+        public double prob;
+        public int attacker;
+        public int defender;
+
+        public State(int attacker, int defender, double prob){
+            this.prob = prob;
+            this.attacker = attacker;
+            this.defender = defender;
+        }
+    }
 
     /*
     * Chance to win a territory by attacking continuously
@@ -52,28 +69,84 @@ public class BattlePhaseEstimator {
     }
 
     /*
-    * Chance to defeat at least a certain number of troops in battle
+    * Expected number of troops lost for a win
     */
-    public double winChance(int against, int with, int defeatedTroops){
-        return (defeatedTroops < against) ? chainProbability(against, with, defeatedTroops, 1.0) : 0.0;
+    public static double expectedLoss(int against, int with){
+        if(!(cachedExpectedLoss[with][against]>0.0)){
+            //generates if value isn't cached
+            List<State> cache = new ArrayList<>();
+            System.out.println("MARKOV CHAIN");
+            //calculate end states from initial states
+            cacheEndStatesFor(against, with, 1.0, cache);
+            System.out.println("END STATES");
+            for(int i=0;i<cache.size();i++){
+                State state = cache.get(i);
+                System.out.println("{"+state.attacker+","+state.defender+","+state.prob+"}");
+            } 
+            //calculated the expected loss over the end states
+            cachedExpectedLoss[with][against] = cache.stream()
+                    .mapToDouble(s->(with-s.attacker)*s.prob)
+                    .average().orElse(0.0);
+        }
+        return cachedExpectedLoss[with][against];
     }
 
-    public double chainProbability(int against, int with, int remainingTroops, double p){
-        if(remainingTroops<=0 || against<=0 || with <=0){return 1.0;}
-        //going to transient state
-        if(against>=2 && with>=3){
-            //attacker looses one troop
-            p *= transitionProbabilities[2][1][0] * chainProbability(against, with-1, remainingTroops, p)
-            //both loose one troop
-            + transitionProbabilities[2][1][1] * chainProbability(against-1, with-1, remainingTroops-1, p)
-            //defender looses two troops
-            + transitionProbabilities[2][1][2] * chainProbability(against-2, with, remainingTroops-2, p);
+    private static void cacheEndStatesFor(int against, int with, double prob, List<State> cache){
+        if(against<0 || with<0){return;}
+        System.out.println("{"+with+","+against+"}");
+
+        //add to the list of end states
+        if(against==0 || with==0){
+            System.out.println("{"+with+","+against+","+prob+"}"+" ADDED");
+            cache.add(new BattlePhaseEstimator.State(with, against, prob));
         }
-        //going to absorbant state
-        else if(against<=2 && with >=1){
-            //probability of the defender losing the last troops
-            p *= transitionProbabilities[with-1][against-1][2];
+        else{
+            //maximum defender 2, attacker 3 troops
+            if(against>=2 && with>=3){
+                //attacker looses one troop
+                cacheEndStatesFor(against-1, with, prob * transitionProbabilities[2][1][0], cache);
+                //both loose one troop
+                cacheEndStatesFor(against-1, with-1, prob * transitionProbabilities[2][1][1], cache);
+                //defender looses two troops
+                cacheEndStatesFor(against-2, with, prob * transitionProbabilities[2][1][2], cache);
+            }
+            else if(against<=2 && with>=1){
+                if(against==1 && with==1){
+                    //defender looses one
+                    cacheEndStatesFor(against-1, with, prob * transitionProbabilities[0][0][2], cache);
+                    //attacker looses one
+                    cacheEndStatesFor(against, with-1, prob * transitionProbabilities[0][0][0], cache);
+                }
+                if(with==1 && against==2){
+                    //defender looses one
+                    cacheEndStatesFor(against-1, with, prob * transitionProbabilities[0][1][2], cache);
+                    //attacker looses one
+                    cacheEndStatesFor(against, with-1, prob * transitionProbabilities[0][1][0], cache);
+                }
+                if(with==2 && against==1){
+                    //defender looses one
+                    cacheEndStatesFor(against-1, with, prob * transitionProbabilities[1][0][2], cache);
+                    //attacker looses one
+                    cacheEndStatesFor(against, with-1, prob * transitionProbabilities[1][0][0], cache);
+                }
+                if(with==2 && against==2){
+                    //defender looses two
+                    cacheEndStatesFor(against-2, with, prob * transitionProbabilities[1][1][2], cache);
+                    //both loose one
+                    cacheEndStatesFor(against-1, with-1, prob * transitionProbabilities[1][1][1], cache);
+                    //attacker looses two
+                    cacheEndStatesFor(against, with-2, prob * transitionProbabilities[1][1][0], cache);
+                }
+                if(with==3 && against==1){
+                    //defender looses one
+                    cacheEndStatesFor(against-1, with, prob * transitionProbabilities[2][0][2], cache);
+                    //attacker looses one
+                    cacheEndStatesFor(against, with-1, prob * transitionProbabilities[2][0][0], cache);
+                }
+            }
         }
-        return p;
+    }
+    public static void main(String[] args){
+        System.out.println("EXPECTED LOSS: "+BattlePhaseEstimator.expectedLoss(3,3));
     }
 }
