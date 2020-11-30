@@ -104,51 +104,43 @@ public class BattlePhaseEstimator {
             //maximum defender 2, attacker 3 troops
             if(against>=2 && with>=3){
                 //attacker looses one troop
-                cacheEndStatesFor(against-1, with, prob * transitionProbabilities[2][1][0], cache);
+                cacheEndStatesFor(against-2, with, prob * transitionProbabilities[2][1][0], cache);
                 //both loose one troop
                 cacheEndStatesFor(against-1, with-1, prob * transitionProbabilities[2][1][1], cache);
                 //defender looses two troops
                 cacheEndStatesFor(against-2, with, prob * transitionProbabilities[2][1][2], cache);
             }
-            else if(against<=2 && with<=3){
-                if(against==1 && with==1){
-                    //defender looses one
-                    cacheEndStatesFor(against-1, with, prob * transitionProbabilities[0][0][2], cache);
-                    //attacker looses one
-                    cacheEndStatesFor(against, with-1, prob * transitionProbabilities[0][0][0], cache);
-                }
-                if(with==1 && against==2){
-                    //defender looses one
-                    cacheEndStatesFor(against-1, with, prob * transitionProbabilities[0][1][2], cache);
-                    //attacker looses one
-                    cacheEndStatesFor(against, with-1, prob * transitionProbabilities[0][1][0], cache);
-                }
-                if(with==2 && against==1){
-                    //defender looses one
-                    cacheEndStatesFor(against-1, with, prob * transitionProbabilities[1][0][2], cache);
-                    //attacker looses one
-                    cacheEndStatesFor(against, with-1, prob * transitionProbabilities[1][0][0], cache);
-                }
-                if(with==2 && against==2){
-                    //defender looses two
-                    cacheEndStatesFor(against-2, with, prob * transitionProbabilities[1][1][2], cache);
-                    //both loose one
-                    cacheEndStatesFor(against-1, with-1, prob * transitionProbabilities[1][1][1], cache);
-                    //attacker looses two
-                    cacheEndStatesFor(against, with-2, prob * transitionProbabilities[1][1][0], cache);
-                }
-                if(with==3 && against==1){
-                    //defender looses one
-                    cacheEndStatesFor(against-1, with, prob * transitionProbabilities[2][0][2], cache);
-                    //attacker looses one
-                    cacheEndStatesFor(against, with-1, prob * transitionProbabilities[2][0][0], cache);
-                }
+            else if(with==1 && against==1){
+                //defender looses one
+                cacheEndStatesFor(against-1, with, prob * transitionProbabilities[0][0][2], cache);
+                //attacker looses one
+                cacheEndStatesFor(against, with-1, prob * transitionProbabilities[0][0][0], cache);
             }
-            else if(with>3 && against==1){
+            else if(with==2 && against==1){
+                //defender looses one
+                cacheEndStatesFor(against-1, with, prob * transitionProbabilities[1][0][2], cache);
+                //attacker looses one
+                cacheEndStatesFor(against, with-1, prob * transitionProbabilities[1][0][0], cache);
+            }
+            else if(with>=3 && against==1){
                 //defender looses one
                 cacheEndStatesFor(against-1, with, prob * transitionProbabilities[2][0][2], cache);
                 //attacker looses one
                 cacheEndStatesFor(against, with-1, prob * transitionProbabilities[2][0][0], cache);
+            }
+            else if(against>=2 && with==1){
+                //defender looses one
+                cacheEndStatesFor(against-1, with, prob * transitionProbabilities[0][1][2], cache);
+                //attacker looses one
+                cacheEndStatesFor(against, with-1, prob * transitionProbabilities[0][1][0], cache);
+            }
+            else if(against>=2 && with==2){
+                //defender looses two
+                cacheEndStatesFor(against-2, with, prob * transitionProbabilities[1][1][2], cache);
+                //both loose one
+                cacheEndStatesFor(against-1, with-1, prob * transitionProbabilities[1][1][1], cache);
+                //attacker looses two
+                cacheEndStatesFor(against, with-2, prob * transitionProbabilities[1][1][0], cache);
             }
         }
     }
@@ -159,6 +151,6 @@ public class BattlePhaseEstimator {
         startTime = System.nanoTime();
         System.out.println("EXPECTED LOSS: "+BattlePhaseEstimator.expectedLoss(3,3));
         System.out.println("time: "+(double)(System.nanoTime()-startTime)/1_000_000_000.0+"ms");
-        System.out.println("EXPECTED LOSS: "+BattlePhaseEstimator.expectedLoss(8,5));
+        System.out.println("EXPECTED LOSS: "+BattlePhaseEstimator.expectedLoss(5,3));
     }
 }
