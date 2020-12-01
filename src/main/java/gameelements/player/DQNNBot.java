@@ -9,7 +9,7 @@ import bot.MachineLearning.NeuralNetwork.Activations.*;
 
 public class DQNNBot extends RiskBot {
     /*
-    * Double Q-Learning (Hasselt, 2010)
+    * Double Q-Learning (Hasselt, 2015)
     *
     * The weights of the online network are transfered to the
     * target network every n steps.
