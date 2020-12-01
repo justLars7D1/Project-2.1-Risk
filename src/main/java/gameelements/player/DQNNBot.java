@@ -11,6 +11,8 @@ public class DQNNBot extends RiskBot {
     /*
     * Double Q-Learning (Hasselt, 2010)
     *
+    * Y = R[t+1] + gamma * Q'(S[t+1], argmax(a) Q(S[t+1], a)) 
+    *
     * The weights of the online network are transfered to the
     * target network every n steps.
     *
