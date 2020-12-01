@@ -9,6 +9,11 @@ public class DoubleQLoss implements Loss {
     * Y = R[t+1] + gamma * Q'(S[t+1], argmax(a) Q(S[t+1], a)) 
     *
     * estimates loss based on the target network and future reward.
+    *
+    * yPred: Y from the Q-value estimation
+    *
+    * yActual: estimation metrics for winning the game
+    *       monotonic incresing/decreasing
     */
     @Override
     // needs to take state-action pairs Q(S,a) and rewards R[t+1]
