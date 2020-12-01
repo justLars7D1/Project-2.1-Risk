@@ -136,6 +136,24 @@ public class Model implements Serializable {
         return collector;
     }
 
+    public void train(Vector[] xs, Vector[] ys) {
+        assert xs.length == ys.length;
+        if (lossFunction == null || optimizer == null || metrics == null) {
+            try {
+                throw new UncompiledModelException();
+            } catch (UncompiledModelException e) {
+                System.out.println("Model could not be compiled");
+            }
+        }
+        optimizer.init(this);
+
+        // Now update the weights using the optimizer
+        this.optimizer.updateWeights(this);
+        this.resetGradients();
+    }
+
+
+
     private void updateMetrics(Vector[] xs, Vector[] ys, MetricCollector collector) {
         for (String metric: metrics) {
             double metricVal = calculateMetricValue(metric, xs, ys);
@@ -284,5 +302,7 @@ public class Model implements Serializable {
 
     static class UncompiledModelException extends Exception {
     }
-
+    public Loss getLossFunction(){
+        return this.lossFunction;
+    }
 }
