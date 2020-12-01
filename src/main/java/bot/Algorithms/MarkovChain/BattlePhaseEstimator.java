@@ -76,14 +76,8 @@ public class BattlePhaseEstimator {
         if(!(cachedExpectedLossForWin[with-1][against-1]>0.0)){
             //generates if value isn't cached
             List<State> cache = new ArrayList<>();
-            System.out.println("MARKOV CHAIN");
             //calculate end states from initial states
             cacheEndStatesFor(against, with, 1.0, cache);
-            System.out.println("END STATES");
-            for(int i=0;i<cache.size();i++){
-                State state = cache.get(i);
-                System.out.println("{"+state.attacker+","+state.defender+","+state.prob+"}");
-            } 
             //calculated the expected loss over the end states
             cachedExpectedLossForWin[with-1][against-1] = cache.stream()
                     .filter(s -> s.attacker > 0)
@@ -100,14 +94,8 @@ public class BattlePhaseEstimator {
         if(!(cachedExpectedDamageWhenLost[with-1][against-1]>0.0)){
             //generates if value isn't cached
             List<State> cache = new ArrayList<>();
-            System.out.println("MARKOV CHAIN");
             //calculate end states from initial states
             cacheEndStatesFor(against, with, 1.0, cache);
-            System.out.println("END STATES");
-            for(int i=0;i<cache.size();i++){
-                State state = cache.get(i);
-                System.out.println("{"+state.attacker+","+state.defender+","+state.prob+"}");
-            } 
             //calculated the expected loss over the end states
             cachedExpectedDamageWhenLost[with-1][against-1] = cache.stream()
                     .filter(s -> s.defender > 0)
@@ -119,17 +107,15 @@ public class BattlePhaseEstimator {
 
     private static void cacheEndStatesFor(int against, int with, double prob, List<State> cache){
         if(against<0 || with<0){return;}
-        System.out.println("{"+with+","+against+"}");
 
         //add to the list of end states
         if(against==0 || with==0){
-            System.out.println("{"+with+","+against+","+prob+"}"+" ADDED");
             cache.add(new BattlePhaseEstimator.State(with, against, prob));
         }
         else{
             //maximum defender 2, attacker 3 troops
             if(against>=2 && with>=3){
-                //attacker looses one troop
+                //attacker looses two troop
                 cacheEndStatesFor(against-2, with, prob * transitionProbabilities[2][1][0], cache);
                 //both loose one troop
                 cacheEndStatesFor(against-1, with-1, prob * transitionProbabilities[2][1][1], cache);
@@ -169,14 +155,5 @@ public class BattlePhaseEstimator {
                 cacheEndStatesFor(against, with-2, prob * transitionProbabilities[1][1][0], cache);
             }
         }
-    }
-    public static void main(String[] args){
-        long startTime = System.nanoTime();
-        System.out.println("EXPECTED LOSS: "+BattlePhaseEstimator.expectedLoss(3,3));
-        System.out.println("time: "+(double)(System.nanoTime()-startTime)/1_000_000_000.0+"ms");
-        startTime = System.nanoTime();
-        System.out.println("EXPECTED LOSS: "+BattlePhaseEstimator.expectedLoss(3,3));
-        System.out.println("time: "+(double)(System.nanoTime()-startTime)/1_000_000_000.0+"ms");
-        System.out.println("EXPECTED LOSS: "+BattlePhaseEstimator.expectedLoss(5,3));
     }
 }
