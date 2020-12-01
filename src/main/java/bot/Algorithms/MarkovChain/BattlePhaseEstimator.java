@@ -48,6 +48,7 @@ public class BattlePhaseEstimator {
     };
 
     private static double[][] cachedExpectedLossForWin = new double[10][10];
+    private static double[][] cachedExpectedDamageWhenLost = new double[10][10];
 
     private static class State{
         public double prob;
@@ -71,7 +72,7 @@ public class BattlePhaseEstimator {
     /*
     * Expected number of troops lost for a win
     */
-    public static double expectedLoss(int against, int with){
+    public static double expectedLossForWin(int against, int with){
         if(!(cachedExpectedLossForWin[with-1][against-1]>0.0)){
             //generates if value isn't cached
             List<State> cache = new ArrayList<>();
@@ -90,6 +91,30 @@ public class BattlePhaseEstimator {
                     .sum();
         }
         return cachedExpectedLossForWin[with-1][against-1];
+    }
+
+    /*
+    * Expected number of troops defeated despite loosing the battle
+    */
+    public static double expectedDamageWhenLost(int against, int with){
+        if(!(cachedExpectedDamageWhenLost[with-1][against-1]>0.0)){
+            //generates if value isn't cached
+            List<State> cache = new ArrayList<>();
+            System.out.println("MARKOV CHAIN");
+            //calculate end states from initial states
+            cacheEndStatesFor(against, with, 1.0, cache);
+            System.out.println("END STATES");
+            for(int i=0;i<cache.size();i++){
+                State state = cache.get(i);
+                System.out.println("{"+state.attacker+","+state.defender+","+state.prob+"}");
+            } 
+            //calculated the expected loss over the end states
+            cachedExpectedDamageWhenLost[with-1][against-1] = cache.stream()
+                    .filter(s -> s.defender > 0)
+                    .mapToDouble(s -> (against-s.defender)*s.prob)
+                    .sum();
+        }
+        return cachedExpectedDamageWhenLost[with-1][against-1];
     }
 
     private static void cacheEndStatesFor(int against, int with, double prob, List<State> cache){
