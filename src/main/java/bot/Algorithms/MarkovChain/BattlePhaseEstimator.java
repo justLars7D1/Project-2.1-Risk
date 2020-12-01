@@ -47,7 +47,7 @@ public class BattlePhaseEstimator {
         }
     };
 
-    private static double[][] cachedExpectedLoss = new double[10][10];
+    private static double[][] cachedExpectedLossForWin = new double[10][10];
 
     private static class State{
         public double prob;
@@ -72,7 +72,7 @@ public class BattlePhaseEstimator {
     * Expected number of troops lost for a win
     */
     public static double expectedLoss(int against, int with){
-        if(!(cachedExpectedLoss[with-1][against-1]>0.0)){
+        if(!(cachedExpectedLossForWin[with-1][against-1]>0.0)){
             //generates if value isn't cached
             List<State> cache = new ArrayList<>();
             System.out.println("MARKOV CHAIN");
@@ -84,11 +84,12 @@ public class BattlePhaseEstimator {
                 System.out.println("{"+state.attacker+","+state.defender+","+state.prob+"}");
             } 
             //calculated the expected loss over the end states
-            cachedExpectedLoss[with-1][against-1] = cache.stream()
-                    .mapToDouble(s->(with-s.attacker)*s.prob)
+            cachedExpectedLossForWin[with-1][against-1] = cache.stream()
+                    .filter(s -> s.attacker > 0)
+                    .mapToDouble(s -> (with-s.attacker)*s.prob)
                     .sum();
         }
-        return cachedExpectedLoss[with-1][against-1];
+        return cachedExpectedLossForWin[with-1][against-1];
     }
 
     private static void cacheEndStatesFor(int against, int with, double prob, List<State> cache){
