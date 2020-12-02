@@ -106,6 +106,8 @@ public class DQNNBot extends RiskBot {
 
         System.out.println(qValues);
 
+        int value = this.getNumCountriesOwned();
+
         // Decide on taking the action or not
         boolean takeAction = qValues.get(1) > qValues.get(0);
         if (takeAction) {
@@ -117,7 +119,6 @@ public class DQNNBot extends RiskBot {
 
         if (trainingEnabled) {
             int reward = getNumCountriesOwned() - numCountriesBeforeAttack;
-
             // Train the bot
         }
 
