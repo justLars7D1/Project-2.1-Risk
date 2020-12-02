@@ -15,7 +15,7 @@ public class Test {
         m.addLayer(2, new Sigmoid());
         m.addLayer(1, new Sigmoid());
 
-        m.compile(new MSE(), new SGD(1), new String[] {"loss", "accuracy"});
+        m.compile(new MSE(), new SGD(1));
 
 //        XOR:
 //        0	0	0
@@ -43,8 +43,7 @@ public class Test {
         output.add(o3);
         output.add(o4);
 
-        MetricCollector collector = m.train(input.toArray(new Vector[0]), output.toArray(new Vector[0]), 1, 1000, 1);
-        collector.saveToFile("D:\\Projects\\JavaAlgorithms\\src\\MachineLearning\\NeuralNetwork\\test.txt");
+        m.train(input.toArray(new Vector[0]), output.toArray(new Vector[0]), 1, 1000, 1);
 
         m.gradientChecking(input.get(0), output.get(0));
 

@@ -1,5 +1,6 @@
 package gameelements.player;
 
+import bot.MachineLearning.NeuralNetwork.Optimizers.Adam;
 import gameelements.board.Country;
 
 import gameelements.game.Game;
@@ -51,6 +52,10 @@ public class DQNNBot extends RiskBot {
         estimatorNetwork.addLayer(3, new LeakyReLu());
         estimatorNetwork.addLayer(3, new LeakyReLu());
         estimatorNetwork.addLayer(1, new Pass());
+
+        //TODO: Add loss functions
+        targetNetwork.compile(null, new Adam(0.001, 0.9, 0.999));
+        estimatorNetwork.compile(null, new Adam(0.001, 0.9, 0.999));
     }
 
     @Override

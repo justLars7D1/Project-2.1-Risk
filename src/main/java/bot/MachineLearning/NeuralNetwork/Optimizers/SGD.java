@@ -28,8 +28,6 @@ public class SGD extends Optimizer {
 
             l.getRepresentation().add(weightGradients);
             l.getBias().add(biasGradients);
-
-
         }
     }
 
