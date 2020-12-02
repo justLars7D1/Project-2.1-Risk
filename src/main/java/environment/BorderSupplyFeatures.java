@@ -4,6 +4,7 @@ import gameelements.board.Board;
 import gameelements.game.Game;
 import gameelements.board.Country;
 import gameelements.player.Player;
+import settings.Settings;
 
 import java.util.*;
 
@@ -57,9 +58,8 @@ public class BorderSupplyFeatures {
      * @return returns double proportion of owned territories
      */
     public static double getTerritoriesFeature(Player player){
-        int total_territories = 42;
-        double result = (double) player.getNumCountriesOwned() / total_territories;
-        return result;
+        int total_territories = Settings.countries.length;
+        return (double) player.getNumCountriesOwned() / total_territories;
     }
 
     /**

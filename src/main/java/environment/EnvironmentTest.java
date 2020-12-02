@@ -10,6 +10,8 @@ public class EnvironmentTest {
         environment.finishDistributionPhase();
         System.out.println("--- Placement ---");
         environment.finishPlacementPhase();
+        System.out.println("--- Attack ---");
+        environment.train(2, true);
     }
 
 }
