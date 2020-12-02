@@ -35,7 +35,7 @@ public class ModelTest extends Model {
         layers.get(1).getBias().set(0, .60);
         layers.get(1).getBias().set(1, .60);
 
-        m.compile(new MSE(), new SGD(0.5), new String[] {"loss"});
+        m.compile(new MSE(), new SGD(0.5));
 
         Vector[] xs = {new Vector(0.05, 0.10)};
         Vector[] ys = {new Vector(0.01, 0.99)};

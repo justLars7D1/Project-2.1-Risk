@@ -60,8 +60,12 @@ public class GameEnvironment {
         System.out.println(game.getGameBoard());
     }
 
-    public void train() {
-        
+    /**
+     * Approach: Freeze one network and train the other one
+     * @param maxTurns The maximum number of turns before quitting the training
+     */
+    public void train(int maxTurns) {
+
     }
 
     /**

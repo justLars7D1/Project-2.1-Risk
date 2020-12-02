@@ -1,6 +1,8 @@
 package gameelements.player;
 
+import bot.MachineLearning.NeuralNetwork.Optimizers.Adam;
 import gameelements.board.Country;
+
 import gameelements.game.Game;
 
 import bot.MachineLearning.NeuralNetwork.Model;
@@ -9,6 +11,8 @@ import bot.MachineLearning.NeuralNetwork.Activations.*;
 public class DQNNBot extends RiskBot {
     /*
     * Double Q-Learning (Hasselt, 2010)
+    *
+    * Y = R[t+1] + gamma * Q'(S[t+1], argmax(a) Q(S[t+1], a)) 
     *
     * The weights of the online network are transfered to the
     * target network every n steps.
@@ -28,6 +32,10 @@ public class DQNNBot extends RiskBot {
     /**
      * algorithm and strategies for our risk bot
      */
+    public DQNNBot(int id, int numTroopsInInventory, Game game) {
+        this(id, numTroopsInInventory, game, 5, 1);
+    }
+
     public DQNNBot(int id, int numTroopsInInventory, Game game, int numFeatures, int lag) {
         super(id, numTroopsInInventory, game);
 
@@ -35,15 +43,19 @@ public class DQNNBot extends RiskBot {
 
         // target approximation
         targetNetwork = new Model(numFeatures);
-        targetNetwork.addLayer(3, new ReLu());
-        targetNetwork.addLayer(3, new ReLu());
-        targetNetwork.addLayer(1, new Sigmoid());
+        targetNetwork.addLayer(3, new LeakyReLu());
+        targetNetwork.addLayer(3, new LeakyReLu());
+        targetNetwork.addLayer(1, new Pass());
 
         // dynamic network
         estimatorNetwork = new Model(numFeatures);
-        estimatorNetwork.addLayer(3, new ReLu());
-        estimatorNetwork.addLayer(3, new ReLu());
-        estimatorNetwork.addLayer(1, new Sigmoid());
+        estimatorNetwork.addLayer(3, new LeakyReLu());
+        estimatorNetwork.addLayer(3, new LeakyReLu());
+        estimatorNetwork.addLayer(1, new Pass());
+
+        //TODO: Add loss functions
+        targetNetwork.compile(null, new Adam(0.001, 0.9, 0.999));
+        estimatorNetwork.compile(null, new Adam(0.001, 0.9, 0.999));
     }
 
     @Override
