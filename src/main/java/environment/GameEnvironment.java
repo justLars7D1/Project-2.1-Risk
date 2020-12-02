@@ -3,6 +3,7 @@ package environment;
 import gameelements.game.Game;
 import gameelements.phases.BattlePhase;
 import gameelements.phases.GamePhase;
+import gameelements.phases.data.AttackEventData;
 import gameelements.phases.data.DistributionEventData;
 import gameelements.phases.data.PlacementEventData;
 import gameelements.player.PlayerType;
@@ -65,7 +66,13 @@ public class GameEnvironment {
      * @param maxTurns The maximum number of turns before quitting the training
      */
     public void train(int maxTurns) {
-
+        int turnCounter = 0;
+        while (turnCounter < maxTurns) { // TODO: Or won the game
+            while (game.getBattlePhase().equals(BattlePhase.ATTACK)) {
+                game.onGameEvent(new AttackEventData(-1, -1));
+            }
+            turnCounter++;
+        }
     }
 
     /**

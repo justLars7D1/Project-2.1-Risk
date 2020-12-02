@@ -8,6 +8,10 @@ import gameelements.game.Game;
 import bot.MachineLearning.NeuralNetwork.Model;
 import bot.MachineLearning.NeuralNetwork.Activations.*;
 
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+
 public class DQNNBot extends RiskBot {
     /*
     * Double Q-Learning (Hasselt, 2010)
@@ -68,21 +72,64 @@ public class DQNNBot extends RiskBot {
     public void onPlacementEvent(Country country, int numTroops) {
         // Put all the code to pick the right action here
         super.onPlacementEvent(country, numTroops);
-        // Add code for deciding end of event phase here (finish attack phase method)
+
+        // Here we check if the phase is over, and if so, we compute which countries we could attack from
+        computeCountriesToAttackFrom();
     }
+
+    private List<List<Country>> countryFromToAttackPairs;
 
     @Override
     public void onAttackEvent(Country countryFrom, Country countryTo) {
-        // Put all the code to pick the right action here
+
+        // Select the current pair we could potentially attack from and to
+        List<Country> attackPair = countryFromToAttackPairs.get(0);
+        countryFrom = attackPair.get(0);
+        countryTo = attackPair.get(1);
+
+        // Run it through the DQNN and evaluate
+        System.out.println(attackPair);
+
+        // Decide on taking the action or not
         //super.onAttackEvent(countryFrom, countryTo);
-        // Add code for deciding end of event phase here (finish attack phase method)
+
+        // Code for deciding end of event phase here (finish attack phase method)
+        countryFromToAttackPairs.remove(attackPair);
+        updatePairList();
+
+        if (countryFromToAttackPairs.size() == 0) {
+            currentGame.nextBattlePhase();
+        }
+
     }
 
     @Override
     public void onFortifyEvent(Country countryFrom, Country countryTo, int numTroops) {
         // Put all the code to pick the right action here
-        //ssuper.onFortifyEvent(countryFrom, countryTo, numTroops);
+        // super.onFortifyEvent(countryFrom, countryTo, numTroops);
         // Add code for deciding end of event phase here (finish attack phase method)
+        return;
+    }
+
+    private void updatePairList() {
+        for (List<Country> attackPair: countryFromToAttackPairs) {
+            Country from = attackPair.get(0);
+            if (from.getNumSoldiers() == 1 || !countriesOwned.contains(from))
+                countryFromToAttackPairs.remove(attackPair);
+        }
+    }
+
+    private void computeCountriesToAttackFrom() {
+        countryFromToAttackPairs = new LinkedList<>();
+        for (Country c: countriesOwned) {
+            if (c.getNumSoldiers() > 1) {
+                for (Country n: c.getNeighboringCountries()) {
+                    if (!countriesOwned.contains(n)) {
+                        countryFromToAttackPairs.add(Arrays.asList(c, n));
+                    }
+                }
+            }
+        }
     }
 
 }
