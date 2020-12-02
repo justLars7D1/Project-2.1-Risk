@@ -22,7 +22,7 @@ public class Softmax implements Activation {
 
     @Override
     public Vector evalDerivative(Vector x) {
-
+        return null;
     }
 
     public static void main(String[] args) {

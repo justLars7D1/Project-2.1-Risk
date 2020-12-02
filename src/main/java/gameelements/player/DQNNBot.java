@@ -42,14 +42,14 @@ public class DQNNBot extends RiskBot {
 
         // target approximation
         targetNetwork = new Model(numFeatures);
-        targetNetwork.addLayer(3, new ReLu());
-        targetNetwork.addLayer(3, new ReLu());
+        targetNetwork.addLayer(3, new LeakyReLu());
+        targetNetwork.addLayer(3, new LeakyReLu());
         targetNetwork.addLayer(1, new Pass());
 
         // dynamic network
         estimatorNetwork = new Model(numFeatures);
-        estimatorNetwork.addLayer(3, new ReLu());
-        estimatorNetwork.addLayer(3, new ReLu());
+        estimatorNetwork.addLayer(3, new LeakyReLu());
+        estimatorNetwork.addLayer(3, new LeakyReLu());
         estimatorNetwork.addLayer(1, new Pass());
     }
 
