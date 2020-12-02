@@ -1,6 +1,9 @@
 package gameelements.player;
 
+import bot.Mathematics.LinearAlgebra.Vector;
+
 import bot.MachineLearning.NeuralNetwork.Optimizers.Adam;
+import environment.WolfFeatures;
 import gameelements.board.Country;
 
 import gameelements.game.Game;
@@ -81,6 +84,15 @@ public class DQNNBot extends RiskBot {
     }
 
     private List<List<Country>> countryFromToAttackPairs;
+
+    private Vector getAttackFeatures(Country countryFrom, Country countryTo){
+        // enemy troops susceptible due to threat on their country
+        double susceptible = WolfFeatures.averageThreatOn(countryTo);
+        // troops suitible to send into battle based on the threat they face
+        double suitible = WolfFeatures.averageThreatOn(countryFrom);
+        
+        return new Vector(suitible, susceptible);
+    }
 
     @Override
     public void onAttackEvent(Country countryFrom, Country countryTo) {
