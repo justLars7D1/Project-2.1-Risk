@@ -44,13 +44,13 @@ public class DQNNBot extends RiskBot {
         targetNetwork = new Model(numFeatures);
         targetNetwork.addLayer(3, new ReLu());
         targetNetwork.addLayer(3, new ReLu());
-        targetNetwork.addLayer(1, new Tanh(1.0));
+        targetNetwork.addLayer(1, new Pass());
 
         // dynamic network
         estimatorNetwork = new Model(numFeatures);
         estimatorNetwork.addLayer(3, new ReLu());
         estimatorNetwork.addLayer(3, new ReLu());
-        estimatorNetwork.addLayer(1, new Tanh(1.0)));
+        estimatorNetwork.addLayer(1, new Pass());
     }
 
     @Override
