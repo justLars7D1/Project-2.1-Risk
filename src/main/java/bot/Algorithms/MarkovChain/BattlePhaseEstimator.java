@@ -64,21 +64,6 @@ public class BattlePhaseEstimator {
         }
     };
 
-    private static double[][] cachedExpectedLossForWin = new double[10][10];
-    private static double[][] cachedExpectedDamageWhenLost = new double[10][10];
-
-    private static class State{
-        public double prob;
-        public int attacker;
-        public int defender;
-
-        public State(int attacker, int defender, double prob){
-            this.prob = prob;
-            this.attacker = attacker;
-            this.defender = defender;
-        }
-    }
-
     /*
     * Chance to win a territory by attacking continuously
     */
@@ -131,7 +116,7 @@ public class BattlePhaseEstimator {
             cacheEndStatesFor(against, with, 1.0, cache);
             //calculated the expected loss over the end states
             cachedExpectedLossForWin[with-1][against-1] = cache.stream()
-                    .filter(s -> s.attacker == 0)
+                    .filter(s -> s.defender == 0)
                     .mapToDouble(s -> (with-s.attacker)*s.prob)
                     .sum();
         }
@@ -149,7 +134,7 @@ public class BattlePhaseEstimator {
             cacheEndStatesFor(against, with, 1.0, cache);
             //calculated the expected loss over the end states
             cachedExpectedDamageWhenLost[with-1][against-1] = cache.stream()
-                    .filter(s -> s.defender == 0)
+                    .filter(s -> s.attacker == 0)
                     .mapToDouble(s -> (against-s.defender)*s.prob)
                     .sum();
         }
