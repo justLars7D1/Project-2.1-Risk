@@ -7,6 +7,23 @@ import java.util.*;
 */
 public class BattlePhaseEstimator {
 
+    private static class State{
+        public double prob;
+        public int attacker;
+        public int defender;
+
+        public State(int attacker, int defender, double prob){
+            this.prob = prob;
+            this.attacker = attacker;
+            this.defender = defender;
+        }
+    }
+
+    private static double[][] cachedExpectedLoss = new double[10][10];
+    private static double[][] cachedExpectedDamage = new double[10][10];
+    private static double[][] cachedExpectedLossForWin = new double[10][10];
+    private static double[][] cachedExpectedDamageWhenLost = new double[10][10];
+
     /*
     * i: number of attacking troops
     * j: number of defending troops
@@ -47,26 +64,45 @@ public class BattlePhaseEstimator {
         }
     };
 
-    private static double[][] cachedExpectedLossForWin = new double[10][10];
-    private static double[][] cachedExpectedDamageWhenLost = new double[10][10];
-
-    private static class State{
-        public double prob;
-        public int attacker;
-        public int defender;
-
-        public State(int attacker, int defender, double prob){
-            this.prob = prob;
-            this.attacker = attacker;
-            this.defender = defender;
-        }
-    }
-
     /*
     * Chance to win a territory by attacking continuously
     */
     public static double winChance(int against, int with){
         return attackerWins[against-1][with-1];
+    }
+
+    /*
+    * Expected number of troops lost in a battle
+    */
+    public static double expectedLoss(int against, int with){
+        if(!(cachedExpectedLoss[with-1][against-1]>0.0)){
+            //generates if value isn't cached
+            List<State> cache = new ArrayList<>();
+            //calculate end states from initial states
+            cacheEndStatesFor(against, with, 1.0, cache);
+            //calculated the expected loss over the end states
+            cachedExpectedLoss[with-1][against-1] = cache.stream()
+                    .mapToDouble(s -> (with-s.attacker)*s.prob)
+                    .sum();
+        }
+        return cachedExpectedLoss[with-1][against-1];
+    }
+
+    /*
+    * Expected number of oponent troops defeated in a battle
+    */
+    public static double expectedDamage(int against, int with){
+        if(!(cachedExpectedDamage[with-1][against-1]>0.0)){
+            //generates if value isn't cached
+            List<State> cache = new ArrayList<>();
+            //calculate end states from initial states
+            cacheEndStatesFor(against, with, 1.0, cache);
+            //calculated the expected loss over the end states
+            cachedExpectedDamage[with-1][against-1] = cache.stream()
+                    .mapToDouble(s -> (against-s.defender)*s.prob)
+                    .sum();
+        }
+        return cachedExpectedDamage[with-1][against-1];
     }
 
     /*
@@ -80,7 +116,7 @@ public class BattlePhaseEstimator {
             cacheEndStatesFor(against, with, 1.0, cache);
             //calculated the expected loss over the end states
             cachedExpectedLossForWin[with-1][against-1] = cache.stream()
-                    .filter(s -> s.attacker > 0)
+                    .filter(s -> s.attacker == 0)
                     .mapToDouble(s -> (with-s.attacker)*s.prob)
                     .sum();
         }
@@ -98,7 +134,7 @@ public class BattlePhaseEstimator {
             cacheEndStatesFor(against, with, 1.0, cache);
             //calculated the expected loss over the end states
             cachedExpectedDamageWhenLost[with-1][against-1] = cache.stream()
-                    .filter(s -> s.defender > 0)
+                    .filter(s -> s.defender == 0)
                     .mapToDouble(s -> (against-s.defender)*s.prob)
                     .sum();
         }
