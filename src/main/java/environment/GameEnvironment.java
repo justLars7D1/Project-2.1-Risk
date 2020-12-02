@@ -7,6 +7,7 @@ import gameelements.phases.data.AttackEventData;
 import gameelements.phases.data.DistributionEventData;
 import gameelements.phases.data.FortifyEventData;
 import gameelements.phases.data.PlacementEventData;
+import gameelements.player.DQNNBot;
 import gameelements.player.PlayerType;
 
 import java.util.HashMap;
@@ -95,6 +96,11 @@ public class GameEnvironment {
         }
 
         System.out.println(game.getGameBoard());
+
+        System.out.println("Phase: " + game.getGamePhase());
+
+        System.out.println("Last network of current player:\n");
+        System.out.println(((DQNNBot) game.getCurrentPlayer()).getEstimatorNetwork());
 
     }
 

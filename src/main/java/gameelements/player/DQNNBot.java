@@ -239,4 +239,7 @@ public class DQNNBot extends RiskBot {
         }
     }
 
+    public Model getEstimatorNetwork() {
+        return estimatorNetwork;
+    }
 }
