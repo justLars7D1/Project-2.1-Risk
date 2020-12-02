@@ -13,6 +13,7 @@ import javafx.scene.layout.Border;
 import bot.Algorithms.MarkovChain.BattlePhaseEstimator;
 import bot.MachineLearning.NeuralNetwork.Model;
 import bot.MachineLearning.NeuralNetwork.Activations.*;
+import bot.MachineLearning.NeuralNetwork.Losses.MSE;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -68,9 +69,8 @@ public class DQNNBot extends RiskBot {
         estimatorNetwork.addLayer(3, new LeakyReLu());
         estimatorNetwork.addLayer(2, new Pass());
 
-        //TODO: Add loss functions
-        targetNetwork.compile(null, new RMSProp(0.001, 0.9));
-        estimatorNetwork.compile(null, new RMSProp(0.001, 0.9));
+        targetNetwork.compile(new MSE(), new RMSProp(0.001, 0.9));
+        estimatorNetwork.compile(new MSE(), new RMSProp(0.001, 0.9));
     }
 
     @Override
