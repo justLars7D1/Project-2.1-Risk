@@ -47,7 +47,7 @@ public class DQNNBot extends RiskBot {
      * algorithm and strategies for our risk bot
      */
     public DQNNBot(int id, int numTroopsInInventory, Game game) {
-        this(id, numTroopsInInventory, game, 12, 1);
+        this(id, numTroopsInInventory, game, 8, 1);
     }
 
     public DQNNBot(int id, int numTroopsInInventory, Game game, int numFeatures, int lag) {
@@ -57,15 +57,15 @@ public class DQNNBot extends RiskBot {
 
         // target approximation
         targetNetwork = new Model(numFeatures);
+        targetNetwork.addLayer(6, new LeakyReLu());
         targetNetwork.addLayer(3, new LeakyReLu());
-        targetNetwork.addLayer(3, new LeakyReLu());
-        targetNetwork.addLayer(1, new Pass());
+        targetNetwork.addLayer(2, new Pass());
 
         // dynamic network
         estimatorNetwork = new Model(numFeatures);
+        estimatorNetwork.addLayer(6, new LeakyReLu());
         estimatorNetwork.addLayer(3, new LeakyReLu());
-        estimatorNetwork.addLayer(3, new LeakyReLu());
-        estimatorNetwork.addLayer(1, new Pass());
+        estimatorNetwork.addLayer(2, new Pass());
 
         //TODO: Add loss functions
         targetNetwork.compile(null, new RMSProp(0.001, 0.9));
@@ -88,6 +88,56 @@ public class DQNNBot extends RiskBot {
     }
 
     private List<List<Country>> countryFromToAttackPairs;
+
+    @Override
+    public void onAttackEvent(Country countryFrom, Country countryTo) {
+
+        // Select the current pair we could potentially attack from and to
+        List<Country> attackPair = countryFromToAttackPairs.get(0);
+        countryFrom = attackPair.get(0);
+        countryTo = attackPair.get(1);
+
+        int numCountriesBeforeAttack = getNumCountriesOwned();
+
+        // Run it through the DQNN and evaluate
+        Vector features = getPlayerFeatures(countryFrom, countryTo);
+        Vector qValues = estimatorNetwork.evaluate(features);
+
+        System.out.println(qValues);
+
+        // Decide on taking the action or not
+        boolean takeAction = qValues.get(1) > qValues.get(0);
+        if (takeAction) {
+            super.onAttackEvent(countryFrom, countryTo);
+            System.out.println("Attacked from " + countryFrom.getName() + " to " + countryTo.getName());
+            System.out.println("Stats from troops: " + countryFrom.getNumSoldiers());
+            System.out.println("Stats to troops: " + countryTo.getNumSoldiers());
+        }
+
+        if (trainingEnabled) {
+            int reward = getNumCountriesOwned() - numCountriesBeforeAttack;
+
+            // Train the bot
+        }
+
+        // Code for deciding end of event phase here (finish attack phase method)
+        countryFromToAttackPairs.remove(attackPair);
+        updatePairList();
+
+        if (countryFromToAttackPairs.size() == 0) {
+            System.out.println("Test");
+            currentGame.nextBattlePhase();
+        }
+
+    }
+
+    @Override
+    public void onFortifyEvent(Country countryFrom, Country countryTo, int numTroops) {
+        // Put all the code to pick the right action here
+        // super.onFortifyEvent(countryFrom, countryTo, numTroops);
+        // Add code for deciding end of event phase here (finish attack phase method)
+        return;
+    }
 
     private Vector getCountryFeatures(Country countryFrom, Country countryTo){
         // enemy troops susceptible due to threat on their country
@@ -137,52 +187,6 @@ public class DQNNBot extends RiskBot {
         double averageBSR = BorderSupplyFeatures.getAverageBSR(currentGame);
 
         return new Vector(suitible, susceptible, averageBSR, ownArmies, ownTerritories, ownHinterland, enemyArmies, enemyTerritories, enemyHinterland, enemyReinforcement, bestEnemy);
-    }
-
-    @Override
-    public void onAttackEvent(Country countryFrom, Country countryTo) {
-
-        // Select the current pair we could potentially attack from and to
-        List<Country> attackPair = countryFromToAttackPairs.get(0);
-        countryFrom = attackPair.get(0);
-        countryTo = attackPair.get(1);
-
-        // Run it through the DQNN and evaluate
-
-        int numCountriesBeforeAttack = getNumCountriesOwned();
-
-        // Decide on taking the action or not
-        super.onAttackEvent(countryFrom, countryTo);
-
-        System.out.println("Attacked from " + countryFrom.getName() + " to " + countryTo.getName());
-        System.out.println("Stats from troops: " + countryFrom.getNumSoldiers());
-        System.out.println("Stats to troops: " + countryTo.getNumSoldiers());
-
-        if (trainingEnabled) {
-            int reward = getNumCountriesOwned() - numCountriesBeforeAttack;
-
-            // Train the bot
-        }
-
-
-
-        // Code for deciding end of event phase here (finish attack phase method)
-        countryFromToAttackPairs.remove(attackPair);
-        updatePairList();
-
-        if (countryFromToAttackPairs.size() == 0) {
-            System.out.println("Test");
-            currentGame.nextBattlePhase();
-        }
-
-    }
-
-    @Override
-    public void onFortifyEvent(Country countryFrom, Country countryTo, int numTroops) {
-        // Put all the code to pick the right action here
-        // super.onFortifyEvent(countryFrom, countryTo, numTroops);
-        // Add code for deciding end of event phase here (finish attack phase method)
-        return;
     }
 
     private void updatePairList() {
