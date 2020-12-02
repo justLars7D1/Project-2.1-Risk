@@ -116,6 +116,26 @@ public class DQNNBot extends RiskBot {
         return new Vector(suitible, susceptible, ownArmies, ownTerritories, enemyArmies, enemyTerritories, enemyReinforcement, bestEnemy);
     }
 
+    private Vector getFeatures(Country countryFrom, Country countryTo){
+        // troops suitible to send into battle based on the threat they face
+        double suitible = WolfFeatures.averageThreatOn(countryFrom);
+        // enemy troops susceptible due to threat on their country
+        double susceptible = WolfFeatures.averageThreatOn(countryTo);
+
+        double ownArmies = BorderSupplyFeatures.getArmiesFeature(currentGame.getGameBoard(), this);
+        double enemyArmies = BorderSupplyFeatures.getArmiesFeature(currentGame.getGameBoard(), countryTo.getOwner());
+
+        double bestEnemy = BorderSupplyFeatures.getBestEnemyFeature(currentGame);
+        double enemyReinforcement = BorderSupplyFeatures.getTotalEnemyReinforcement(currentGame);
+
+        double ownTerritories = BorderSupplyFeatures.getTerritoriesFeature(this);
+        double enemyTerritories = BorderSupplyFeatures.getTerritoriesFeature(countryTo.getOwner());
+
+        double averageBSR = BorderSupplyFeatures.getAverageBSR(currentGame);
+
+        return new Vector(suitible, susceptible, averageBSR, ownArmies, ownTerritories, enemyArmies, enemyTerritories, enemyReinforcement, bestEnemy);
+    }
+
     @Override
     public void onAttackEvent(Country countryFrom, Country countryTo) {
 
