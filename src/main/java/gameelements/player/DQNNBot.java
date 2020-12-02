@@ -4,11 +4,12 @@ import bot.MachineLearning.NeuralNetwork.Optimizers.RMSProp;
 import bot.Mathematics.LinearAlgebra.Vector;
 
 import bot.MachineLearning.NeuralNetwork.Optimizers.Adam;
+import environment.BorderSupplyFeatures;
 import environment.WolfFeatures;
 import gameelements.board.Country;
 
 import gameelements.game.Game;
-
+import javafx.scene.layout.Border;
 import bot.MachineLearning.NeuralNetwork.Model;
 import bot.MachineLearning.NeuralNetwork.Activations.*;
 
@@ -88,13 +89,31 @@ public class DQNNBot extends RiskBot {
 
     private List<List<Country>> countryFromToAttackPairs;
 
-    private Vector getAttackFeatures(Country countryFrom, Country countryTo){
+    private Vector getCountryFeatures(Country countryFrom, Country countryTo){
         // enemy troops susceptible due to threat on their country
         double susceptible = WolfFeatures.averageThreatOn(countryTo);
         // troops suitible to send into battle based on the threat they face
         double suitible = WolfFeatures.averageThreatOn(countryFrom);
-        
+
         return new Vector(suitible, susceptible);
+    }
+
+    private Vector getPlayerFeatures(Country countryFrom, Country countryTo){
+        // troops suitible to send into battle based on the threat they face
+        double suitible = WolfFeatures.averageThreatOn(countryFrom);
+        // enemy troops susceptible due to threat on their country
+        double susceptible = WolfFeatures.averageThreatOn(countryTo);
+
+        double ownArmies = BorderSupplyFeatures.getArmiesFeature(currentGame.getGameBoard(), this);
+        double enemyArmies = BorderSupplyFeatures.getArmiesFeature(currentGame.getGameBoard(), countryTo.getOwner());
+
+        double bestEnemy = BorderSupplyFeatures.getBestEnemyFeature(currentGame);
+        double enemyReinforcement = BorderSupplyFeatures.getTotalEnemyReinforcement(currentGame);
+
+        double ownTerritories = BorderSupplyFeatures.getTerritoriesFeature(this);
+        double enemyTerritories = BorderSupplyFeatures.getTerritoriesFeature(countryTo.getOwner());
+
+        return new Vector(suitible, susceptible, ownArmies, ownTerritories, enemyArmies, enemyTerritories, enemyReinforcement, bestEnemy);
     }
 
     @Override
