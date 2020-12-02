@@ -28,6 +28,8 @@ public class DQNNBot extends RiskBot {
     * predicts q values for a binary attack decision
     */
 
+    private final static boolean trainingEnabled = false;
+
     int n;
 
     Model targetNetwork;
@@ -93,6 +95,10 @@ public class DQNNBot extends RiskBot {
 
         // Decide on taking the action or not
         super.onAttackEvent(countryFrom, countryTo);
+
+        if (trainingEnabled) {
+            // Train the bot
+        }
 
         // Code for deciding end of event phase here (finish attack phase method)
         countryFromToAttackPairs.remove(attackPair);
