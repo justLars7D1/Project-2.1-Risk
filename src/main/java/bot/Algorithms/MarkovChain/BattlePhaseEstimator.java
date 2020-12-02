@@ -106,6 +106,40 @@ public class BattlePhaseEstimator {
     }
 
     /*
+    * Expected number of troops lost in a battle
+    */
+    public static double expectedLoss(int against, int with){
+        if(!(cachedExpectedLoss[with-1][against-1]>0.0)){
+            //generates if value isn't cached
+            List<State> cache = new ArrayList<>();
+            //calculate end states from initial states
+            cacheEndStatesFor(against, with, 1.0, cache);
+            //calculated the expected loss over the end states
+            cachedExpectedLoss[with-1][against-1] = cache.stream()
+                    .mapToDouble(s -> (with-s.attacker)*s.prob)
+                    .sum();
+        }
+        return cachedExpectedLoss[with-1][against-1];
+    }
+
+    /*
+    * Expected number of oponent troops defeated in a battle
+    */
+    public static double expectedDamage(int against, int with){
+        if(!(cachedExpectedDamage[with-1][against-1]>0.0)){
+            //generates if value isn't cached
+            List<State> cache = new ArrayList<>();
+            //calculate end states from initial states
+            cacheEndStatesFor(against, with, 1.0, cache);
+            //calculated the expected loss over the end states
+            cachedExpectedDamage[with-1][against-1] = cache.stream()
+                    .mapToDouble(s -> (against-s.defender)*s.prob)
+                    .sum();
+        }
+        return cachedExpectedDamage[with-1][against-1];
+    }
+
+    /*
     * Expected number of troops lost for a win
     */
     public static double expectedLossForWin(int against, int with){
