@@ -10,6 +10,7 @@ import gameelements.board.Country;
 
 import gameelements.game.Game;
 import javafx.scene.layout.Border;
+import bot.Algorithms.MarkovChain.BattlePhaseEstimator;
 import bot.MachineLearning.NeuralNetwork.Model;
 import bot.MachineLearning.NeuralNetwork.Activations.*;
 
@@ -145,7 +146,12 @@ public class DQNNBot extends RiskBot {
         // troops suitible to send into battle based on the threat they face
         double suitible = WolfFeatures.averageThreatOn(countryFrom);
 
-        return new Vector(suitible, susceptible);
+        // expected number of troops lost in battle
+        double expectedLoss = BattlePhaseEstimator.expectedLoss(countryTo.getNumSoldiers(), countryFrom.getNumSoldiers());
+        // expected number of oponent troops defeated in a battle
+        double expectedDamage = BattlePhaseEstimator.expectedDamage(countryTo.getNumSoldiers(), countryFrom.getNumSoldiers());
+
+        return new Vector(suitible, susceptible, expectedLoss, expectedDamage);
     }
 
     private Vector getPlayerFeatures(Country countryFrom, Country countryTo){
