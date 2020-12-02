@@ -1,5 +1,6 @@
 package gameelements.player;
 
+import bot.MachineLearning.NeuralNetwork.Optimizers.RMSProp;
 import bot.Mathematics.LinearAlgebra.Vector;
 
 import bot.MachineLearning.NeuralNetwork.Optimizers.Adam;
@@ -33,6 +34,8 @@ public class DQNNBot extends RiskBot {
 
     private final static boolean trainingEnabled = false;
 
+    private final static double discountFactor = 0.8;
+
     int n;
 
     Model targetNetwork;
@@ -43,7 +46,7 @@ public class DQNNBot extends RiskBot {
      * algorithm and strategies for our risk bot
      */
     public DQNNBot(int id, int numTroopsInInventory, Game game) {
-        this(id, numTroopsInInventory, game, 5, 1);
+        this(id, numTroopsInInventory, game, 12, 1);
     }
 
     public DQNNBot(int id, int numTroopsInInventory, Game game, int numFeatures, int lag) {
@@ -64,8 +67,8 @@ public class DQNNBot extends RiskBot {
         estimatorNetwork.addLayer(1, new Pass());
 
         //TODO: Add loss functions
-        targetNetwork.compile(null, new Adam(0.001, 0.9, 0.999));
-        estimatorNetwork.compile(null, new Adam(0.001, 0.9, 0.999));
+        targetNetwork.compile(null, new RMSProp(0.001, 0.9));
+        estimatorNetwork.compile(null, new RMSProp(0.001, 0.9));
     }
 
     @Override
@@ -103,14 +106,23 @@ public class DQNNBot extends RiskBot {
         countryTo = attackPair.get(1);
 
         // Run it through the DQNN and evaluate
-        System.out.println(countryFromToAttackPairs);
+
+        int numCountriesBeforeAttack = getNumCountriesOwned();
 
         // Decide on taking the action or not
         super.onAttackEvent(countryFrom, countryTo);
 
+        System.out.println("Attacked from " + countryFrom.getName() + " to " + countryTo.getName());
+        System.out.println("Stats from troops: " + countryFrom.getNumSoldiers());
+        System.out.println("Stats to troops: " + countryTo.getNumSoldiers());
+
         if (trainingEnabled) {
+            int reward = getNumCountriesOwned() - numCountriesBeforeAttack;
+
             // Train the bot
         }
+
+
 
         // Code for deciding end of event phase here (finish attack phase method)
         countryFromToAttackPairs.remove(attackPair);
