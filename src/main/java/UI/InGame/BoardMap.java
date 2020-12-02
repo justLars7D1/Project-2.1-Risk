@@ -398,7 +398,6 @@ public class BoardMap {
                         updateInfo(s);
                         updateAllCountries();
                         updateWarning();
-                        updateCountryLabel(findCountry(s));
                     }
                 }
             });
@@ -487,6 +486,7 @@ public class BoardMap {
                 for (SVGPath s : listOfPaths) {
                     if (findCountry(s) == c.getID()) {
                         s.setStyle("-fx-fill: " + getPlayerColor(c.getOwner().getId()));
+                        updateCountryLabel(findCountry(s));
                     }
                 }
             }
