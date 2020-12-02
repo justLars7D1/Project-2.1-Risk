@@ -131,9 +131,12 @@ public class DQNNBot extends RiskBot {
         double ownTerritories = BorderSupplyFeatures.getTerritoriesFeature(this);
         double enemyTerritories = BorderSupplyFeatures.getTerritoriesFeature(countryTo.getOwner());
 
+        double ownHinterland = WolfFeatures.hinterland(this);
+        double enemyHinterland = WolfFeatures.hinterland(countryTo.getOwner());
+
         double averageBSR = BorderSupplyFeatures.getAverageBSR(currentGame);
 
-        return new Vector(suitible, susceptible, averageBSR, ownArmies, ownTerritories, enemyArmies, enemyTerritories, enemyReinforcement, bestEnemy);
+        return new Vector(suitible, susceptible, averageBSR, ownArmies, ownTerritories, ownHinterland, enemyArmies, enemyTerritories, enemyHinterland, enemyReinforcement, bestEnemy);
     }
 
     @Override
