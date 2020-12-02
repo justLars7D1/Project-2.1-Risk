@@ -64,6 +64,21 @@ public class BattlePhaseEstimator {
         }
     };
 
+    private static double[][] cachedExpectedLossForWin = new double[10][10];
+    private static double[][] cachedExpectedDamageWhenLost = new double[10][10];
+
+    private static class State{
+        public double prob;
+        public int attacker;
+        public int defender;
+
+        public State(int attacker, int defender, double prob){
+            this.prob = prob;
+            this.attacker = attacker;
+            this.defender = defender;
+        }
+    }
+
     /*
     * Chance to win a territory by attacking continuously
     */

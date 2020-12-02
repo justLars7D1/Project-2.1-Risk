@@ -29,7 +29,7 @@ public class Model implements Serializable {
         this.layers = new ArrayList<>();
     }
 
-    public void compile(Loss lossFunction, Optimizer optimizer, String[] metrics) {
+    public void compile(Loss lossFunction, Optimizer optimizer) {
         assert (lossFunction != null) && (optimizer != null) && (metrics != null);
         this.lossFunction = lossFunction;
         this.optimizer = optimizer;
@@ -91,22 +91,18 @@ public class Model implements Serializable {
         this.resetGradients();
     }
 
-    public MetricCollector train(Vector[] xs, Vector[] ys, int batchSize, int epochs, int verbose) {
+    public void train(Vector[] xs, Vector[] ys, int batchSize, int epochs, int verbose) {
         assert xs.length == ys.length;
         if (lossFunction == null || optimizer == null || metrics == null) {
             try {
                 throw new UncompiledModelException();
             } catch (UncompiledModelException e) {
-                return null;
+                return;
             }
         }
 
-        MetricCollector collector = new MetricCollector();
-        for (String metric: metrics) collector.enableMetric(metric);
-
         optimizer.init(this);
 
-        // TODO: Shuffling up to user
         TrainingBatch[] batches = TrainingBatch.generateUniformlyRandomBatches(xs, ys, batchSize);
         for (int i = 0; i < epochs; i++) {
             for (TrainingBatch batch: batches) {
@@ -123,23 +119,11 @@ public class Model implements Serializable {
                 this.optimizer.updateWeights(this);
                 this.resetGradients();
             }
-            updateMetrics(xs,ys, collector);
             if (verbose >= 1) {
                 // Iterate and print the metrics
-                System.out.print("Epoch " + (i+1) + "/" + epochs + ": ");
-                for (Map.Entry<String, List<Double>> metric: collector.getMetrics().entrySet()) {
-                    System.out.print(metric.getKey() + " = " + metric.getValue().get(metric.getValue().size()-1) + " ");
-                }
+                System.out.print("Epoch " + (i+1) + "/" + epochs);
                 System.out.println();
             }
-        }
-        return collector;
-    }
-
-    private void updateMetrics(Vector[] xs, Vector[] ys, MetricCollector collector) {
-        for (String metric: metrics) {
-            double metricVal = calculateMetricValue(metric, xs, ys);
-            collector.addToMetric(metric, metricVal);
         }
     }
 

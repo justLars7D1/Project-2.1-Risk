@@ -98,6 +98,18 @@ public class Board {
         return new ArrayList<>(nameToCountryMapping.values());
     }
 
+    /**
+     * Returns the total number of armies present on the board map
+     * @return Number of Armies on board map
+     */
+    public int getTotalNumArmies(){
+        int total_num_armies = 0;
+        for(Country country : getCountries()){
+            total_num_armies += country.getNumSoldiers();
+        }
+        return  total_num_armies;
+    }
+
     @Override
     public String toString() {
         StringBuilder res = new StringBuilder("Board\n");

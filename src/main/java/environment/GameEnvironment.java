@@ -1,8 +1,10 @@
 package environment;
 
 import gameelements.game.Game;
+import gameelements.phases.BattlePhase;
 import gameelements.phases.GamePhase;
 import gameelements.phases.data.DistributionEventData;
+import gameelements.phases.data.PlacementEventData;
 import gameelements.player.PlayerType;
 
 import java.util.HashMap;
@@ -51,8 +53,19 @@ public class GameEnvironment {
         System.out.println(game.getGameBoard());
     }
 
-    public void train() {
-        
+    public void finishPlacementPhase() {
+        while (game.getBattlePhase().equals(BattlePhase.PLACEMENT)) {
+            game.onGameEvent(new PlacementEventData(-1, 0));
+        }
+        System.out.println(game.getGameBoard());
+    }
+
+    /**
+     * Approach: Freeze one network and train the other one
+     * @param maxTurns The maximum number of turns before quitting the training
+     */
+    public void train(int maxTurns) {
+
     }
 
     /**
