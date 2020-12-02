@@ -6,10 +6,7 @@ import gameelements.phases.data.AttackEventData;
 import settings.BotSettings;
 import settings.Settings;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 public class RiskBot extends Player {
 
@@ -83,21 +80,19 @@ public class RiskBot extends Player {
             }
         }
 
-        // Place at most the number of troops that are left in the inventory
+        // Place at most the number of troops that are left in the inventory and make sure it places at least one troop
         numTroops = Math.min(numTroopsInInventory, Math.abs(troopDifference));
-
-        if (country == null) {
-            currentGame.nextBattlePhase();
+        if (numTroops == 0) {
+            numTroops = numTroopsInInventory;
         }
 
-        // Execute the action
-        super.onPlacementEvent(country, numTroops);
-
-        // Add code for deciding end of event phase here (finish placement phase method)
-        if (numTroopsInInventory == 0) {
+        if (country == null || numTroopsInInventory == 0) {
             currentGame.nextBattlePhase();
+        } else {
+            // Execute the action but bound the number of troops
+            numTroops = Math.min(numTroops, Settings.TROOPSLIMIT - country.getNumSoldiers());
+            super.onPlacementEvent(country, numTroops);
         }
-
     }
 
     @Override

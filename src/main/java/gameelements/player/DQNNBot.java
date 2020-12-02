@@ -90,7 +90,6 @@ public class DQNNBot extends RiskBot {
     public void onPlacementEvent(Country country, int numTroops) {
         // Put all the code to pick the right action here
         super.onPlacementEvent(country, numTroops);
-
         // Here we check if the phase is over, and if so, we compute which countries we could attack from
         computeCountriesToAttackFrom();
     }
@@ -99,6 +98,8 @@ public class DQNNBot extends RiskBot {
 
     @Override
     public void onAttackEvent(Country countryFrom, Country countryTo) {
+
+        System.out.println("Test");
 
         // Select the current pair we could potentially attack from and to
         List<Country> attackPair = countryFromToAttackPairs.get(0);
@@ -117,6 +118,7 @@ public class DQNNBot extends RiskBot {
 
         // Decide on taking the action or not
         boolean takeAction = qValues.get(1) > qValues.get(0);
+        System.out.println("Taking action: " + takeAction);
         if (takeAction) {
             super.onAttackEvent(countryFrom, countryTo);
             /*System.out.println("Attacked from " + countryFrom.getName() + " to " + countryTo.getName());
@@ -142,6 +144,8 @@ public class DQNNBot extends RiskBot {
         // Code for deciding end of event phase here (finish attack phase method)
         countryFromToAttackPairs.remove(attackPair);
         updatePairList();
+
+        System.out.println(countryFromToAttackPairs.size());
 
         if (countryFromToAttackPairs.size() == 0) {
             System.out.println("Test");

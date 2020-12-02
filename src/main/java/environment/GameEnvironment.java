@@ -74,21 +74,28 @@ public class GameEnvironment {
      */
     public void train(int maxTurns, boolean verbose) {
         int turnCounter = 0;
-        while (turnCounter < maxTurns*numPlayers) { // TODO: Or won the game
+        while (turnCounter < maxTurns*numPlayers && !game.getGamePhase().equals(GamePhase.VICTORY)) {
             System.out.println("-- Current Player: " + game.getCurrentPlayer() + " --");
-            while (game.getBattlePhase().equals(BattlePhase.ATTACK)) {
+            while (game.getBattlePhase().equals(BattlePhase.ATTACK) && !game.getGamePhase().equals(GamePhase.VICTORY)) {
                 game.onGameEvent(new AttackEventData(-1, -1));
             }
-            finishFortifyingPhase();
 
-            // Next player placement
-            finishPlacementPhase();
+            if (!game.getGamePhase().equals(GamePhase.VICTORY)) {
+                finishFortifyingPhase();
+
+                // Next player placement
+                finishPlacementPhase();
+
+            }
 
             if (verbose) {
                 System.out.println("Turn " + turnCounter + " completed");
             }
             turnCounter++;
         }
+
+        System.out.println(game.getGameBoard());
+
     }
 
     /**

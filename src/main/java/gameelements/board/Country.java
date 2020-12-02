@@ -91,13 +91,12 @@ public class Country {
 
     @Override
     public String toString() {
-        /*return "Country{" +
+        return "Country{" +
                 "name='" + name + '\'' +
                 ", iD=" + ID +
                 ", owner=" + owner +
                 ", numSoldiers=" + numSoldiers +
                 ", numNeighboringCountries=" + neighboringCountries.size() +
-                '}';*/
-        return String.valueOf(hashCode());
+                '}';
     }
 }
