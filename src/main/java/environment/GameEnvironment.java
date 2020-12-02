@@ -5,6 +5,7 @@ import gameelements.phases.BattlePhase;
 import gameelements.phases.GamePhase;
 import gameelements.phases.data.AttackEventData;
 import gameelements.phases.data.DistributionEventData;
+import gameelements.phases.data.FortifyEventData;
 import gameelements.phases.data.PlacementEventData;
 import gameelements.player.PlayerType;
 
@@ -51,14 +52,20 @@ public class GameEnvironment {
         while (game.getGamePhase().equals(GamePhase.DISTRIBUTION)) {
             game.onGameEvent(new DistributionEventData(-1));
         }
-        System.out.println(game.getGameBoard());
+        //System.out.println(game.getGameBoard());
     }
 
     public void finishPlacementPhase() {
         while (game.getBattlePhase().equals(BattlePhase.PLACEMENT)) {
             game.onGameEvent(new PlacementEventData(-1, 0));
         }
-        System.out.println(game.getGameBoard());
+        //System.out.println(game.getGameBoard());
+    }
+
+    public void finishFortifyingPhase() {
+        while (game.getBattlePhase().equals(BattlePhase.FORTIFYING)) {
+            game.onGameEvent(new FortifyEventData(-1, -1, 0));
+        }
     }
 
     /**
@@ -67,10 +74,15 @@ public class GameEnvironment {
      */
     public void train(int maxTurns, boolean verbose) {
         int turnCounter = 0;
-        while (turnCounter < maxTurns) { // TODO: Or won the game
+        while (turnCounter < maxTurns*numPlayers) { // TODO: Or won the game
+            System.out.println("-- Current Player: " + game.getCurrentPlayer() + " --");
             while (game.getBattlePhase().equals(BattlePhase.ATTACK)) {
                 game.onGameEvent(new AttackEventData(-1, -1));
             }
+            finishFortifyingPhase();
+
+            // Next player placement
+            finishPlacementPhase();
 
             if (verbose) {
                 System.out.println("Turn " + turnCounter + " completed");

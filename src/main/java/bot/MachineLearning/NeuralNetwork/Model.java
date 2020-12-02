@@ -111,6 +111,7 @@ public class Model implements Serializable {
                 for (int j = 0; j < batch.getSize(); j++) {
                     // Do a forward pass, gathering all the data we will need
                     this.forward(batchXs[j]);
+
                     // Compute the gradients and add them to the current gradient matrix
                     this.computeGradients(batchXs[j], batchYs[j]);
                 }
@@ -182,6 +183,36 @@ public class Model implements Serializable {
         }
     }
 
+    public void computeGradientsRL(Vector x, Vector y, Vector Y) {
+        Layer layerBefore = null;
+        Vector layerErrorBefore = null;
+        for (int i = layers.size()-1; i >= 0; i--) {
+            Layer currentLayer = layers.get(i);
+
+            Vector dJda;
+            if (layerBefore != null) {
+                Matrix layerWeights = layerBefore.getRepresentation();
+                // Calculate dJ/da, which equals the weight matrix (da/dz) times dJ/da (that was previously computed)
+                dJda = layerWeights.getTransposed().multiply(layerErrorBefore);
+            } else {
+                // Means we're at the final layer of the model right now
+                // First calculate dJ/da, where J is the loss function and a is the predicted y-value
+                dJda = lossFunction.evalDerivative(Y, y);
+            }
+
+            // Now calculate da/dz, which is the derivative of the activation function (g'(z))
+            Vector dadz = currentLayer.getActivation().evalDerivative(currentLayer.getOutputBeforeActivation());
+            Vector layerError = dJda.getMultiplied(dadz); // dJ/da * da/dz = dJ/dz
+            Matrix weightError = getLastLayerActivation(i, x).multiply(layerError.getTransposed()); // dJ/dz * dz/dw = dJ/dw
+            // Now add the correct errors to the weights and biases of this layer
+            currentLayer.getGradientSumBias().add(layerError); // dJ/dz = dJ/db
+            currentLayer.getGradientSumWeight().add(weightError.getTransposed());
+
+            layerErrorBefore = layerError;
+            layerBefore = currentLayer;
+        }
+    }
+
     private Matrix getLastLayerActivation(int i, Vector x) {
         return new Matrix((i == 0) ? x : layers.get(i-1).getOutputAfterActivation());
     }
@@ -193,7 +224,7 @@ public class Model implements Serializable {
         }
     }
 
-    private void resetGradients() {
+    public void resetGradients() {
         for (Layer l: layers) {
             l.resetGradients();
         }
@@ -204,6 +235,15 @@ public class Model implements Serializable {
         for (Layer l: layers) {
             currentOutput = l.evaluateTraining(currentOutput);
         }
+    }
+
+    public Vector forwardEvaluate(Vector x) {
+        Vector currentOutput = (Vector) x.clone();
+        for (Layer l: layers) {
+            currentOutput = l.evaluateTraining(currentOutput);
+        }
+
+        return layers.get(layers.size() - 1).getOutputAfterActivation();
     }
 
     public List<Vector> evaluate(List<Vector> input) {

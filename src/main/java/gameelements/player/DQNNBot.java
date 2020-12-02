@@ -1,5 +1,7 @@
 package gameelements.player;
 
+import bot.MachineLearning.NeuralNetwork.Losses.Loss;
+import bot.MachineLearning.NeuralNetwork.Optimizers.Optimizer;
 import bot.MachineLearning.NeuralNetwork.Optimizers.RMSProp;
 import bot.Mathematics.LinearAlgebra.Vector;
 
@@ -35,9 +37,13 @@ public class DQNNBot extends RiskBot {
     * predicts q values for a binary attack decision
     */
 
-    private final static boolean trainingEnabled = false;
+    private final static boolean trainingEnabled = true;
 
     private final static double discountFactor = 0.8;
+
+    Loss lossFunction = new MSE();
+    Optimizer optEst = new RMSProp(0.01, 0.9);
+    Optimizer optTarget = new RMSProp(0.01, 0.9);
 
     int n;
 
@@ -69,8 +75,9 @@ public class DQNNBot extends RiskBot {
         estimatorNetwork.addLayer(3, new LeakyReLu());
         estimatorNetwork.addLayer(2, new Pass());
 
-        targetNetwork.compile(new MSE(), new RMSProp(0.001, 0.9));
-        estimatorNetwork.compile(new MSE(), new RMSProp(0.001, 0.9));
+        targetNetwork.compile(lossFunction, optEst);
+        estimatorNetwork.compile(lossFunction, optTarget);
+
     }
 
     @Override
@@ -106,20 +113,30 @@ public class DQNNBot extends RiskBot {
 
         System.out.println(qValues);
 
-        int value = this.getNumCountriesOwned();
+        int valueBefore = this.getNumCountriesOwned();
 
         // Decide on taking the action or not
         boolean takeAction = qValues.get(1) > qValues.get(0);
         if (takeAction) {
             super.onAttackEvent(countryFrom, countryTo);
-            System.out.println("Attacked from " + countryFrom.getName() + " to " + countryTo.getName());
+            /*System.out.println("Attacked from " + countryFrom.getName() + " to " + countryTo.getName());
             System.out.println("Stats from troops: " + countryFrom.getNumSoldiers());
-            System.out.println("Stats to troops: " + countryTo.getNumSoldiers());
+            System.out.println("Stats to troops: " + countryTo.getNumSoldiers());*/
         }
 
+        int valueAfter = this.getNumCountriesOwned();
+
         if (trainingEnabled) {
+            optEst.init(estimatorNetwork);
+
             int reward = getNumCountriesOwned() - numCountriesBeforeAttack;
-            // Train the bot
+            Vector newFeatures = getPlayerFeatures(countryFrom, countryTo);
+            Vector qValuesNextState = estimatorNetwork.forwardEvaluate(newFeatures);
+            Vector Y = qValuesNextState.getScaled(discountFactor).getAdded(reward);
+            System.out.println(lossFunction.evaluate(Y, new Vector(valueBefore, valueAfter)));
+            estimatorNetwork.computeGradientsRL(newFeatures, new Vector(valueBefore, valueAfter), Y);
+            optEst.updateWeights(estimatorNetwork);
+            estimatorNetwork.resetGradients();
         }
 
         // Code for deciding end of event phase here (finish attack phase method)
@@ -136,9 +153,8 @@ public class DQNNBot extends RiskBot {
     @Override
     public void onFortifyEvent(Country countryFrom, Country countryTo, int numTroops) {
         // Put all the code to pick the right action here
-        // super.onFortifyEvent(countryFrom, countryTo, numTroops);
+        super.onFortifyEvent(countryFrom, countryTo, numTroops);
         // Add code for deciding end of event phase here (finish attack phase method)
-        return;
     }
 
     private Vector getCountryFeatures(Country countryFrom, Country countryTo){
