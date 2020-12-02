@@ -80,6 +80,11 @@ public abstract class Player {
      */
     public void onAttackEvent(Country countryFrom, Country countryTo){
         // Ensure countries are owned and not owned, and if they're adjacent
+        // We need a helper method here, since the recursive method call would call the overwritten subclass method
+        attackHelper(countryFrom, countryTo);
+    }
+
+    private void attackHelper(Country countryFrom, Country countryTo) {
         if(countriesOwned.contains(countryFrom) && !countriesOwned.contains(countryTo) && countryFrom.getNeighboringCountries().contains(countryTo)){
 
             // Calculate the number of attackers
@@ -112,9 +117,12 @@ public abstract class Player {
                 }
 
                 boolean conquered = checkCountryConquer(countryFrom, countryTo);
-                if (Settings.ATTACKUNTILWINORLOSE && !conquered) onAttackEvent(countryFrom, countryTo);
+                if (Settings.ATTACKUNTILWINORLOSE && !conquered) {
+                    attackHelper(countryFrom, countryTo);
+                }
 
             }
+
 
         }
     }

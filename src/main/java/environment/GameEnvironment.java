@@ -65,11 +65,15 @@ public class GameEnvironment {
      * Approach: Freeze one network and train the other one
      * @param maxTurns The maximum number of turns before quitting the training
      */
-    public void train(int maxTurns) {
+    public void train(int maxTurns, boolean verbose) {
         int turnCounter = 0;
         while (turnCounter < maxTurns) { // TODO: Or won the game
             while (game.getBattlePhase().equals(BattlePhase.ATTACK)) {
                 game.onGameEvent(new AttackEventData(-1, -1));
+            }
+
+            if (verbose) {
+                System.out.println("Turn " + turnCounter + " completed");
             }
             turnCounter++;
         }

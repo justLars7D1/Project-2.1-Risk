@@ -8,6 +8,7 @@ import gameelements.game.Game;
 import bot.MachineLearning.NeuralNetwork.Model;
 import bot.MachineLearning.NeuralNetwork.Activations.*;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -88,16 +89,17 @@ public class DQNNBot extends RiskBot {
         countryTo = attackPair.get(1);
 
         // Run it through the DQNN and evaluate
-        System.out.println(attackPair);
+        System.out.println(countryFromToAttackPairs);
 
         // Decide on taking the action or not
-        //super.onAttackEvent(countryFrom, countryTo);
+        super.onAttackEvent(countryFrom, countryTo);
 
         // Code for deciding end of event phase here (finish attack phase method)
         countryFromToAttackPairs.remove(attackPair);
         updatePairList();
 
         if (countryFromToAttackPairs.size() == 0) {
+            System.out.println("Test");
             currentGame.nextBattlePhase();
         }
 
@@ -112,11 +114,13 @@ public class DQNNBot extends RiskBot {
     }
 
     private void updatePairList() {
+        List<List<Country>> toRemovePairs = new LinkedList<>();
         for (List<Country> attackPair: countryFromToAttackPairs) {
             Country from = attackPair.get(0);
             if (from.getNumSoldiers() == 1 || !countriesOwned.contains(from))
-                countryFromToAttackPairs.remove(attackPair);
+                toRemovePairs.add(attackPair);
         }
+        countryFromToAttackPairs.removeAll(toRemovePairs);
     }
 
     private void computeCountriesToAttackFrom() {
