@@ -81,7 +81,8 @@ public class BattlePhaseEstimator {
             //calculate end states from initial states
             cacheEndStatesFor(against, with, 1.0, cache);
             //calculated the expected loss over the end states
-            cachedExpectedLoss[with-1][against-1] = cache.stream()
+            cachedExpectedLossForWin[with-1][against-1] = cache.stream()
+                    .filter(s -> s.defender == 0)
                     .mapToDouble(s -> (with-s.attacker)*s.prob)
                     .sum();
         }
@@ -115,10 +116,15 @@ public class BattlePhaseEstimator {
             //calculate end states from initial states
             cacheEndStatesFor(against, with, 1.0, cache);
             //calculated the expected loss over the end states
-            cachedExpectedLossForWin[with-1][against-1] = cache.stream()
-                    .filter(s -> s.defender == 0)
-                    .mapToDouble(s -> (with-s.attacker)*s.prob)
-                    .sum();
+            double sumProb = cache.stream()
+            .filter(s -> s.defender == 0)
+            .mapToDouble(s -> s.prob)
+            .sum();
+            double expSum = cache.stream()
+                .filter(s -> s.defender == 0)
+                .mapToDouble(s -> (with-s.attacker)*s.prob)
+                .sum();
+            cachedExpectedLossForWin[with-1][against-1] = expSum/sumProb;
         }
         return cachedExpectedLossForWin[with-1][against-1];
     }
@@ -132,11 +138,16 @@ public class BattlePhaseEstimator {
             List<State> cache = new ArrayList<>();
             //calculate end states from initial states
             cacheEndStatesFor(against, with, 1.0, cache);
+            double sumProb = cache.stream()
+                .filter(s -> s.attacker == 0)
+                .mapToDouble(s -> s.prob)
+                .sum();
             //calculated the expected loss over the end states
-            cachedExpectedDamageWhenLost[with-1][against-1] = cache.stream()
+            double expSum = cache.stream()
                     .filter(s -> s.attacker == 0)
                     .mapToDouble(s -> (against-s.defender)*s.prob)
                     .sum();
+            cachedExpectedDamageWhenLost[with-1][against-1] = expSum/sumProb;
         }
         return cachedExpectedDamageWhenLost[with-1][against-1];
     }
@@ -192,4 +203,5 @@ public class BattlePhaseEstimator {
             }
         }
     }
+
 }
