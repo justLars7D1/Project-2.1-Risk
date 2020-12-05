@@ -11,7 +11,7 @@ public class EnvironmentTest {
         System.out.println("--- Placement ---");
         environment.finishPlacementPhase();
         System.out.println("--- Attack ---");
-        environment.train(2, true);
+        environment.train(100, true);
     }
 
 }

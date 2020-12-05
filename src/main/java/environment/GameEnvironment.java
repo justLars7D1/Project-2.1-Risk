@@ -7,6 +7,7 @@ import gameelements.phases.data.AttackEventData;
 import gameelements.phases.data.DistributionEventData;
 import gameelements.phases.data.FortifyEventData;
 import gameelements.phases.data.PlacementEventData;
+import gameelements.player.DQNNBot;
 import gameelements.player.PlayerType;
 
 import java.util.HashMap;
@@ -74,21 +75,33 @@ public class GameEnvironment {
      */
     public void train(int maxTurns, boolean verbose) {
         int turnCounter = 0;
-        while (turnCounter < maxTurns*numPlayers) { // TODO: Or won the game
+        while (turnCounter < maxTurns*numPlayers && !game.getGamePhase().equals(GamePhase.VICTORY)) {
             System.out.println("-- Current Player: " + game.getCurrentPlayer() + " --");
-            while (game.getBattlePhase().equals(BattlePhase.ATTACK)) {
+            while (game.getBattlePhase().equals(BattlePhase.ATTACK) && !game.getGamePhase().equals(GamePhase.VICTORY)) {
                 game.onGameEvent(new AttackEventData(-1, -1));
             }
-            finishFortifyingPhase();
 
-            // Next player placement
-            finishPlacementPhase();
+            if (!game.getGamePhase().equals(GamePhase.VICTORY)) {
+                finishFortifyingPhase();
+
+                // Next player placement
+                finishPlacementPhase();
+
+            }
 
             if (verbose) {
                 System.out.println("Turn " + turnCounter + " completed");
             }
             turnCounter++;
         }
+
+        System.out.println(game.getGameBoard());
+
+        System.out.println("Phase: " + game.getGamePhase());
+
+        System.out.println("Last network of current player:\n");
+        System.out.println(((DQNNBot) game.getCurrentPlayer()).getEstimatorNetwork());
+
     }
 
     /**
