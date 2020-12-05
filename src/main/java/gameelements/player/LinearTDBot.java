@@ -9,8 +9,6 @@ import environment.WolfFeatures;
 import gameelements.board.Country;
 import gameelements.game.Game;
 import environment.FeatureSpace;
-import org.junit.Test;
-
 import java.util.*;
 
 public class LinearTDBot extends RiskBot {
@@ -108,23 +106,19 @@ public class LinearTDBot extends RiskBot {
         return input;
     }
 
-    public HashMap<List<Country>, Vector> futureStateValue(Game game){
-        // Features for win state
-        double armies_feature;
-        double territory_feature;
-        int enemey_reinforce_feature;
-        double best_enemy_feature;
-        double hinterland_feature;
-
+    public ArrayList<Vector> futureStateValue(Game game){
+        int final_attackingCountry = -1;
+        int final_defendingCountry= -1;
+        Vector stateValueVector = new Vector(1);
+        Vector counryFromVector = new Vector(1);
+        Vector countryToVector = new Vector(1);
 
         Player current_player = game.getCurrentPlayer();
         double maxExpectedStateValue = -1000;
         HashMap<Country,List<Country>> attackTargets = getAttackTargets(game);
         Set<Country> owned_countries = attackTargets.keySet();
-        // The returned HashMap
-        HashMap<List<Country>, Vector> fightingCountriesStateValue = new HashMap<>();
-
-        List<Country> fightingCountries = new ArrayList<>(2);
+        // The resulting Arraylist containing a vector for each contry from, .. to , state value
+        List<Vector> fightingCountriesStateValue = new ArrayList<>();
 
         for(Country attackingCountry : owned_countries){
             int attackingTroops = attackingCountry.getNumSoldiers();
@@ -176,14 +170,19 @@ public class LinearTDBot extends RiskBot {
 
                 // Find the maximum expected state value and the countries that belong to it
                 if(expectedStateValue > maxExpectedStateValue){
+                    // Country from
+                    final_attackingCountry = attackingCountry.getID();
+                    // country to
+                    final_defendingCountry = defendingCountry.getID();
+                    // state value
                     maxExpectedStateValue = expectedStateValue;
-                    fightingCountries.add(0,attackingCountry);
-                    fightingCountries.add(1,defendingCountry);
                 }
             }
         }
-        fightingCountriesStateValue.put(fightingCountries, new Vector(maxExpectedStateValue));
-        return fightingCountriesStateValue;
+        stateValueVector.set(0,maxExpectedStateValue);
+        counryFromVector.set(0,(double)final_attackingCountry);
+        countryToVector.set(0,(double)final_defendingCountry);
+        return new ArrayList<>(Arrays.asList(counryFromVector, countryToVector,stateValueVector ));
     }
 
     public static HashMap getAttackTargets(Game game){
