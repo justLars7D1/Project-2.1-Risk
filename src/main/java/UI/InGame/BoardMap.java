@@ -341,6 +341,7 @@ public class BoardMap {
                             getPlayerColor();
 
                         } else if (game.getGamePhase() == GamePhase.BATTLE) {
+                            updateWarning();
                             System.out.println("Battle");
 
                             if(game.getBattlePhase() == BattlePhase.PLACEMENT){
@@ -366,11 +367,6 @@ public class BoardMap {
 //                                        AttackEventData data = new AttackEventData(-1, -1);
 //                                        game.onGameEvent(data);
 //                                    }
-
-//                                    if (game.botConquered()) {
-//                                        //what did the bot conquer return method in backend
-//                                        conquerScreen()
-//                                    }
                                 } else {
                                     if (!fromCountryClicked && isOwner(currentID)) {
                                         System.out.println("picked from");
@@ -382,24 +378,34 @@ public class BoardMap {
                                         game.onGameEvent(data);
                                         fromCountryClicked = false;
                                         if (game.getCurrentPlayer() == game.getGameBoard().getCountryFromID(currentID).getOwner()) {
-                                            List<SVGPath> list = new ArrayList<SVGPath>();
-                                            list.add(s);
+                                            List<Country> list = new ArrayList<Country>();
+                                            list.add(game.getGameBoard().getCountryFromID(findCountry(s)));
                                             conquerScreen(list);
                                         }
                                     }
                                 }
                             } else {
                                 //System.out.println("Fortifying");
-                                if(!fromCountryClicked){
-                                    fromCountryID = currentID;
-                                    fromCountryClicked = true;
-                                    lastCountryFromId = currentID;
-                                } else { //case where previous country already clicked
-                                    FortifyEventData data = new FortifyEventData(fromCountryID, currentID, 1);
+                                if(game.isBot()){
+                                    if(game.getConqueredCountries().size() > 0 ) {
+                                        conquerScreen(game.getConqueredCountries());
+                                    }
+                                    FortifyEventData data = new FortifyEventData(-1, -1, 1);
                                     game.onGameEvent(data);
-                                    fromCountryClicked = false;
-                                    updateCountryLabel(lastCountryFromId);
+                                    getPlayerColor();
+                                } else {
+                                    if (!fromCountryClicked) {
+                                        fromCountryID = currentID;
+                                        fromCountryClicked = true;
+                                        lastCountryFromId = currentID;
+                                    } else { //case where previous country already clicked
+                                        FortifyEventData data = new FortifyEventData(fromCountryID, currentID, 1);
+                                        game.onGameEvent(data);
+                                        fromCountryClicked = false;
+                                        updateCountryLabel(lastCountryFromId);
+                                    }
                                 }
+
                             }
                             //attackB.setDisable(false);
                         } else {
@@ -414,14 +420,20 @@ public class BoardMap {
         }
     }
 
-    private void conquerScreen(List<SVGPath> listOfConqueredCountries) {
+    private void conquerScreen(List<Country> listOfConqueredCountries) {
         String str = "Player " + getPlayerColor() + " took over ";
-        for (SVGPath s : listOfConqueredCountries) {
-            str = str.concat(game.getGameBoard().getCountryFromID(findCountry(s)).getName());
-            if (listOfConqueredCountries.size() != 1) {
-                str = str.concat(",\n");
-            }
+
+        str = str.concat(listOfConqueredCountries.get(0).getName());
+
+        for (int i = 1; i < (listOfConqueredCountries.size()) ; i++ ) {
+
+//            if (listOfConqueredCountries.size() != 1) {
+            str = str.concat(", \n");
+//            }
+            str = str.concat(listOfConqueredCountries.get(i).getName());
+
         }
+
         Label victory = new Label(str);
         Button confirm = new Button("Continue...");
         confirm.setUnderline(true);

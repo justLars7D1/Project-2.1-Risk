@@ -30,7 +30,7 @@ public class LinearTDBot extends RiskBot {
     private void setupModel() {
         this.linearEvalFunction = new Model(5);
         this.linearEvalFunction.addLayer(1, new Pass());
-        this.linearEvalFunction.compile(new MSE(), new SGD(0.05));
+//        this.linearEvalFunction.compile(new MSE(), new SGD(0.05));
     }
 
     @Override

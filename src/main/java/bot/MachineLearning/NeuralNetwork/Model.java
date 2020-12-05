@@ -128,11 +128,11 @@ public class Model implements Serializable {
                 System.out.println();
             }
         }
-        return collector;
+//        return collector;
     }
 
     public void tdTrain(Vector xs, Vector ys, double alpha, double lambda) {
-        this.compile(new TDLoss(), new TDOptimizer(alpha, lambda),new String[0]);
+//        this.compile(new TDLoss(), new TDOptimizer(alpha, lambda),new String[0]);
         TDOptimizer op = (TDOptimizer) optimizer;
         op.init(this);
         lossFunction = (TDLoss) lossFunction;
