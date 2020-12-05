@@ -38,15 +38,34 @@ public class RiskBot extends Player {
             }
         }
 
-        // TODO: Part 2 - All countries have an owner (maybe something with border troops)
-        for (Country c: countriesOwned) {
-            if (c.getNumSoldiers() < Settings.TROOPSLIMIT) {
-                return c;
+        // We will place troops on the country with the smallest "security", e.g. highest chance to be overtaken
+        Country country = null;
+        int troopDifference = Integer.MAX_VALUE;
+
+        for (Country c: this.countriesOwned) {
+            // Calculate the number of troops that can attack the country
+            int numAttackingTroops = 0;
+            List<Country> neighbors = c.getNeighboringCountries();
+            for (Country neighbor: neighbors) {
+                if (!neighbor.getOwner().equals(this)) {
+                    // We do - 1 here, since you can't attack with 1 troop
+                    numAttackingTroops += neighbor.getNumSoldiers();
+                }
+            }
+
+            // Get the total difference in troops, with at most the number of troops that can be placed
+            int differenceInTroops = c.getNumSoldiers() - numAttackingTroops;
+            differenceInTroops = Math.max(differenceInTroops, -(Settings.TROOPSLIMIT - c.getNumSoldiers()));
+
+            // If the country is the most underarmed of all countries AND the limit is not reached yet,
+            // place the troops there
+            if (differenceInTroops <= troopDifference && c.getNumSoldiers() != Settings.TROOPSLIMIT) {
+                country = c;
+                troopDifference = differenceInTroops;
             }
         }
 
-        // This can never happen, since there are always less troops than the limit on the countries
-        return null;
+        return country;
 
     }
 
