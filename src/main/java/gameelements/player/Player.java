@@ -181,7 +181,7 @@ public abstract class Player {
      * @param countryFrom The country the attack came from
      * @param countryTo The country that was attacked
      */
-    private boolean checkCountryConquer(Country countryFrom, Country countryTo) {
+    public boolean checkCountryConquer(Country countryFrom, Country countryTo) {
         if(countryTo.getNumSoldiers() == 0){
             // Remove from countries owned of old owner and add it for the new owner
             countryTo.getOwner().countriesOwned.remove(countryTo);

@@ -3,7 +3,9 @@ package bot.MachineLearning.NeuralNetwork;
 import bot.MachineLearning.NeuralNetwork.Activations.Activation;
 import bot.MachineLearning.NeuralNetwork.Layers.Layer;
 import bot.MachineLearning.NeuralNetwork.Losses.Loss;
+import bot.MachineLearning.NeuralNetwork.Losses.TDLoss;
 import bot.MachineLearning.NeuralNetwork.Optimizers.Optimizer;
+import bot.MachineLearning.NeuralNetwork.Optimizers.TDOptimizer;
 import bot.Mathematics.LinearAlgebra.Matrix;
 import bot.Mathematics.LinearAlgebra.Vector;
 
@@ -125,6 +127,29 @@ public class Model implements Serializable {
                 System.out.print("Epoch " + (i+1) + "/" + epochs);
                 System.out.println();
             }
+        }
+        return collector;
+    }
+
+    public void tdTrain(Vector xs, Vector ys, double alpha, double lambda) {
+        this.compile(new TDLoss(), new TDOptimizer(alpha, lambda),new String[0]);
+        TDOptimizer op = (TDOptimizer) optimizer;
+        op.init(this);
+        lossFunction = (TDLoss) lossFunction;
+        ((TDLoss) lossFunction).obtainLambda(lambda);
+        Vector losses = lossFunction.evalDerivative(xs, ys);
+        op.obtainLosses(losses);
+        // Now update the weights using the optimizer
+        this.optimizer.updateWeights(this);
+        this.resetGradients();
+    }
+
+
+
+    private void updateMetrics(Vector[] xs, Vector[] ys, MetricCollector collector) {
+        for (String metric: metrics) {
+            double metricVal = calculateMetricValue(metric, xs, ys);
+            collector.addToMetric(metric, metricVal);
         }
     }
 
@@ -308,5 +333,7 @@ public class Model implements Serializable {
 
     static class UncompiledModelException extends Exception {
     }
-
+    public Loss getLossFunction(){
+        return this.lossFunction;
+    }
 }
