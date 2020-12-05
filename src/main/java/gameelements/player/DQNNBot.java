@@ -121,10 +121,11 @@ public class DQNNBot extends RiskBot {
         System.out.println("Taking action: " + takeAction);
         if (takeAction) {
             super.onAttackEvent(countryFrom, countryTo);
-            /*System.out.println("Attacked from " + countryFrom.getName() + " to " + countryTo.getName());
-            System.out.println("Stats from troops: " + countryFrom.getNumSoldiers());
-            System.out.println("Stats to troops: " + countryTo.getNumSoldiers());*/
         }
+
+        /*System.out.println("Attacked from " + countryFrom.getName() + " to " + countryTo.getName());
+        System.out.println("Stats from troops: " + countryFrom.getNumSoldiers());
+        System.out.println("Stats to troops: " + countryTo.getNumSoldiers());*/
 
         int valueAfter = this.getNumCountriesOwned();
 
@@ -144,11 +145,8 @@ public class DQNNBot extends RiskBot {
         // Code for deciding end of event phase here (finish attack phase method)
         countryFromToAttackPairs.remove(attackPair);
         updatePairList();
-
-        System.out.println(countryFromToAttackPairs.size());
-
+        
         if (countryFromToAttackPairs.size() == 0) {
-            System.out.println("Test");
             currentGame.nextBattlePhase();
         }
 
