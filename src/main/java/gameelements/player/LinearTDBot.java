@@ -55,11 +55,39 @@ public class LinearTDBot extends RiskBot {
 
         double features[] = {armies_feature, territory_feature, (double)enemey_reinforce_feature, best_enemy_feature,hinterland_feature};
 
+        double winChanceThreshold = 0.5;
+        double randomChanceThreshold = 0.2;
         FeatureSpace.features.put(FeatureSpace.round, features);
         FeatureSpace.round ++;
+
         // Put all the code to pick the right action here
         //super.onAttackEvent(countryFrom, countryTo);
         // Add code for deciding end of event phase here (finish attack phase method)
+
+        //return vector has the 0th index containing the country from, the 1st index containing the country to and the 2nd index containing the state value
+        ArrayList<Vector> chosenCountriesStateValue = this.futureStateValue(currentGame);
+
+        //extracting the selected country IDs from the vector of countries and statevalue
+        int countryAttackFromID = (int) chosenCountriesStateValue.get(0).get(0) ; // intial get(0) returns the oth index of the arraylist, second get(0) for the vector element retrieval
+        int countryAttackToID = (int) chosenCountriesStateValue.get(1).get(0) ;
+
+        //getting the country class references from the IDs
+        Country countryFromID = currentGame.getGameBoard().getCountryFromID(countryAttackFromID);
+        Country countryToID = currentGame.getGameBoard().getCountryFromID(countryAttackToID);
+
+        //calculating the win chance for the countries specified
+        double winChance = BattlePhaseEstimator.winChance(countryToID.getNumSoldiers(), countryFromID.getNumSoldiers());
+
+        //If there is an 'obvious' attack where the win chance is greater than the threshold we attack straight away.
+        if(winChance > winChanceThreshold){
+            super.onAttackEvent(countryFromID, countryToID);
+        } else { // this is the condition that the winChance is below the threshold to attack immediately.
+            if(Math.random() < randomChanceThreshold ){ //there is a 20% chance that the countries will attack even if it's below the threshold to allow exploration - 'underdog'
+                super.onAttackEvent(countryFromID, countryToID);
+            } else {// if there is no 'obvious attack', and the potential 'underdog' attack is also no considered then we will move onto the next battle phase.
+                currentGame.nextBattlePhase();
+            }
+        }
     }
 
     @Override

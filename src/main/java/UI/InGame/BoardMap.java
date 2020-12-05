@@ -355,8 +355,18 @@ public class BoardMap {
                             } else if (game.getBattlePhase() == BattlePhase.ATTACK){
                                 if (game.isBot()) {
                                     System.out.println("bot attack");
+                                    // while condition keeps sending attacks to the backend until it's decided that no country wants to be attacked.
+                                    // stopping heuristic handled in the bot onAttackEvent method.
+
                                     AttackEventData data = new AttackEventData(-1, -1);
                                     game.onGameEvent(data);
+
+                                    //TODO DO NOT REMOVE THIS WHILE LOOP WHEN MERGING, we need this in order to simulate multiple attacks on the same turn
+//                                    while(game.getBattlePhase() == BattlePhase.ATTACK){
+//                                        AttackEventData data = new AttackEventData(-1, -1);
+//                                        game.onGameEvent(data);
+//                                    }
+
 //                                    if (game.botConquered()) {
 //                                        //what did the bot conquer return method in backend
 //                                        conquerScreen()
