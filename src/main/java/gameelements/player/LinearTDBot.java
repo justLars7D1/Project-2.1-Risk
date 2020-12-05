@@ -2,7 +2,9 @@ package gameelements.player;
 
 import bot.Algorithms.MarkovChain.BattlePhaseEstimator;
 import bot.MachineLearning.NeuralNetwork.Activations.Pass;
+import bot.MachineLearning.NeuralNetwork.Losses.TDLoss;
 import bot.MachineLearning.NeuralNetwork.Model;
+import bot.MachineLearning.NeuralNetwork.Optimizers.TDOptimizer;
 import bot.Mathematics.LinearAlgebra.Vector;
 import environment.BorderSupplyFeatures;
 import environment.WolfFeatures;

@@ -4,6 +4,7 @@ import bot.Mathematics.LinearAlgebra.Vector;
 import environment.FeatureSpace;
 
 public class TDLoss implements Loss{
+    double lambda; // This is lambda from the TD formula, has to lie between 0 and 1.
     @Override
     public Vector evaluate(Vector yPred, Vector yActual) {
         return yActual;
@@ -16,7 +17,7 @@ public class TDLoss implements Loss{
             double scale  = 0;
             for(int i = 0; i < FeatureSpace.round; i++){
                 Vector featureResult = yPred.getSubtracted(yActual);
-                double lambda = 1; // This is lambda from the TD formula, has to lie between 0 and 1.
+
                 double regulator = Math.pow(lambda, (FeatureSpace.round - i));
                 scale += FeatureSpace.features.get(i)[j] * regulator;
                 featureResult = featureResult.getScaled(scale);
@@ -24,5 +25,8 @@ public class TDLoss implements Loss{
             }
         }
         return result;
+    }
+    public void obtainLambda(double lambda){
+        this.lambda = lambda;
     }
 }

@@ -3,7 +3,9 @@ package bot.MachineLearning.NeuralNetwork;
 import bot.MachineLearning.NeuralNetwork.Activations.Activation;
 import bot.MachineLearning.NeuralNetwork.Layers.Layer;
 import bot.MachineLearning.NeuralNetwork.Losses.Loss;
+import bot.MachineLearning.NeuralNetwork.Losses.TDLoss;
 import bot.MachineLearning.NeuralNetwork.Optimizers.Optimizer;
+import bot.MachineLearning.NeuralNetwork.Optimizers.TDOptimizer;
 import bot.Mathematics.LinearAlgebra.Matrix;
 import bot.Mathematics.LinearAlgebra.Vector;
 
@@ -136,17 +138,14 @@ public class Model implements Serializable {
         return collector;
     }
 
-    public void train(Vector[] xs, Vector[] ys) {
-        assert xs.length == ys.length;
-        if (lossFunction == null || optimizer == null || metrics == null) {
-            try {
-                throw new UncompiledModelException();
-            } catch (UncompiledModelException e) {
-                System.out.println("Model could not be compiled");
-            }
-        }
-        optimizer.init(this);
-
+    public void tdTrain(Vector xs, Vector ys, double alpha, double lambda) {
+        this.compile(new TDLoss(), new TDOptimizer(alpha, lambda),new String[0]);
+        TDOptimizer op = (TDOptimizer) optimizer;
+        op.init(this);
+        lossFunction = (TDLoss) lossFunction;
+        ((TDLoss) lossFunction).obtainLambda(lambda);
+        Vector losses = lossFunction.evalDerivative(xs, ys);
+        op.obtainLosses(losses);
         // Now update the weights using the optimizer
         this.optimizer.updateWeights(this);
         this.resetGradients();
