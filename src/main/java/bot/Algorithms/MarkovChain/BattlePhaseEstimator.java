@@ -68,7 +68,7 @@ public class BattlePhaseEstimator {
     * Chance to win a territory by attacking continuously
     */
     public static double winChance(int against, int with){
-        return attackerWins[against-1][with-1];
+        return attackerWins[against-1][with];
     }
 
     /*
