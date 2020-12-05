@@ -166,9 +166,9 @@ public class DQNNBot extends RiskBot {
         double suitible = WolfFeatures.averageThreatOn(countryFrom);
 
         // expected number of troops lost in battle
-        double expectedLoss = BattlePhaseEstimator.expectedLoss(countryTo.getNumSoldiers(), countryFrom.getNumSoldiers());
+        double expectedLoss = BattlePhaseEstimator.expectedLoss(countryTo.getNumSoldiers(), countryFrom.getNumSoldiers()-1);
         // expected number of oponent troops defeated in a battle
-        double expectedDamage = BattlePhaseEstimator.expectedDamage(countryTo.getNumSoldiers(), countryFrom.getNumSoldiers());
+        double expectedDamage = BattlePhaseEstimator.expectedDamage(countryTo.getNumSoldiers(), countryFrom.getNumSoldiers()-1);
 
         return new Vector(suitible, susceptible, expectedLoss, expectedDamage);
     }
