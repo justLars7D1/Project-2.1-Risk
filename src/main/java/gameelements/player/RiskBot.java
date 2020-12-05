@@ -99,6 +99,10 @@ public class RiskBot extends Player {
     public void onAttackEvent(Country countryFrom, Country countryTo) {
         // Put all the code to pick the right action here
         super.onAttackEvent(countryFrom, countryTo);
+
+        if (countryTo.getOwner().equals(this)) {
+            currentGame.addConqueredCountry(countryTo);
+        }
         // Add code for deciding end of event phase here (finish attack phase method)
     }
 

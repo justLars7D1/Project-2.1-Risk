@@ -30,6 +30,8 @@ public class Game extends GameObserver {
      */
     private int numPlayers;
 
+    private List<Country> conqueredCountries;
+
     /**
      * Constructor
      * Sets selection of players and sets up starting game phases
@@ -184,6 +186,8 @@ public class Game extends GameObserver {
         switch (battlePhase) {
             case PLACEMENT:
                 battlePhase = BattlePhase.ATTACK;
+                // Initialize list
+                this.conqueredCountries = new ArrayList<>();
                 break;
             case ATTACK:
                 removePlayersWithoutTerritory();
@@ -248,6 +252,14 @@ public class Game extends GameObserver {
             numTroops += continent.getValue();
         }
         return numTroops;
+    }
+
+    public List<Country> getConqueredCountries() {
+        return conqueredCountries;
+    }
+
+    public void addConqueredCountry(Country conqueredCountry) {
+        this.conqueredCountries.add(conqueredCountry);
     }
 
     public int getNumPlayers() {
