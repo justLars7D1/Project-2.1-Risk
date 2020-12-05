@@ -101,50 +101,52 @@ public class DQNNBot extends RiskBot {
 
         System.out.println("Test");
 
-        // Select the current pair we could potentially attack from and to
-        List<Country> attackPair = countryFromToAttackPairs.get(0);
-        countryFrom = attackPair.get(0);
-        countryTo = attackPair.get(1);
+        if(!countryFromToAttackPairs.isEmpty()){
+            // Select the current pair we could potentially attack from and to
+            List<Country> attackPair = countryFromToAttackPairs.get(0);
+            countryFrom = attackPair.get(0);
+            countryTo = attackPair.get(1);
 
-        int numCountriesBeforeAttack = getNumCountriesOwned();
+            int numCountriesBeforeAttack = getNumCountriesOwned();
 
-        // Run it through the DQNN and evaluate
-        Vector features = getPlayerFeatures(countryFrom, countryTo);
-        Vector qValues = estimatorNetwork.evaluate(features);
+            // Run it through the DQNN and evaluate
+            Vector features = getPlayerFeatures(countryFrom, countryTo);
+            Vector qValues = estimatorNetwork.evaluate(features);
 
-        System.out.println(qValues);
+            System.out.println(qValues);
 
-        int valueBefore = this.getNumCountriesOwned();
+            int valueBefore = this.getNumCountriesOwned();
 
-        // Decide on taking the action or not
-        boolean takeAction = qValues.get(1) > qValues.get(0);
-        System.out.println("Taking action: " + takeAction);
-        if (takeAction) {
-            super.onAttackEvent(countryFrom, countryTo);
+            // Decide on taking the action or not
+            boolean takeAction = qValues.get(1) > qValues.get(0);
+            System.out.println("Taking action: " + takeAction);
+            if (takeAction) {
+                super.onAttackEvent(countryFrom, countryTo);
+            }
+
+            /*System.out.println("Attacked from " + countryFrom.getName() + " to " + countryTo.getName());
+            System.out.println("Stats from troops: " + countryFrom.getNumSoldiers());
+            System.out.println("Stats to troops: " + countryTo.getNumSoldiers());*/
+
+            int valueAfter = this.getNumCountriesOwned();
+
+            if (trainingEnabled) {
+                optEst.init(estimatorNetwork);
+
+                int reward = getNumCountriesOwned() - numCountriesBeforeAttack;
+                Vector newFeatures = getPlayerFeatures(countryFrom, countryTo);
+                Vector qValuesNextState = estimatorNetwork.forwardEvaluate(newFeatures);
+                Vector Y = qValuesNextState.getScaled(discountFactor).getAdded(reward);
+                System.out.println(lossFunction.evaluate(Y, new Vector(valueBefore, valueAfter)));
+                estimatorNetwork.computeGradientsRL(newFeatures, new Vector(valueBefore, valueAfter), Y);
+                optEst.updateWeights(estimatorNetwork);
+                estimatorNetwork.resetGradients();
+            }
+
+            // Code for deciding end of event phase here (finish attack phase method)
+            countryFromToAttackPairs.remove(attackPair);
+            updatePairList();
         }
-
-        /*System.out.println("Attacked from " + countryFrom.getName() + " to " + countryTo.getName());
-        System.out.println("Stats from troops: " + countryFrom.getNumSoldiers());
-        System.out.println("Stats to troops: " + countryTo.getNumSoldiers());*/
-
-        int valueAfter = this.getNumCountriesOwned();
-
-        if (trainingEnabled) {
-            optEst.init(estimatorNetwork);
-
-            int reward = getNumCountriesOwned() - numCountriesBeforeAttack;
-            Vector newFeatures = getPlayerFeatures(countryFrom, countryTo);
-            Vector qValuesNextState = estimatorNetwork.forwardEvaluate(newFeatures);
-            Vector Y = qValuesNextState.getScaled(discountFactor).getAdded(reward);
-            System.out.println(lossFunction.evaluate(Y, new Vector(valueBefore, valueAfter)));
-            estimatorNetwork.computeGradientsRL(newFeatures, new Vector(valueBefore, valueAfter), Y);
-            optEst.updateWeights(estimatorNetwork);
-            estimatorNetwork.resetGradients();
-        }
-
-        // Code for deciding end of event phase here (finish attack phase method)
-        countryFromToAttackPairs.remove(attackPair);
-        updatePairList();
         
         if (countryFromToAttackPairs.size() == 0) {
             currentGame.nextBattlePhase();
