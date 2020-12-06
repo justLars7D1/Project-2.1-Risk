@@ -37,9 +37,11 @@ public class DQNNBot extends RiskBot {
     * predicts q values for a binary attack decision
     */
 
-    private final static boolean trainingEnabled = true;
+    private final static boolean trainingEnabled = false;
 
     private final static double discountFactor = 0.8;
+
+    public final static boolean loadBestModel = true;
 
     Loss lossFunction = new MSE();
     Optimizer optEst = new RMSProp(0.01, 0.9);
@@ -63,20 +65,29 @@ public class DQNNBot extends RiskBot {
 
         this.n = lag;
 
+        if (loadBestModel) {
+
+            estimatorNetwork = Model.loadModel("D:\\Projects\\Project-2.1---Game\\src\\main\\java\\gameelements\\player\\botWeights\\bestEstimatorWeights.txt");
+
+        } else {
+
+            // dynamic network
+            estimatorNetwork = new Model(numFeatures);
+            estimatorNetwork.addLayer(6, new LeakyReLu());
+            estimatorNetwork.addLayer(3, new LeakyReLu());
+            estimatorNetwork.addLayer(2, new Pass());
+
+            estimatorNetwork.compile(lossFunction, optTarget);
+
+        }
+
         // target approximation
         targetNetwork = new Model(numFeatures);
         targetNetwork.addLayer(6, new LeakyReLu());
         targetNetwork.addLayer(3, new LeakyReLu());
         targetNetwork.addLayer(2, new Pass());
 
-        // dynamic network
-        estimatorNetwork = new Model(numFeatures);
-        estimatorNetwork.addLayer(6, new LeakyReLu());
-        estimatorNetwork.addLayer(3, new LeakyReLu());
-        estimatorNetwork.addLayer(2, new Pass());
-
         targetNetwork.compile(lossFunction, optEst);
-        estimatorNetwork.compile(lossFunction, optTarget);
 
     }
 
@@ -99,8 +110,6 @@ public class DQNNBot extends RiskBot {
     @Override
     public void onAttackEvent(Country countryFrom, Country countryTo) {
 
-        System.out.println("Test");
-
         if(!countryFromToAttackPairs.isEmpty()){
             // Select the current pair we could potentially attack from and to
             List<Country> attackPair = countryFromToAttackPairs.get(0);
@@ -113,13 +122,11 @@ public class DQNNBot extends RiskBot {
             Vector features = getPlayerFeatures(countryFrom, countryTo);
             Vector qValues = estimatorNetwork.evaluate(features);
 
-            System.out.println(qValues);
-
             int valueBefore = this.getNumCountriesOwned();
 
             // Decide on taking the action or not
             boolean takeAction = qValues.get(1) > qValues.get(0);
-            System.out.println("Taking action: " + takeAction);
+            System.out.println("Action? " + takeAction);
             if (takeAction) {
                 super.onAttackEvent(countryFrom, countryTo);
             }
@@ -137,7 +144,6 @@ public class DQNNBot extends RiskBot {
                 Vector newFeatures = getPlayerFeatures(countryFrom, countryTo);
                 Vector qValuesNextState = estimatorNetwork.forwardEvaluate(newFeatures);
                 Vector Y = qValuesNextState.getScaled(discountFactor).getAdded(reward);
-                System.out.println(lossFunction.evaluate(Y, new Vector(valueBefore, valueAfter)));
                 estimatorNetwork.computeGradientsRL(newFeatures, new Vector(valueBefore, valueAfter), Y);
                 optEst.updateWeights(estimatorNetwork);
                 estimatorNetwork.resetGradients();
@@ -145,7 +151,7 @@ public class DQNNBot extends RiskBot {
 
             // Code for deciding end of event phase here (finish attack phase method)
             countryFromToAttackPairs.remove(attackPair);
-            updatePairList();
+             updatePairList();
         }
         
         if (countryFromToAttackPairs.size() == 0) {

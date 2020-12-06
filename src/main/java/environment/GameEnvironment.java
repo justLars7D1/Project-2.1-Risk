@@ -8,9 +8,11 @@ import gameelements.phases.data.DistributionEventData;
 import gameelements.phases.data.FortifyEventData;
 import gameelements.phases.data.PlacementEventData;
 import gameelements.player.DQNNBot;
+import gameelements.player.Player;
 import gameelements.player.PlayerType;
 
 import java.util.HashMap;
+import java.util.List;
 
 public class GameEnvironment {
 
@@ -73,10 +75,10 @@ public class GameEnvironment {
      * Approach: Freeze one network and train the other one
      * @param maxTurns The maximum number of turns before quitting the training
      */
-    public void train(int maxTurns, boolean verbose) {
+    public void trainOnOneGame(int maxTurns, boolean verbose) {
         int turnCounter = 0;
         while (turnCounter < maxTurns*numPlayers && !game.getGamePhase().equals(GamePhase.VICTORY)) {
-            System.out.println("-- Current Player: " + game.getCurrentPlayer() + " --");
+            if (verbose) System.out.println("-- Current Player: " + game.getCurrentPlayer() + " --");
             while (game.getBattlePhase().equals(BattlePhase.ATTACK) && !game.getGamePhase().equals(GamePhase.VICTORY)) {
                 game.onGameEvent(new AttackEventData(-1, -1));
             }
@@ -95,13 +97,39 @@ public class GameEnvironment {
             turnCounter++;
         }
 
-        System.out.println(game.getGameBoard());
+    }
 
-        System.out.println("Phase: " + game.getGamePhase());
+    public void train(int numGames, int maxTurns, boolean verbose) {
+        int gameNum = 0;
+        while (gameNum < numGames) {
+            finishDistributionPhase();
+            finishPlacementPhase();
+            trainOnOneGame(maxTurns, false);
 
-        System.out.println("Last network of current player:\n");
-        System.out.println(((DQNNBot) game.getCurrentPlayer()).getEstimatorNetwork());
+            gameNum++;
+            if (verbose) {
+                System.out.println("Game " + gameNum + " - Phase: " + game.getGamePhase());
+            }
+            saveDQNNWeights();
+            reset();
+        }
+    }
 
+    public void saveDQNNWeights() {
+        List<Player> players = game.getAllPlayer();
+        Player best = players.get(0);
+        int bestTerritory = -1;
+        for (Player p: players) {
+            int countriesOwned = p.getNumCountriesOwned();
+            if (countriesOwned > bestTerritory) {
+                best = p;
+                bestTerritory = countriesOwned;
+            }
+        }
+        String path = "D:\\Projects\\Project-2.1---Game\\src\\main\\java\\gameelements\\player\\botWeights\\bestEstimatorWeights.txt";
+        ((DQNNBot) best)
+                .getEstimatorNetwork()
+                .save(path);
     }
 
     /**
