@@ -24,7 +24,7 @@ public class TDOptimizer extends Optimizer {
         double[][] weigths = currentWeights.getGrid();
         double[] vectorPrep = weigths[0];
         for(int i = 0; i < losses.getCoordinates().length; i++){
-            double newWeight = vectorPrep[i] - (learningRate * losses.get(i));
+            double newWeight = vectorPrep[i] + (learningRate * losses.get(i));
             double increment = newWeight - vectorPrep[i];
             weightIncrements.set(i, increment);
         }

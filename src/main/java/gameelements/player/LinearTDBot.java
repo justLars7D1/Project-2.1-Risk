@@ -30,7 +30,7 @@ public class LinearTDBot extends RiskBot {
     private void setupModel() {
         this.linearEvalFunction = new Model(5);
         this.linearEvalFunction.addLayer(1, new Pass());
-        this.linearEvalFunction.compile(new MSE(), new SGD(0.05));
+        //this.linearEvalFunction.compile(new MSE(), new SGD(0.05));
     }
 
     @Override
@@ -98,6 +98,11 @@ public class LinearTDBot extends RiskBot {
 
     @Override
     public void onFortifyEvent(Country countryFrom, Country countryTo, int numTroops) {
+        double armiesFeature = BorderSupplyFeatures.getArmiesFeature(currentGame.getGameBoard(), this);
+        double territoriesFeature = BorderSupplyFeatures.getTerritoriesFeature(this);
+        double bestEnemyFeature = BorderSupplyFeatures.getBestEnemyFeature(currentGame);
+        double totalEnemyReinforcement = BorderSupplyFeatures.getTotalEnemyReinforcement(currentGame);
+        double averageBSR = BorderSupplyFeatures.getAverageBSR(currentGame);
         // Put all the code to pick the right action here
         //super.onFortifyEvent(countryFrom, countryTo, numTroops);
         // Add code for deciding end of event phase here (finish attack phase method)
