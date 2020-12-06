@@ -29,8 +29,15 @@ public class WolfFeatures {
         } else {
             conflict = false;
         }
-        return (((double) numcountries) / hinterland);
+        if(hinterland != 0) {
+            return (((double) numcountries) / hinterland);
+        }
+        else {
+            return 1;
+        }
     }
+
+
     public static double moreThanOneArmy(Player player){
         HashSet<Country> countries = player.getCountriesOwned();
         int counter = 0;

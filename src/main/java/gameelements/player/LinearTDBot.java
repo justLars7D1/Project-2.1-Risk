@@ -179,7 +179,6 @@ public class LinearTDBot extends RiskBot {
 
                 // Calculate expected State Value
                 double expectedStateValue = win_chance * win_value.get(0) + (1-win_chance) * loose_value.get(0);
-
                 // Find the maximum expected state value and the countries that belong to it
                 if(expectedStateValue > maxExpectedStateValue){
                     // Country from
