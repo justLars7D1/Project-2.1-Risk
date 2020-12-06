@@ -139,8 +139,14 @@ public class LinearTDBot extends RiskBot {
                 // Attacking troops = troops stationed in country -1 -> one has to stay behind
                 double win_chance = BattlePhaseEstimator.winChance(defendingTroops, attackingTroops-1);
                 // How many troops is the enemy expected to loose if he wins, how many troops is the current player expected to loose when he wins
-                int TroopLossCurrentP = pseudoLoss(attackingTroops, defendingTroops);
-                int TroopLossEnemy = pseudoLoss(defendingTroops, attackingTroops);
+                //int TroopLossCurrentP = pseudoLoss(attackingTroops, defendingTroops);
+                double expected_loss_win = BattlePhaseEstimator.expectedLossForWin(defendingTroops, attackingTroops);
+                int TroopLossCurrentP = (int) Math.round(expected_loss_win);
+                // Safeguard should not happen
+                if(TroopLossCurrentP > attackingTroops){TroopLossCurrentP = attackingTroops;}
+                double expected_loss_loose = BattlePhaseEstimator.expectedDamageWhenLost(defendingTroops, attackingTroops);
+                int TroopLossEnemy = (int) Math.round(expected_loss_loose);
+                if(TroopLossEnemy > defendingTroops){TroopLossEnemy = defendingTroops;}
 
                 /* Attacking Player wins */
                 // 1. defending country troops = 0; 2. attacking country - expected loss ; 3. Switch Owner
@@ -210,8 +216,4 @@ public class LinearTDBot extends RiskBot {
         }
         return attackTargets;
     }
-
-    // We want to know how many troops the winner will loose as the loose will loose all
-    public static int pseudoLoss(int winnerTroops, int looserTroops){return 2;}
-
 }
