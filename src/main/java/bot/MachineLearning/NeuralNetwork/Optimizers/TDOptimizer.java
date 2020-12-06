@@ -40,4 +40,7 @@ public class TDOptimizer extends Optimizer {
     public void obtainLosses (Vector losses){
         this.losses = losses;
     }
+    public double getLambda() {
+        return this.l2factor;
+    }
 }

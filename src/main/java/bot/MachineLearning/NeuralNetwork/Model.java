@@ -131,12 +131,11 @@ public class Model implements Serializable {
 //        return collector;
     }
 
-    public void tdTrain(Vector xs, Vector ys, double alpha, double lambda) {
+    public void tdTrain(Vector xs, Vector ys) {
 //        this.compile(new TDLoss(), new TDOptimizer(alpha, lambda),new String[0]);
         TDOptimizer op = (TDOptimizer) optimizer;
         op.init(this);
-        lossFunction = (TDLoss) lossFunction;
-        ((TDLoss) lossFunction).obtainLambda(lambda);
+         ((TDLoss) lossFunction).obtainLambda(op.getLambda());
         Vector losses = lossFunction.evalDerivative(xs, ys);
         op.obtainLosses(losses);
         // Now update the weights using the optimizer

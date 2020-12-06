@@ -30,7 +30,7 @@ public class LinearTDBot extends RiskBot {
     private void setupModel() {
         this.linearEvalFunction = new Model(5);
         this.linearEvalFunction.addLayer(1, new Pass());
-//        this.linearEvalFunction.compile(new MSE(), new SGD(0.05));
+        this.linearEvalFunction.compile(new TDLoss(), new TDOptimizer(0.05, 0.5));
     }
 
     @Override
@@ -55,19 +55,14 @@ public class LinearTDBot extends RiskBot {
         double hinterland_feature = WolfFeatures.hinterland(currentGame.getCurrentPlayer());
 
         double features[] = {armies_feature, territory_feature, (double)enemey_reinforce_feature, best_enemy_feature,hinterland_feature};
-
-        double winChanceThreshold = 0.5;
-        double randomChanceThreshold = 0.2;
         FeatureSpace.features.put(FeatureSpace.round, features);
         FeatureSpace.round ++;
 
         // Put all the code to pick the right action here
-        double feature1 = 0;
-        double feature2 = 1;
-        Vector input = new Vector(feature1, feature2);
-        Vector ouput = linearEvalFunction.evaluate(input);
+        double winChanceThreshold = 0.5;
+        double randomChanceThreshold = 0.2;
 
-        super.onAttackEvent(countryFrom, countryTo);
+        //super.onAttackEvent(countryFrom, countryTo);
         // Add code for deciding end of event phase here (finish attack phase method)
 
         //return vector has the 0th index containing the country from, the 1st index containing the country to and the 2nd index containing the state value
@@ -90,6 +85,9 @@ public class LinearTDBot extends RiskBot {
         } else { // this is the condition that the winChance is below the threshold to attack immediately.
             if(Math.random() < randomChanceThreshold ){ //there is a 20% chance that the countries will attack even if it's below the threshold to allow exploration - 'underdog'
                 super.onAttackEvent(countryFromID, countryToID);
+                Vector current = new Vector(armies_feature, territory_feature, (double)enemey_reinforce_feature, best_enemy_feature,hinterland_feature);
+                Vector future  = chosenCountriesStateValue.get(2);
+                linearEvalFunction.tdTrain(future, current);
             } else {// if there is no 'obvious attack', and the potential 'underdog' attack is also no considered then we will move onto the next battle phase.
                 currentGame.nextBattlePhase();
             }
