@@ -20,24 +20,21 @@ public class WolfFeatures {
             for(int j = 0; j < neighbours.size(); j++){
                 if (neighbours.get(j).getOwner() != player) {
                     conflict = true;
-                    break;
                 }
             }
+            if (!conflict) {
+                hinterland++;
+            } else {
+                conflict = false;
+            }
         }
-        if (!conflict) {
-            hinterland++;
-        } else {
-            conflict = false;
-        }
-        if(hinterland != 0) {
+        if(hinterland == 0)
+        {return 0;}
+        else {
             return (((double) numcountries) / hinterland);
         }
-        else {
-            return 1;
-        }
+
     }
-
-
     public static double moreThanOneArmy(Player player){
         HashSet<Country> countries = player.getCountriesOwned();
         int counter = 0;

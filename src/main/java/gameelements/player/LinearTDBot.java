@@ -77,7 +77,7 @@ public class LinearTDBot extends RiskBot {
         Country countryToID = currentGame.getGameBoard().getCountryFromID(countryAttackToID);
 
         //calculating the win chance for the countries specified
-        double winChance = BattlePhaseEstimator.winChance(countryToID.getNumSoldiers(), countryFromID.getNumSoldiers());
+        double winChance = BattlePhaseEstimator.winChance(countryToID.getNumSoldiers(), countryFromID.getNumSoldiers()-1);
 
         //If there is an 'obvious' attack where the win chance is greater than the threshold we attack straight away.
         if(winChance > winChanceThreshold){
