@@ -23,13 +23,16 @@ public class TDOptimizer extends Optimizer {
         Matrix currentWeights = layers.get(0).getRepresentation();
         double[][] weigths = currentWeights.getGrid();
         double[] vectorPrep = weigths[0];
+        for (int l = 0; l < vectorPrep.length; l++){
+            System.out.println(vectorPrep[l]);
+        }
         for(int i = 0; i < losses.getCoordinates().length; i++){
             double newWeight = vectorPrep[i] - (learningRate * losses.get(i));
             double increment = newWeight - vectorPrep[i];
             weightIncrements.set(i, increment);
         }
         Matrix increments = new Matrix(weightIncrements);
-        model.getLayers().get(0).getRepresentation().add(increments);
+        model.getLayers().get(0).getRepresentation().add(increments.getTransposed());
 
     }
 

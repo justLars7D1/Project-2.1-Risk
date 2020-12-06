@@ -447,7 +447,7 @@ public class BoardMap {
             victoryPane.getChildren().clear();
             victoryPane.setVisible(false);
         });
-        victoryPane.setVisible(true);
+        victoryPane.setVisible(false);
     }
 
     private void updateInfo(SVGPath s) {

@@ -140,7 +140,7 @@ public class Model implements Serializable {
         op.obtainLosses(losses);
         // Now update the weights using the optimizer
         this.optimizer.updateWeights(this);
-        this.resetGradients();
+        //this.resetGradients();
     }
 
 

@@ -21,7 +21,7 @@ public class TDLoss implements Loss{
                 double regulator = Math.pow(lambda, (FeatureSpace.round - i));
                 scale += FeatureSpace.features.get(i)[j] * regulator;
                 featureResult = featureResult.getScaled(scale);
-                result.set(i,featureResult.get(0));
+                result.set(j,featureResult.get(0));
             }
         }
         return result;

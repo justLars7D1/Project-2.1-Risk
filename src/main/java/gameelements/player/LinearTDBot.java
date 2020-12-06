@@ -99,6 +99,7 @@ public class LinearTDBot extends RiskBot {
         // Put all the code to pick the right action here
         //super.onFortifyEvent(countryFrom, countryTo, numTroops);
         // Add code for deciding end of event phase here (finish attack phase method)
+        currentGame.nextBattlePhase();
     }
 
     public Vector calculateFeatures(Game game){
