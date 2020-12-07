@@ -110,7 +110,7 @@ public class GameEnvironment {
             if (verbose) {
                 System.out.println("Game " + gameNum + " - Phase: " + game.getGamePhase());
             }
-            saveDQNNWeights();
+            //saveDQNNWeights();
             reset();
         }
     }

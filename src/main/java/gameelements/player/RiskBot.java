@@ -72,18 +72,23 @@ public class RiskBot extends Player {
     @Override
     public void onPlacementEvent(Country country, int numTroops) {
 
+        //TODO: Add number of opponent countries bordering on tie
+
         // We will place troops on the country with the smallest "security", e.g. highest chance to be overtaken
         int troopDifference = Integer.MAX_VALUE;
+        int numOffensiveCountries = Integer.MIN_VALUE;
 
         for (Country c: this.countriesOwned) {
 
             // Calculate the number of troops that can attack the country
             int numAttackingTroops = 0;
+            int numAttackingCountries = 0;
             List<Country> neighbors = c.getNeighboringCountries();
             for (Country neighbor: neighbors) {
                 if (!neighbor.getOwner().equals(this)) {
                     // We do - 1 here, since you can't attack with 1 troop
                     numAttackingTroops += neighbor.getNumSoldiers() - 1;
+                    numAttackingCountries++;
                 }
             }
 
@@ -93,10 +98,15 @@ public class RiskBot extends Player {
 
             // If the country is the most underarmed of all countries AND the limit is not reached yet,
             // place the troops there
-            if (differenceInTroops <= troopDifference && c.getNumSoldiers() != Settings.TROOPSLIMIT) {
-                country = c;
-                troopDifference = differenceInTroops;
+            if (c.getNumSoldiers() != Settings.TROOPSLIMIT) {
+                if (differenceInTroops < troopDifference ||
+                        (differenceInTroops == troopDifference && numAttackingCountries >= numOffensiveCountries)) {
+                    country = c;
+                    troopDifference = differenceInTroops;
+                    numOffensiveCountries = numAttackingCountries;
+                }
             }
+
         }
 
         // Place at most the number of troops that are left in the inventory and make sure it places at least one troop
