@@ -14,6 +14,9 @@ import gameelements.player.PlayerType;
 import java.util.HashMap;
 import java.util.List;
 
+import static gameelements.player.PlayerType.DQN;
+import static gameelements.player.PlayerType.TD;
+
 public class GameEnvironment {
 
     /**
@@ -110,7 +113,11 @@ public class GameEnvironment {
             if (verbose) {
                 System.out.println("Game " + gameNum + " - Phase: " + game.getGamePhase());
             }
-            saveDQNNWeights();
+            if(playerTypes == DQN){saveDQNNWeights();}
+            if(playerTypes == TD){
+                System.out.println("td update");
+            }
+
             reset();
         }
     }

@@ -83,6 +83,7 @@ public class LinearTDBot extends RiskBot {
 
         //If there is an 'obvious' attack where the win chance is greater than the threshold we attack straight away.
         if(winChance > winChanceThreshold){
+            linearEvalFunction.tdTrain(future, current);
             super.onAttackEvent(countryFromID, countryToID);
             linearEvalFunction.tdTrain(future, current);
         } else { // this is the condition that the winChance is below the threshold to attack immediately.
@@ -91,15 +92,14 @@ public class LinearTDBot extends RiskBot {
                 super.onAttackEvent(countryFromID, countryToID);
             } else {// if there is no 'obvious attack', and the potential 'underdog' attack is also no considered then we will move onto the next battle phase.
                 currentGame.nextBattlePhase();
+                System.out.println("Battle skipped");
             }
         }
+        System.out.println("attack done");
     }
-
     @Override
     public void onFortifyEvent(Country countryFrom, Country countryTo, int numTroops) {
-        // Put all the code to pick the right action here
-        //super.onFortifyEvent(countryFrom, countryTo, numTroops);
-        // Add code for deciding end of event phase here (finish attack phase method)
+        currentGame.nextBattlePhase();
         currentGame.nextBattlePhase();
     }
 
@@ -109,6 +109,7 @@ public class LinearTDBot extends RiskBot {
         int enemey_reinforce_feature = BorderSupplyFeatures.getTotalEnemyReinforcement(game);
         double best_enemy_feature = BorderSupplyFeatures.getBestEnemyFeature(game);
         double hinterland_feature = WolfFeatures.hinterland(game.getCurrentPlayer());
+
 
         Vector input = new Vector(armies_feature, territory_feature, enemey_reinforce_feature, best_enemy_feature, hinterland_feature);
         return input;
@@ -178,11 +179,10 @@ public class LinearTDBot extends RiskBot {
                 defendingCountry.removeNumSoldiers(defendingCountry.getNumSoldiers());
                 defendingCountry.addNumSoldiers(defendingTroops);
                 attackingCountry.addNumSoldiers(attackingTroops-1);
-
                 // Calculate expected State Value
                 double expectedStateValue = win_chance * win_value.get(0) + (1-win_chance) * loose_value.get(0);
+
                 // Find the maximum expected state value and the countries that belong to it
-                System.out.println(expectedStateValue);
                 if(expectedStateValue > maxExpectedStateValue){
                     // Country from
                     final_attackingCountry = attackingCountry.getID();
@@ -190,6 +190,7 @@ public class LinearTDBot extends RiskBot {
                     final_defendingCountry = defendingCountry.getID();
                     // state value
                     maxExpectedStateValue = expectedStateValue;
+                    System.out.println(maxExpectedStateValue);
                 }
             }
         }
