@@ -37,7 +37,7 @@ public class DQNNBot extends RiskBot {
 
     private final static double discountFactor = 0.8;
 
-    public final static boolean loadBestModel = false;
+    public final static boolean loadBestModel = true;
 
     Loss lossFunction = new MSE();
     Optimizer optEst = new RMSProp(0.01, 0.9);
@@ -63,7 +63,7 @@ public class DQNNBot extends RiskBot {
 
         if (loadBestModel) {
 
-            estimatorNetwork = Model.loadModel("D:\\Projects\\Project-2.1---Game\\src\\main\\java\\gameelements\\player\\botWeights\\bestEstimatorWeights.txt");
+            estimatorNetwork = Model.loadModel("src/main/java/gameelements/player/botWeights/bestEstimatorWeights.txt");
 
         } else {
 
@@ -126,10 +126,10 @@ public class DQNNBot extends RiskBot {
 
                 // Decide on taking the action or not
                 boolean takeAction = qValues.get(1) > qValues.get(0);
-                if (countryFrom.getNumSoldiers() < countryTo.getNumSoldiers()) {
-                    System.out.println("Action? " + takeAction);
-                    System.out.println(countryFrom.getNumSoldiers() + " - " + countryTo.getNumSoldiers());
-                }
+
+                System.out.println("Action? " + takeAction);
+                System.out.println(countryFrom.getNumSoldiers() + " - " + countryTo.getNumSoldiers());
+
                 if (takeAction) {
                     super.onAttackEvent(countryFrom, countryTo);
                     actionTaken = true;
@@ -144,8 +144,9 @@ public class DQNNBot extends RiskBot {
                 if (trainingEnabled) {
                     optEst.init(estimatorNetwork);
 
-                    double reward = getNumCountriesOwned() - numCountriesBeforeAttack;
-                    if (reward == 0) reward = -0.1;
+                    double reward = 100*(getNumCountriesOwned() - numCountriesBeforeAttack);
+                    if (reward == 0) reward = -25;
+
                     Vector newFeatures = getPlayerFeatures(countryFrom, countryTo);
                     Vector qValuesNextState = estimatorNetwork.forwardEvaluate(newFeatures);
                     Vector Y = qValuesNextState.getScaled(discountFactor).getAdded(reward);

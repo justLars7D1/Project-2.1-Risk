@@ -110,7 +110,7 @@ public class GameEnvironment {
             if (verbose) {
                 System.out.println("Game " + gameNum + " - Phase: " + game.getGamePhase());
             }
-            //saveDQNNWeights();
+            saveDQNNWeights();
             reset();
         }
     }
@@ -126,7 +126,7 @@ public class GameEnvironment {
                 bestTerritory = countriesOwned;
             }
         }
-        String path = "D:\\Projects\\Project-2.1---Game\\src\\main\\java\\gameelements\\player\\botWeights\\bestEstimatorWeights.txt";
+        String path = "src/main/java/gameelements/player/botWeights/bestEstimatorWeights.txt";
         ((DQNNBot) best)
                 .getEstimatorNetwork()
                 .save(path);
