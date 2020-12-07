@@ -78,16 +78,17 @@ public class LinearTDBot extends RiskBot {
 
         //calculating the win chance for the countries specified
         double winChance = BattlePhaseEstimator.winChance(countryToID.getNumSoldiers(), countryFromID.getNumSoldiers()-1);
+        Vector current = new Vector(armies_feature, territory_feature, (double)enemey_reinforce_feature, best_enemy_feature,hinterland_feature);
+        Vector future  = chosenCountriesStateValue.get(2);
 
         //If there is an 'obvious' attack where the win chance is greater than the threshold we attack straight away.
         if(winChance > winChanceThreshold){
             super.onAttackEvent(countryFromID, countryToID);
+            linearEvalFunction.tdTrain(future, current);
         } else { // this is the condition that the winChance is below the threshold to attack immediately.
             if(Math.random() < randomChanceThreshold ){ //there is a 20% chance that the countries will attack even if it's below the threshold to allow exploration - 'underdog'
-                super.onAttackEvent(countryFromID, countryToID);
-                Vector current = new Vector(armies_feature, territory_feature, (double)enemey_reinforce_feature, best_enemy_feature,hinterland_feature);
-                Vector future  = chosenCountriesStateValue.get(2);
                 linearEvalFunction.tdTrain(future, current);
+                super.onAttackEvent(countryFromID, countryToID);
             } else {// if there is no 'obvious attack', and the potential 'underdog' attack is also no considered then we will move onto the next battle phase.
                 currentGame.nextBattlePhase();
             }
@@ -181,6 +182,7 @@ public class LinearTDBot extends RiskBot {
                 // Calculate expected State Value
                 double expectedStateValue = win_chance * win_value.get(0) + (1-win_chance) * loose_value.get(0);
                 // Find the maximum expected state value and the countries that belong to it
+                System.out.println(expectedStateValue);
                 if(expectedStateValue > maxExpectedStateValue){
                     // Country from
                     final_attackingCountry = attackingCountry.getID();
