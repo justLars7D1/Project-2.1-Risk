@@ -8,11 +8,15 @@ import gameelements.phases.data.DistributionEventData;
 import gameelements.phases.data.FortifyEventData;
 import gameelements.phases.data.PlacementEventData;
 import gameelements.player.DQNNBot;
+import gameelements.player.LinearTDBot;
 import gameelements.player.Player;
 import gameelements.player.PlayerType;
 
 import java.util.HashMap;
 import java.util.List;
+
+import static gameelements.player.PlayerType.DQN;
+import static gameelements.player.PlayerType.TD;
 
 public class GameEnvironment {
 
@@ -108,9 +112,30 @@ public class GameEnvironment {
             if (verbose) {
                 System.out.println("Game " + gameNum + " - Phase: " + game.getGamePhase());
             }
-            saveDQNNWeights();
+            if(playerTypes == DQN){saveDQNNWeights();}
+            if(playerTypes == TD){ saveTDWeight(); }
+
             reset();
         }
+    }
+    public  void saveTDWeight(){
+        System.out.println("###### saving waits ######");
+        List<Player> players = game.getAllPlayer();
+        Player best = players.get(0);
+        int bestTerritory = -1;
+        for (Player p: players) {
+            int countriesOwned = p.getNumCountriesOwned();
+            if (countriesOwned > bestTerritory) {
+                best = p;
+                bestTerritory = countriesOwned;
+            }
+        }
+        String path = "src/main/java/gameelements/player/botWeights/TD-Bot_Weights.txt";
+        ((LinearTDBot) best)
+                .getLinearEvalFunction()
+                .save(path);
+
+
     }
 
     public void saveDQNNWeights() {
