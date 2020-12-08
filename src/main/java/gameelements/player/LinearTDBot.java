@@ -100,7 +100,6 @@ public class LinearTDBot extends RiskBot {
     @Override
     public void onFortifyEvent(Country countryFrom, Country countryTo, int numTroops) {
         currentGame.nextBattlePhase();
-        currentGame.nextBattlePhase();
     }
 
     public Vector calculateFeatures(Game game){
@@ -216,5 +215,9 @@ public class LinearTDBot extends RiskBot {
             attackTargets.put(owned_country, targetCountries);
         }
         return attackTargets;
+    }
+
+    public Model getLinearEvalFunction() {
+        return linearEvalFunction;
     }
 }

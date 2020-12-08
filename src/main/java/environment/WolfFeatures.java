@@ -31,7 +31,7 @@ public class WolfFeatures {
         if(hinterland == 0)
         {return 0;}
         else {
-            return (((double) numcountries) / hinterland);
+            return ((hinterland / (double) numcountries) );
         }
 
     }
