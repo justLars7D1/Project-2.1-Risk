@@ -19,12 +19,14 @@ public class LinearTDBot extends RiskBot {
     Model linearEvalFunction;
 
 
+
     /**
      * algorithm and strategies for our risk bot
      */
     public LinearTDBot(int id, int numTroopsInInventory, Game game) {
         super(id, numTroopsInInventory, game);
-        setupModel();
+        //setupModel();
+        linearEvalFunction = Model.loadModel("src/main/java/gameelements/player/botWeights/TD-Bot_Weights.txt");
     }
 
     private void setupModel() {

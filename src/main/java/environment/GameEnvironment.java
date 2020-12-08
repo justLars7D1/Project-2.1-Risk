@@ -121,6 +121,7 @@ public class GameEnvironment {
         }
     }
     public  void saveTDWeight(){
+        System.out.println("###### saving waits ######");
         List<Player> players = game.getAllPlayer();
         Player best = players.get(0);
         int bestTerritory = -1;
