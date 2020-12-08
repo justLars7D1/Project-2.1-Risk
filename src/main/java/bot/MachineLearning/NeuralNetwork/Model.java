@@ -221,7 +221,8 @@ public class Model implements Serializable {
             } else {
                 // Means we're at the final layer of the model right now
                 // First calculate dJ/da, where J is the loss function and a is the predicted y-value
-                dJda = lossFunction.evalDerivative(Y, y);
+                dJda = lossFunction.evalDerivative(y, Y);
+                //System.out.println("Derivative loss:" + dJda);
             }
 
             // Now calculate da/dz, which is the derivative of the activation function (g'(z))

@@ -3,6 +3,7 @@ package gameelements.player;
 import bot.Algorithms.MarkovChain.BattlePhaseEstimator;
 import bot.MachineLearning.NeuralNetwork.Activations.LeakyReLu;
 import bot.MachineLearning.NeuralNetwork.Activations.Pass;
+import bot.MachineLearning.NeuralNetwork.Activations.Sigmoid;
 import bot.MachineLearning.NeuralNetwork.Losses.Loss;
 import bot.MachineLearning.NeuralNetwork.Losses.MSE;
 import bot.MachineLearning.NeuralNetwork.Model;
@@ -33,15 +34,15 @@ public class DQNNBot extends RiskBot {
     * predicts q values for a binary attack decision
     */
 
-    private final static boolean trainingEnabled = false;
+    private final static boolean trainingEnabled = true;
 
-    private final static double discountFactor = 0.8;
+    private final static double discountFactor = 0;
 
-    public final static boolean loadBestModel = true;
+    public final static boolean loadBestModel = false;
 
     Loss lossFunction = new MSE();
-    Optimizer optEst = new RMSProp(0.01, 0.9);
-    Optimizer optTarget = new RMSProp(0.01, 0.9);
+    Optimizer optEst = new RMSProp(0.005, 0.9);
+    Optimizer optTarget = new RMSProp(0.005, 0.9);
 
     int n;
 
@@ -63,14 +64,14 @@ public class DQNNBot extends RiskBot {
 
         if (loadBestModel) {
 
-            estimatorNetwork = Model.loadModel("src/main/java/gameelements/player/botWeights/bestEstimatorWeights.txt");
+            estimatorNetwork = Model.loadModel("src/main/java/gameelements/player/botWeights/bestEstimatorWeights1.txt");
 
         } else {
 
             // dynamic network
             estimatorNetwork = new Model(numFeatures);
-            estimatorNetwork.addLayer(6, new LeakyReLu());
-            estimatorNetwork.addLayer(3, new LeakyReLu());
+            estimatorNetwork.addLayer(6, new Sigmoid());
+            estimatorNetwork.addLayer(3, new Sigmoid());
             estimatorNetwork.addLayer(2, new Pass());
 
             estimatorNetwork.compile(lossFunction, optTarget);
@@ -79,8 +80,8 @@ public class DQNNBot extends RiskBot {
 
         // target approximation
         targetNetwork = new Model(numFeatures);
-        targetNetwork.addLayer(6, new LeakyReLu());
-        targetNetwork.addLayer(3, new LeakyReLu());
+        targetNetwork.addLayer(6, new Sigmoid());
+        targetNetwork.addLayer(3, new Sigmoid());
         targetNetwork.addLayer(2, new Pass());
 
         targetNetwork.compile(lossFunction, optEst);
@@ -99,9 +100,12 @@ public class DQNNBot extends RiskBot {
         super.onPlacementEvent(country, numTroops);
         // Here we check if the phase is over, and if so, we compute which countries we could attack from
         computeCountriesToAttackFrom();
+        turnReward = 0;
     }
 
     private List<List<Country>> countryFromToAttackPairs;
+
+    public double turnReward = 0;
 
     @Override
     public void onAttackEvent(Country countryFrom, Country countryTo) {
@@ -117,18 +121,19 @@ public class DQNNBot extends RiskBot {
                 countryTo = attackPair.get(1);
 
                 int numCountriesBeforeAttack = getNumCountriesOwned();
+                int numTroopsDefenderBeforeAttack = countryFrom.getNumSoldiers();
 
                 // Run it through the DQNN and evaluate
                 Vector features = getPlayerFeatures(countryFrom, countryTo);
-                Vector qValues = estimatorNetwork.evaluate(features);
+                Vector qValues = estimatorNetwork.forwardEvaluate(features);
 
                 int valueBefore = this.getNumCountriesOwned();
 
                 // Decide on taking the action or not
                 boolean takeAction = qValues.get(1) > qValues.get(0);
 
-                System.out.println("Action? " + takeAction);
-                System.out.println(countryFrom.getNumSoldiers() + " - " + countryTo.getNumSoldiers());
+                System.out.println("--- Turn Start ---");
+                System.out.println(takeAction + ": " + countryFrom.getNumSoldiers() + " -> " + countryTo.getNumSoldiers());
 
                 if (takeAction) {
                     super.onAttackEvent(countryFrom, countryTo);
@@ -144,15 +149,38 @@ public class DQNNBot extends RiskBot {
                 if (trainingEnabled) {
                     optEst.init(estimatorNetwork);
 
-                    double reward = 100*(getNumCountriesOwned() - numCountriesBeforeAttack);
-                    if (reward == 0) reward = -25;
+                    double reward = 10*(getNumCountriesOwned() - numCountriesBeforeAttack);
+                    System.out.println(countryFrom.getNumSoldiers() + ", " + numTroopsDefenderBeforeAttack);
+                    if (reward == 0)reward += 2*(countryFrom.getNumSoldiers() - numTroopsDefenderBeforeAttack);
+
+                    turnReward += reward;
 
                     Vector newFeatures = getPlayerFeatures(countryFrom, countryTo);
-                    Vector qValuesNextState = estimatorNetwork.forwardEvaluate(newFeatures);
-                    Vector Y = qValuesNextState.getScaled(discountFactor).getAdded(reward);
-                    estimatorNetwork.computeGradientsRL(newFeatures, new Vector(valueBefore, valueAfter), Y);
+                    Vector qValuesNextState = estimatorNetwork.evaluate(newFeatures);
+                    double targetValue = Math.max(qValuesNextState.get(0), qValuesNextState.get(1));
+                    targetValue *= discountFactor;
+                    targetValue += reward;
+                    Vector Yt = new Vector(2);
+                    if (takeAction) {
+                        Yt.set(0, qValues.get(0));
+                        Yt.set(1, targetValue);
+                    } else {
+                        Yt.set(0, targetValue);
+                        Yt.set(1, qValues.get(1));
+                    }
+
+                    System.out.println("Reward: " + reward);
+
+                    estimatorNetwork.computeGradientsRL(newFeatures, qValues, Yt);
                     optEst.updateWeights(estimatorNetwork);
                     estimatorNetwork.resetGradients();
+
+                    System.out.println("Q before update: " + qValues);
+                    System.out.println("Q after update: " + estimatorNetwork.evaluate(features));
+
+                    //System.out.println("--- Turn End ---");
+
+
                 }
 
                 // Code for deciding end of event phase here (finish attack phase method)

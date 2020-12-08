@@ -110,7 +110,7 @@ public abstract class Player {
                 for (int i = 0; i < minNumDiceRolled; i++) {
                     int attackerRoll = attackerDiceRolls.get(i);
                     int defenderRoll = defenderDiceRolls.get(i);
-                    if (attackerRoll > defenderRoll) {
+                    if (attackerRoll >= defenderRoll) {
                         countryTo.removeNumSoldiers(1);
                     } else {
                         countryFrom.removeNumSoldiers(1);

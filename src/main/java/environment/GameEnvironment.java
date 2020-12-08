@@ -77,8 +77,10 @@ public class GameEnvironment {
      */
     public void trainOnOneGame(int maxTurns, boolean verbose) {
         int turnCounter = 0;
+        double rewardSum = 0;
         while (turnCounter < maxTurns*numPlayers && !game.getGamePhase().equals(GamePhase.VICTORY)) {
-            if (verbose) System.out.println("-- Current Player: " + game.getCurrentPlayer() + " --");
+            //System.out.println("-- Current Player: " + game.getCurrentPlayer() + " --");
+            System.out.println("Player " + game.getCurrentPlayer().getId());
             while (game.getBattlePhase().equals(BattlePhase.ATTACK) && !game.getGamePhase().equals(GamePhase.VICTORY)) {
                 game.onGameEvent(new AttackEventData(-1, -1));
             }
@@ -91,12 +93,8 @@ public class GameEnvironment {
 
             }
 
-            if (verbose) {
-                System.out.println("Turn " + turnCounter + " completed");
-            }
             turnCounter++;
         }
-
     }
 
     public void train(int numGames, int maxTurns, boolean verbose) {
@@ -126,7 +124,7 @@ public class GameEnvironment {
                 bestTerritory = countriesOwned;
             }
         }
-        String path = "src/main/java/gameelements/player/botWeights/bestEstimatorWeights.txt";
+        String path = "src/main/java/gameelements/player/botWeights/bestEstimatorWeights1.txt";
         ((DQNNBot) best)
                 .getEstimatorNetwork()
                 .save(path);
