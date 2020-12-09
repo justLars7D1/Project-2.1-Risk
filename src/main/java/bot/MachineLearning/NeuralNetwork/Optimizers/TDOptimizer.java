@@ -32,7 +32,12 @@ public class TDOptimizer extends Optimizer {
         double normFactor = this.normalization();
         double featureNorm = this.obtainCurrentFeatureNorm();
         for(int i = 0; i < losses.getCoordinates().length; i++){
+            //TD with normalized features
             double newWeight = vectorPrep[i] - (learningRate * (losses.get(i)/(normFactor * featureNorm)));
+
+            //TD without normalized features
+            //double newWeight = vectorPrep[i] - learningRate * (losses.get(i));
+
             double increment = newWeight - vectorPrep[i];
             weightIncrements.set(i, increment);
         }
