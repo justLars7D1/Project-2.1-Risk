@@ -40,6 +40,8 @@ public class ModelTest extends Model {
         Vector[] xs = {new Vector(0.05, 0.10)};
         Vector[] ys = {new Vector(0.01, 0.99)};
 
+        m.gradientChecking(xs[0], ys[0]);
+
         System.out.println(m.evaluate(xs[0]));
         System.out.println(new MSE().evaluate(m.evaluate(xs[0]), ys[0]) + "\n");
 

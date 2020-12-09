@@ -3,12 +3,14 @@ package gameelements.player;
 import bot.Algorithms.MarkovChain.BattlePhaseEstimator;
 import bot.MachineLearning.NeuralNetwork.Activations.LeakyReLu;
 import bot.MachineLearning.NeuralNetwork.Activations.Pass;
+import bot.MachineLearning.NeuralNetwork.Activations.ReLu;
 import bot.MachineLearning.NeuralNetwork.Activations.Sigmoid;
 import bot.MachineLearning.NeuralNetwork.Losses.Loss;
 import bot.MachineLearning.NeuralNetwork.Losses.MSE;
 import bot.MachineLearning.NeuralNetwork.Model;
 import bot.MachineLearning.NeuralNetwork.Optimizers.Optimizer;
 import bot.MachineLearning.NeuralNetwork.Optimizers.RMSProp;
+import bot.MachineLearning.NeuralNetwork.Optimizers.SGD;
 import bot.Mathematics.LinearAlgebra.Vector;
 import environment.BorderSupplyFeatures;
 import environment.WolfFeatures;
@@ -34,15 +36,15 @@ public class DQNNBot extends RiskBot {
     * predicts q values for a binary attack decision
     */
 
-    private final static boolean trainingEnabled = true;
+    private final static boolean trainingEnabled = false;
 
-    private final static double discountFactor = 0;
+    private final static double discountFactor = 0.5;
 
-    public final static boolean loadBestModel = false;
+    public final static boolean loadBestModel = true;
 
     Loss lossFunction = new MSE();
-    Optimizer optEst = new RMSProp(0.005, 0.9);
-    Optimizer optTarget = new RMSProp(0.005, 0.9);
+    Optimizer optEst = new SGD(0.05);
+    Optimizer optTarget = new SGD(0.05);
 
     int n;
 
@@ -70,8 +72,8 @@ public class DQNNBot extends RiskBot {
 
             // dynamic network
             estimatorNetwork = new Model(numFeatures);
-            estimatorNetwork.addLayer(6, new Sigmoid());
-            estimatorNetwork.addLayer(3, new Sigmoid());
+            estimatorNetwork.addLayer(6, new ReLu());
+            estimatorNetwork.addLayer(3, new ReLu());
             estimatorNetwork.addLayer(2, new Pass());
 
             estimatorNetwork.compile(lossFunction, optTarget);
@@ -80,8 +82,8 @@ public class DQNNBot extends RiskBot {
 
         // target approximation
         targetNetwork = new Model(numFeatures);
-        targetNetwork.addLayer(6, new Sigmoid());
-        targetNetwork.addLayer(3, new Sigmoid());
+        targetNetwork.addLayer(6, new ReLu());
+        targetNetwork.addLayer(3, new ReLu());
         targetNetwork.addLayer(2, new Pass());
 
         targetNetwork.compile(lossFunction, optEst);
@@ -132,8 +134,8 @@ public class DQNNBot extends RiskBot {
                 // Decide on taking the action or not
                 boolean takeAction = qValues.get(1) > qValues.get(0);
 
-                System.out.println("--- Turn Start ---");
-                System.out.println(takeAction + ": " + countryFrom.getNumSoldiers() + " -> " + countryTo.getNumSoldiers());
+                //System.out.println("--- Turn Start ---");
+                //System.out.println(takeAction + ": " + countryFrom.getNumSoldiers() + " -> " + countryTo.getNumSoldiers());
 
                 if (takeAction) {
                     super.onAttackEvent(countryFrom, countryTo);
@@ -150,7 +152,6 @@ public class DQNNBot extends RiskBot {
                     optEst.init(estimatorNetwork);
 
                     double reward = 10*(getNumCountriesOwned() - numCountriesBeforeAttack);
-                    System.out.println(countryFrom.getNumSoldiers() + ", " + numTroopsDefenderBeforeAttack);
                     if (reward == 0)reward += 2*(countryFrom.getNumSoldiers() - numTroopsDefenderBeforeAttack);
 
                     turnReward += reward;
@@ -169,14 +170,13 @@ public class DQNNBot extends RiskBot {
                         Yt.set(1, qValues.get(1));
                     }
 
-                    System.out.println("Reward: " + reward);
+                    //System.out.print(lossFunction.evaluate(qValues, Yt));
+
+                    //System.out.println("Reward: " + reward);
 
                     estimatorNetwork.computeGradientsRL(newFeatures, qValues, Yt);
                     optEst.updateWeights(estimatorNetwork);
                     estimatorNetwork.resetGradients();
-
-                    System.out.println("Q before update: " + qValues);
-                    System.out.println("Q after update: " + estimatorNetwork.evaluate(features));
 
                     //System.out.println("--- Turn End ---");
 

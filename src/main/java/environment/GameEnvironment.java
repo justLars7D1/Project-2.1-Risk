@@ -84,10 +84,11 @@ public class GameEnvironment {
         double rewardSum = 0;
         while (turnCounter < maxTurns*numPlayers && !game.getGamePhase().equals(GamePhase.VICTORY)) {
             //System.out.println("-- Current Player: " + game.getCurrentPlayer() + " --");
-            System.out.println("Player " + game.getCurrentPlayer().getId());
             while (game.getBattlePhase().equals(BattlePhase.ATTACK) && !game.getGamePhase().equals(GamePhase.VICTORY)) {
                 game.onGameEvent(new AttackEventData(-1, -1));
             }
+
+            System.out.println(game.getCurrentPlayer());
 
             if (!game.getGamePhase().equals(GamePhase.VICTORY)) {
                 finishFortifyingPhase();
