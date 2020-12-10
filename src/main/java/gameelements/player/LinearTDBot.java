@@ -87,7 +87,6 @@ public class LinearTDBot extends RiskBot {
         if(winChance > winChanceThreshold){
             linearEvalFunction.tdTrain(future, current);
             super.onAttackEvent(countryFromID, countryToID);
-            linearEvalFunction.tdTrain(future, current);
         } else { // this is the condition that the winChance is below the threshold to attack immediately.
             if(Math.random() < randomChanceThreshold ){ //there is a 20% chance that the countries will attack even if it's below the threshold to allow exploration - 'underdog'
                 linearEvalFunction.tdTrain(future, current);
@@ -99,6 +98,7 @@ public class LinearTDBot extends RiskBot {
         }
         System.out.println("attack done");
     }
+
     @Override
     public void onFortifyEvent(Country countryFrom, Country countryTo, int numTroops) {
         currentGame.nextBattlePhase();
