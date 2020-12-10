@@ -108,6 +108,9 @@ public class DQNNBot extends RiskBot {
     private List<List<Country>> countryFromToAttackPairs;
 
     public double turnReward = 0;
+    private double totalReward = 0;
+
+    private static int bla = 0;
 
     @Override
     public void onAttackEvent(Country countryFrom, Country countryTo) {
@@ -129,8 +132,6 @@ public class DQNNBot extends RiskBot {
                 Vector features = getPlayerFeatures(countryFrom, countryTo);
                 Vector qValues = estimatorNetwork.forwardEvaluate(features);
 
-                int valueBefore = this.getNumCountriesOwned();
-
                 // Decide on taking the action or not
                 boolean takeAction = qValues.get(1) > qValues.get(0);
 
@@ -146,15 +147,17 @@ public class DQNNBot extends RiskBot {
                 System.out.println("Stats from troops: " + countryFrom.getNumSoldiers());
                 System.out.println("Stats to troops: " + countryTo.getNumSoldiers());*/
 
-                int valueAfter = this.getNumCountriesOwned();
-
                 if (trainingEnabled) {
                     optEst.init(estimatorNetwork);
 
                     double reward = 10*(getNumCountriesOwned() - numCountriesBeforeAttack);
-                    if (reward == 0)reward += 2*(countryFrom.getNumSoldiers() - numTroopsDefenderBeforeAttack);
+                    if (reward == 0) reward += 2*(countryFrom.getNumSoldiers() - numTroopsDefenderBeforeAttack);
 
-                    turnReward += reward;
+                    totalReward += reward;
+
+                    if (bla % 2 == 0) {
+                        System.out.println(totalReward);
+                    }
 
                     Vector newFeatures = getPlayerFeatures(countryFrom, countryTo);
                     Vector qValuesNextState = estimatorNetwork.evaluate(newFeatures);
@@ -199,6 +202,7 @@ public class DQNNBot extends RiskBot {
 
     @Override
     public void onFortifyEvent(Country countryFrom, Country countryTo, int numTroops) {
+        bla++;
         // Put all the code to pick the right action here
         super.onFortifyEvent(countryFrom, countryTo, numTroops);
         // Add code for deciding end of event phase here (finish attack phase method)

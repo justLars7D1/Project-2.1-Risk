@@ -88,8 +88,6 @@ public class GameEnvironment {
                 game.onGameEvent(new AttackEventData(-1, -1));
             }
 
-            System.out.println(game.getCurrentPlayer());
-
             if (!game.getGamePhase().equals(GamePhase.VICTORY)) {
                 finishFortifyingPhase();
 
