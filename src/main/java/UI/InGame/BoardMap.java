@@ -42,7 +42,7 @@ public class BoardMap {
 
     private static Robot robot = null;
     private SVGPath path1 = new SVGPath();
-    private double scaleFactor = 7;
+    private double scaleFactor = 8.5;
     private ArrayList<SVGPath> listOfPaths;
     private double width;
     private double height;
@@ -53,6 +53,7 @@ public class BoardMap {
     private ArrayList<String> countryCode = new ArrayList<String>();
     private Button confirmB;
     private Button attackB;
+    private Button skipB;
     private Button endTurnB;
     private String playerColor;
     private Circle playerFlag;
@@ -80,6 +81,7 @@ public class BoardMap {
     public BoardMap(HashMap<Integer, PlayerType> players, Menu menu) {
         this.players = players;
         this.game = new Game(players);
+        this.oldStyle = "-fx-fill: grey";
         buildScene(menu);
     }
 
@@ -164,14 +166,15 @@ public class BoardMap {
 
         //Action Panel ---------------------------
         warning = new Label("Select a land to add your troops! ");
-        //confirmB = new Button("Confirm");
+        //confirmB = new Button("Confirm");w
         //attackB = new Button("Attack");
         endTurnB = new Button("End Phase");
         //confirmB.setUnderline(true);
         //attackB.setUnderline(true);
         endTurnB.setUnderline(true);
+        skipB = new Button("Skip Turn");
 
-        HBox actionPanel = new HBox(warning, endTurnB);
+        HBox actionPanel = new HBox(warning, endTurnB, skipB);
         actionPanel.getStyleClass().add("hbox");
         actionPanel.setAlignment(Pos.CENTER);
 
@@ -194,6 +197,9 @@ public class BoardMap {
             updateWarning();
             updateAllCountries();
             getPlayerColor();
+        });
+        skipB.setOnAction(e -> {
+            skipBotTurn();
         });
 
         borderPane.setBottom(actionPanel);
@@ -292,6 +298,26 @@ public class BoardMap {
         }
     }
 
+    private void skipBotTurn(){
+
+        while( game.isBot() &&  game.getBattlePhase() == BattlePhase.PLACEMENT && game.getGamePhase() != game.getGamePhase().VICTORY){
+            PlacementEventData data = new PlacementEventData(-1, 1);
+            game.onGameEvent(data);
+        }
+
+        while( game.isBot() &&  game.getBattlePhase() == BattlePhase.ATTACK && game.getGamePhase() != game.getGamePhase().VICTORY){
+            AttackEventData data = new AttackEventData(-1, -1);
+            game.onGameEvent(data);
+        }
+
+        if(game.getConqueredCountries().size() > 0  && game.getGamePhase() != game.getGamePhase().VICTORY) {
+            conquerScreen(game.getConqueredCountries());
+        }
+
+        updateAllCountries();
+        updateWarning();
+    }
+
     /**
      * method to return the ID of the country which is being clicked on within the UI
      * @param svg contains the country svg that is being clicked
@@ -325,22 +351,23 @@ public class BoardMap {
                             //when bot starts first turn doesnt execute because waits MOUSE PRESSED
                             //click automaticaly applies color on bot because the mouse is there
 
-
                              if (!game.isBot()){
                                  oldStyle = "-fx-fill:" + getPlayerColor(game.getCurrentPlayer().getId());
                                  System.out.println("HUMAN");
-                                GameEventData data = new DistributionEventData(currentID);
-                                game.onGameEvent(data);
+                                 GameEventData data = new DistributionEventData(currentID);
+                                 game.onGameEvent(data);
                              }
+
                              if (game.isBot()) {
-                                System.out.println("BOT");
-                                GameEventData data = new DistributionEventData(-1);
+                                 System.out.println("BOT");
+                                 GameEventData data = new DistributionEventData(-1);
                                  game.onGameEvent(data);
                                  updateAllCountries();
                              }
                             getPlayerColor();
 
                         } else if (game.getGamePhase() == GamePhase.BATTLE) {
+                            getPlayerColor();
                             updateWarning();
                             System.out.println("Battle");
 
@@ -421,16 +448,26 @@ public class BoardMap {
     }
 
     private void conquerScreen(List<Country> listOfConqueredCountries) {
+
+        List<Country> countrySet = new ArrayList<Country>();
+
+        for (Country country : listOfConqueredCountries) {
+            if (!countrySet.contains(country)) {
+                countrySet.add(country);
+            }
+        }
+
+
         String str = "Player " + getPlayerColor() + " took over ";
 
-        str = str.concat(listOfConqueredCountries.get(0).getName());
+        str = str.concat(countrySet.get(0).getName());
 
-        for (int i = 1; i < (listOfConqueredCountries.size()) ; i++ ) {
+        for (int i = 1; i < (countrySet.size()) ; i++ ) {
 
 //            if (listOfConqueredCountries.size() != 1) {
             str = str.concat(", \n");
 //            }
-            str = str.concat(listOfConqueredCountries.get(i).getName());
+            str = str.concat(countrySet.get(i).getName());
 
         }
 
@@ -644,6 +681,7 @@ public class BoardMap {
     * Restart the current game.
     * */
     public void restart() {
+        this.oldStyle = "-fx-fill: grey" ;
         game = new Game(this.players);
         labelsDissapear();
         getPlayerColor();
