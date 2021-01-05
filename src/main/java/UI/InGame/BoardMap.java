@@ -42,7 +42,7 @@ public class BoardMap {
 
     private static Robot robot = null;
     private SVGPath path1 = new SVGPath();
-    private double scaleFactor = 8.5;
+    private double scaleFactor = 8.7;
     private ArrayList<SVGPath> listOfPaths;
     private double width;
     private double height;
