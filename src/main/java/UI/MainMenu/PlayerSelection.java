@@ -24,17 +24,15 @@ public class PlayerSelection {
     private ArrayList<Color> colors;
     public Scene scene4;
     private BoardMap board;
+    private Rectangle2D screenSize = Screen.getPrimary().getVisualBounds();
 
     public void buildScene(Menu menu) {
-        BorderPane pane = new BorderPane();
-        Rectangle2D screenSize = Screen.getPrimary().getVisualBounds();
+
         fillColors();
 
-        grid.setPadding(new Insets(100, 0, 0, screenSize.getWidth()/2-400));
-        grid.setVgap(10);
-        grid.setPrefWidth(400);
+        grid.setPadding(new Insets(160, 0, 0, screenSize.getWidth() / 3.4));
+        grid.setVgap(15);
         grid.setPrefHeight(30);
-
 
         //Column labels
         Label title = new Label("Player Selection");
@@ -64,10 +62,6 @@ public class PlayerSelection {
         //Button style
         grid.setConstraints(start, 1, 9);
         grid.setConstraints(back, 0, 9);
-        start.setMinWidth(grid.getPrefWidth());
-        start.setMinHeight(grid.getPrefHeight());
-        back.setMinWidth(grid.getPrefWidth());
-        back.setMinHeight(grid.getPrefHeight());
 
         //Button actions
         start.setOnAction(e -> { //initialising the board map
@@ -77,9 +71,9 @@ public class PlayerSelection {
         back.setOnAction(e -> menu.window.setScene(menu.scene1));
 
         grid.getChildren().addAll(title, player, colorLabel, start, back);
-        pane.setCenter(grid);
 
-        menu.scene2 = new Scene(pane, screenSize.getWidth(), screenSize.getHeight());
+
+        menu.scene2 = new Scene(grid, screenSize.getWidth(), screenSize.getHeight());
         menu.scene2.getStylesheets().add("css/SelectionStyle.css");
     }
 
@@ -103,6 +97,7 @@ public class PlayerSelection {
     private void createChoiceBoxes(int i) {
 
         ComboBox<String> playerBox = new ComboBox<>();
+        playerBox.setStyle("-fx-pref-width: " + screenSize.getWidth() / 6 + "; -fx-pref-height:" + 50);
         playerList.add(playerBox);
 
         playerBox.getItems().addAll("EMPTY", "USER", "EASY BOT", "HARD BOT");
@@ -110,7 +105,7 @@ public class PlayerSelection {
         grid.setConstraints(playerBox, 0, i + 1);
 
         ComboBox<String> colorBox = new ComboBox<>();
-
+        colorBox.setStyle("-fx-pref-width: " + screenSize.getWidth()/6 + "; -fx-pref-height:" + 50);
         colorList.add(colorBox);
         colorBox.setItems(FXCollections.observableArrayList("EMPTY", "RED", "BLUE", "GREEN", "YELLOW", "ORANGE", "PURPLE"));
         colorBox.setValue("EMPTY");

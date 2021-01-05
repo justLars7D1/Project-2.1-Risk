@@ -90,7 +90,7 @@ public class BoardMap {
 
         robot = new Robot();
         pane = new Pane();
-        StackPane canvas = new StackPane();
+        StackPane canvas = new StackPane(); 
         BorderPane pausePane = new BorderPane();
         victoryPane = new BorderPane();
         landInfoPane = new Pane();

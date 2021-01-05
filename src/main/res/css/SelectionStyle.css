@@ -5,7 +5,7 @@
 
 .button {
       -fx-font-family: Vivaldi;
-      -fx-font-size: 3em;
+      -fx-font-size: 3.8em;
       -fx-text-fill: black;
       -fx-background-color: transparent;
       -fx-background-radius: 100px;
@@ -18,15 +18,14 @@
 .label {
     -fx-font-family: Vivaldi;
     -fx-effect: dropshadow( gaussian , white , 4, 0.5, 1, 1);
-    -fx-font-size: 2.5em;
+    -fx-font-size: 3.5em;
     -fx-font-weight: bold;
 }
 
 .combo-box {
     -fx-background-color: #d1d1d1;
-    -fx-pref-width: 240;
     -fx-pref-height: 40;
-    -fx-font-size: 1.2em;
+    -fx-font-size: 1.4em;
 }
 
 .combo-box .combo-box-popup .list-cell {
@@ -37,7 +36,7 @@
 }
 
 #title {
-   -fx-font-size: 5em;
+   -fx-font-size: 6em;
 }
 
 .combo-box .combo-box-popup .list-cell:hover {
