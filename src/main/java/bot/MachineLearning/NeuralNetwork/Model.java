@@ -305,6 +305,14 @@ public class Model implements Serializable {
         return false;
     }
 
+    public void copyModelWeights(Model toModel) {
+        List<Layer> toModelLayers = toModel.getLayers();
+        for (int i = 0; i < layers.size(); i++) {
+            toModelLayers.get(i).setRepresentation((Matrix) layers.get(i).getRepresentation().clone());
+            toModelLayers.get(i).setBias((Vector) layers.get(i).getBias().clone());
+        }
+    }
+
     public static Model loadModel(String fileAndPath) {
         try {
             FileInputStream fileIn = new FileInputStream(fileAndPath);

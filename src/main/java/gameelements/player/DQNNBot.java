@@ -1,15 +1,12 @@
 package gameelements.player;
 
 import bot.Algorithms.MarkovChain.BattlePhaseEstimator;
-import bot.MachineLearning.NeuralNetwork.Activations.LeakyReLu;
 import bot.MachineLearning.NeuralNetwork.Activations.Pass;
 import bot.MachineLearning.NeuralNetwork.Activations.ReLu;
-import bot.MachineLearning.NeuralNetwork.Activations.Sigmoid;
 import bot.MachineLearning.NeuralNetwork.Losses.Loss;
 import bot.MachineLearning.NeuralNetwork.Losses.MSE;
 import bot.MachineLearning.NeuralNetwork.Model;
 import bot.MachineLearning.NeuralNetwork.Optimizers.Optimizer;
-import bot.MachineLearning.NeuralNetwork.Optimizers.RMSProp;
 import bot.MachineLearning.NeuralNetwork.Optimizers.SGD;
 import bot.Mathematics.LinearAlgebra.Vector;
 import environment.BorderSupplyFeatures;
@@ -46,7 +43,7 @@ public class DQNNBot extends RiskBot {
     Optimizer optEst = new SGD(0.05);
     Optimizer optTarget = new SGD(0.05);
 
-    int n;
+    int lag;
 
     Model targetNetwork;
 
@@ -62,7 +59,7 @@ public class DQNNBot extends RiskBot {
     public DQNNBot(int id, int numTroopsInInventory, Game game, int numFeatures, int lag) {
         super(id, numTroopsInInventory, game);
 
-        this.n = lag;
+        this.lag = lag;
 
         if (loadBestModel) {
 
@@ -76,7 +73,7 @@ public class DQNNBot extends RiskBot {
             estimatorNetwork.addLayer(3, new ReLu());
             estimatorNetwork.addLayer(2, new Pass());
 
-            estimatorNetwork.compile(lossFunction, optTarget);
+            estimatorNetwork.compile(lossFunction, optEst);
 
         }
 
@@ -86,7 +83,7 @@ public class DQNNBot extends RiskBot {
         targetNetwork.addLayer(3, new ReLu());
         targetNetwork.addLayer(2, new Pass());
 
-        targetNetwork.compile(lossFunction, optEst);
+        targetNetwork.compile(lossFunction, optTarget);
 
     }
 
@@ -110,7 +107,7 @@ public class DQNNBot extends RiskBot {
     public double turnReward = 0;
     private double totalReward = 0;
 
-    private static int bla = 0;
+    private int iteration = 0;
 
     @Override
     public void onAttackEvent(Country countryFrom, Country countryTo) {
@@ -129,7 +126,7 @@ public class DQNNBot extends RiskBot {
                 int numTroopsDefenderBeforeAttack = countryFrom.getNumSoldiers();
 
                 // Run it through the DQNN and evaluate
-                Vector features = getPlayerFeatures(countryFrom, countryTo);
+                Vector features = getCountryFeatures(countryFrom, countryTo);
                 Vector qValues = estimatorNetwork.forwardEvaluate(features);
 
                 // Decide on taking the action or not
@@ -155,23 +152,20 @@ public class DQNNBot extends RiskBot {
 
                     totalReward += reward;
 
-                    if (bla % 2 == 0) {
-                        System.out.println(totalReward);
-                    }
 
-                    Vector newFeatures = getPlayerFeatures(countryFrom, countryTo);
-                    Vector qValuesNextState = estimatorNetwork.evaluate(newFeatures);
-                    double targetValue = Math.max(qValuesNextState.get(0), qValuesNextState.get(1));
+                    Vector newFeatures = getCountryFeatures(countryFrom, countryTo);
+
+                    Vector qValuesNextStateEst = estimatorNetwork.evaluate(newFeatures);
+                    int maxIndex = (qValuesNextStateEst.get(0) >= qValuesNextStateEst.get(1)) ? 0 : 1;
+
+                    double targetValue = targetNetwork.evaluate(newFeatures).get(maxIndex);
+                    //double targetValue = Math.max(qValuesNextStateEst.get(0), qValuesNextStateEst.get(1)); - Normal Q-Learning
+
                     targetValue *= discountFactor;
                     targetValue += reward;
                     Vector Yt = new Vector(2);
-                    if (takeAction) {
-                        Yt.set(0, qValues.get(0));
-                        Yt.set(1, targetValue);
-                    } else {
-                        Yt.set(0, targetValue);
-                        Yt.set(1, qValues.get(1));
-                    }
+                    Yt.set(0, targetValue);
+                    Yt.set(1, targetValue);
 
                     //System.out.print(lossFunction.evaluate(qValues, Yt));
 
@@ -180,6 +174,10 @@ public class DQNNBot extends RiskBot {
                     estimatorNetwork.computeGradientsRL(newFeatures, qValues, Yt);
                     optEst.updateWeights(estimatorNetwork);
                     estimatorNetwork.resetGradients();
+
+                    if (iteration++ % this.lag == 0) {
+                        estimatorNetwork.copyModelWeights(targetNetwork);
+                    }
 
                     //System.out.println("--- Turn End ---");
 
@@ -202,7 +200,6 @@ public class DQNNBot extends RiskBot {
 
     @Override
     public void onFortifyEvent(Country countryFrom, Country countryTo, int numTroops) {
-        bla++;
         // Put all the code to pick the right action here
         super.onFortifyEvent(countryFrom, countryTo, numTroops);
         // Add code for deciding end of event phase here (finish attack phase method)
@@ -218,10 +215,16 @@ public class DQNNBot extends RiskBot {
 
         // expected number of troops lost in battle
         double expectedLoss = BattlePhaseEstimator.expectedLoss(countryTo.getNumSoldiers(), countryFrom.getNumSoldiers()-1);
-        // expected number of oponent troops defeated in a battle
+        // expected number of opponent troops defeated in a battle
         double expectedDamage = BattlePhaseEstimator.expectedDamage(countryTo.getNumSoldiers(), countryFrom.getNumSoldiers()-1);
 
-        return new Vector(winChance, suitible, susceptible, expectedLoss, expectedDamage);
+        double ownArmies = BorderSupplyFeatures.getArmiesFeature(currentGame.getGameBoard(), this);
+
+        double enemyArmies = BorderSupplyFeatures.getArmiesFeature(currentGame.getGameBoard(), countryTo.getOwner());
+
+        double bestEnemy = BorderSupplyFeatures.getBestEnemyFeature(currentGame);
+
+        return new Vector(winChance, suitible, susceptible, expectedLoss, expectedDamage, ownArmies, enemyArmies, bestEnemy);
     }
 
     private Vector getPlayerFeatures(Country countryFrom, Country countryTo){

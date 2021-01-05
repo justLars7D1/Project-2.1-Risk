@@ -100,6 +100,14 @@ public class Layer implements Serializable {
         return activation;
     }
 
+    public void setRepresentation(Matrix representation) {
+        this.representation = representation;
+    }
+
+    public void setBias(Vector bias) {
+        this.bias = bias;
+    }
+
     public String toString(int id) {
         String res = "---- Layer " + id + ": Dense ----\n";
         res += "Weights: \n";
