@@ -7,7 +7,7 @@ public class EnvironmentTest {
     public static void main(String[] args) {
         GameEnvironment environment = new GameEnvironment(PlayerType.DQN);
         System.out.println("--- Attack ---");
-        environment.train(1, 100, true);
+        environment.train(1000, 1000, true);
     }
 
 }

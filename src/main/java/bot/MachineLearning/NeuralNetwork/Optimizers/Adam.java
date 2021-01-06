@@ -35,6 +35,14 @@ public class Adam extends Optimizer {
         this.epsilon = 10e-7;
     }
 
+    public Adam(double learningRate) {
+        super(learningRate, 0);
+        this.beta1 = 0.9;
+        this.beta2 = 0.999;
+        this.epsilon = 10e-7;
+    }
+
+
     @Override
     public void updateWeights(Model model) {
         List<Layer> layers = model.getLayers();

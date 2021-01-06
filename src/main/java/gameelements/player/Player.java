@@ -242,6 +242,14 @@ public abstract class Player {
         return numTroopsInInventory;
     }
 
+    public int getNumTroopsOwned() {
+        int numTroops = 0;
+        for (Country c: getCountriesOwned()) {
+            numTroops += c.getNumSoldiers();
+        }
+        return numTroops;
+    }
+
     @Override
     public String toString() {
         return "Player{" +

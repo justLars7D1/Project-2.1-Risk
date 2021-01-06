@@ -6,8 +6,10 @@ import bot.MachineLearning.NeuralNetwork.Activations.ReLu;
 import bot.MachineLearning.NeuralNetwork.Losses.Loss;
 import bot.MachineLearning.NeuralNetwork.Losses.MSE;
 import bot.MachineLearning.NeuralNetwork.Model;
+import bot.MachineLearning.NeuralNetwork.Optimizers.Adam;
 import bot.MachineLearning.NeuralNetwork.Optimizers.Optimizer;
 import bot.MachineLearning.NeuralNetwork.Optimizers.SGD;
+import bot.MachineLearning.NeuralNetwork.QMetricCollector;
 import bot.Mathematics.LinearAlgebra.Vector;
 import environment.BorderSupplyFeatures;
 import environment.WolfFeatures;
@@ -17,6 +19,7 @@ import gameelements.game.Game;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 
 public class DQNNBot extends RiskBot {
     /*
@@ -33,15 +36,15 @@ public class DQNNBot extends RiskBot {
     * predicts q values for a binary attack decision
     */
 
-    private final static boolean trainingEnabled = false;
+    private final static boolean trainingEnabled = true;
 
-    private final static double discountFactor = 0.5;
+    private final static double discountFactor = 0.75;
 
     public final static boolean loadBestModel = true;
 
     Loss lossFunction = new MSE();
-    Optimizer optEst = new SGD(0.05);
-    Optimizer optTarget = new SGD(0.05);
+    Optimizer optEst = new Adam(10e-3);
+    Optimizer optTarget = new Adam(10e-3);
 
     int lag;
 
@@ -49,11 +52,25 @@ public class DQNNBot extends RiskBot {
 
     Model estimatorNetwork;
 
+    private final double randomActionProbability = 0.01;
+    private Random random = new Random();
+
+    public QMetricCollector metrics = new QMetricCollector();
+    {
+        metrics.enableMetric("reward");
+        metrics.enableMetric("targetOffset");
+        metrics.enableMetric("estimatorOffset");
+        metrics.enableMetric("estimatorAttack");
+        metrics.enableMetric("exploration");
+        metrics.enableMetric("lossInTroops");
+        metrics.enableMetric("totalNumTroops");
+    }
+
     /**
      * algorithm and strategies for our risk bot
      */
     public DQNNBot(int id, int numTroopsInInventory, Game game) {
-        this(id, numTroopsInInventory, game, 8, 1);
+        this(id, numTroopsInInventory, game, 8, 2);
     }
 
     public DQNNBot(int id, int numTroopsInInventory, Game game, int numFeatures, int lag) {
@@ -63,7 +80,8 @@ public class DQNNBot extends RiskBot {
 
         if (loadBestModel) {
 
-            estimatorNetwork = Model.loadModel("src/main/java/gameelements/player/botWeights/bestEstimatorWeights1.txt");
+            estimatorNetwork = Model.loadModel("src/main/java/gameelements/player/botWeights/bestEstimatorWeights2.txt");
+            estimatorNetwork = Model.loadModel("src/main/java/gameelements/player/botWeights/bestTargetWeights2.txt");
 
         } else {
 
@@ -99,13 +117,9 @@ public class DQNNBot extends RiskBot {
         super.onPlacementEvent(country, numTroops);
         // Here we check if the phase is over, and if so, we compute which countries we could attack from
         computeCountriesToAttackFrom();
-        turnReward = 0;
     }
 
     private List<List<Country>> countryFromToAttackPairs;
-
-    public double turnReward = 0;
-    private double totalReward = 0;
 
     private int iteration = 0;
 
@@ -117,6 +131,9 @@ public class DQNNBot extends RiskBot {
         while (!actionTaken) {
 
             if(!countryFromToAttackPairs.isEmpty()){
+
+                metrics.addToMetric("totalNumTroops", getNumTroopsOwned());
+
                 // Select the current pair we could potentially attack from and to
                 List<Country> attackPair = countryFromToAttackPairs.get(0);
                 countryFrom = attackPair.get(0);
@@ -126,11 +143,19 @@ public class DQNNBot extends RiskBot {
                 int numTroopsDefenderBeforeAttack = countryFrom.getNumSoldiers();
 
                 // Run it through the DQNN and evaluate
-                Vector features = getCountryFeatures(countryFrom, countryTo);
+                Vector features = getPlayerFeatures(countryFrom, countryTo);
                 Vector qValues = estimatorNetwork.forwardEvaluate(features);
 
                 // Decide on taking the action or not
                 boolean takeAction = qValues.get(1) > qValues.get(0);
+                if (random.nextDouble() <= this.randomActionProbability) {
+                    takeAction = !takeAction;
+                    metrics.addToMetric("exploration", 1);
+                } else {
+                    metrics.addToMetric("exploration", 0);
+                }
+
+                metrics.addToMetric("estimatorAttack", takeAction ? 1 : 0);
 
                 //System.out.println("--- Turn Start ---");
                 //System.out.println(takeAction + ": " + countryFrom.getNumSoldiers() + " -> " + countryTo.getNumSoldiers());
@@ -148,12 +173,13 @@ public class DQNNBot extends RiskBot {
                     optEst.init(estimatorNetwork);
 
                     double reward = 10*(getNumCountriesOwned() - numCountriesBeforeAttack);
-                    if (reward == 0) reward += 2*(countryFrom.getNumSoldiers() - numTroopsDefenderBeforeAttack);
+                    if (reward == 0) reward += (countryFrom.getNumSoldiers() - numTroopsDefenderBeforeAttack);
+                    if (reward == 0) reward = -1;
 
-                    totalReward += reward;
+                    metrics.addToMetric("lossInTroops", numTroopsDefenderBeforeAttack - countryFrom.getNumSoldiers());
+                    metrics.addToMetric("reward", reward);
 
-
-                    Vector newFeatures = getCountryFeatures(countryFrom, countryTo);
+                    Vector newFeatures = getPlayerFeatures(countryFrom, countryTo);
 
                     Vector qValuesNextStateEst = estimatorNetwork.evaluate(newFeatures);
                     int maxIndex = (qValuesNextStateEst.get(0) >= qValuesNextStateEst.get(1)) ? 0 : 1;
@@ -166,6 +192,9 @@ public class DQNNBot extends RiskBot {
                     Vector Yt = new Vector(2);
                     Yt.set(0, targetValue);
                     Yt.set(1, targetValue);
+
+                    metrics.addToMetric("estimatorOffset", lossFunction.evaluate(qValues, Yt).getMagnitude());
+                    metrics.addToMetric("targetOffset", lossFunction.evaluate(targetNetwork.evaluate(features), Yt).getMagnitude());
 
                     //System.out.print(lossFunction.evaluate(qValues, Yt));
 
@@ -293,5 +322,9 @@ public class DQNNBot extends RiskBot {
 
     public Model getEstimatorNetwork() {
         return estimatorNetwork;
+    }
+
+    public Model getTargetNetwork() {
+        return targetNetwork;
     }
 }

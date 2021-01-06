@@ -103,6 +103,7 @@ public class GameEnvironment {
     public void train(int numGames, int maxTurns, boolean verbose) {
         int gameNum = 0;
         while (gameNum < numGames) {
+            long startTime = System.currentTimeMillis();
             finishDistributionPhase();
             finishPlacementPhase();
             trainOnOneGame(maxTurns, false);
@@ -110,8 +111,15 @@ public class GameEnvironment {
             gameNum++;
             if (verbose) {
                 System.out.println("Game " + gameNum + " - Phase: " + game.getGamePhase());
+                System.out.println("Time elapsed: " + (System.currentTimeMillis() - startTime)/1. + " ms");
             }
-            if(playerTypes == DQN){saveDQNNWeights();}
+            if(playerTypes == DQN){
+                saveDQNNWeights();
+                int i = 0;
+                for (Player p: game.getAllPlayer()) {
+                    ((DQNNBot) p).metrics.saveToFile("D:\\Projects\\Project-2.1---Game\\src\\main\\java\\gameelements\\player\\p"+i+++".txt");
+                }
+            }
             if(playerTypes == TD){ saveTDWeight(); }
 
             reset();
@@ -148,9 +156,13 @@ public class GameEnvironment {
                 bestTerritory = countriesOwned;
             }
         }
-        String path = "src/main/java/gameelements/player/botWeights/bestEstimatorWeights1.txt";
+        String path = "src/main/java/gameelements/player/botWeights/bestEstimatorWeights2.txt";
         ((DQNNBot) best)
                 .getEstimatorNetwork()
+                .save(path);
+        path = "src/main/java/gameelements/player/botWeights/bestTargetWeights2.txt";
+        ((DQNNBot) best)
+                .getTargetNetwork()
                 .save(path);
     }
 
