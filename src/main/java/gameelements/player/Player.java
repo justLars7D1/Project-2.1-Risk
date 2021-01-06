@@ -154,7 +154,7 @@ public abstract class Player {
      * @param countryTo The last vertex in the path
      * @return Whether the path exists
      */
-    private boolean existsCountryPath(Country countryFrom, Country countryTo) {
+    public boolean existsCountryPath(Country countryFrom, Country countryTo) {
         boolean pathExists = false;
         HashSet<Country> seenCountries = new HashSet<>();
         Queue<Country> pathQueue = new ArrayDeque<>();

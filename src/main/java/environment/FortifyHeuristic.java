@@ -1,91 +1,14 @@
-import gameelements.board.Board;
+package environment;
+
 import gameelements.board.Country;
 import gameelements.game.Game;
 import gameelements.player.Player;
-import gameelements.player.PlayerFactory;
-import gameelements.player.PlayerType;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
-import java.util.*;
-import java.util.Arrays;
-
-public class test {
-    public static void main(String[] args) {
-        HashMap<Integer, PlayerType> players = new HashMap<>();
-        players.put(0, PlayerType.USER);
-        players.put(1, PlayerType.USER);
-        players.put(2, PlayerType.USER);
-        Game game = new Game(players);
-
-        // Initialize Test Case
-        Player player3 = PlayerFactory.createPlayer(3,20,game,PlayerType.USER);
-        Player player4 = PlayerFactory.createPlayer(4,20,game,PlayerType.USER);
-        Player player5 = PlayerFactory.createPlayer(5,20,game,PlayerType.USER);
-
-        Board game_board = game.getGameBoard();
-
-        // Get all countries for testcases -> neighbors of east_africa
-        Country east_africa = game_board.getCountryFromID(1);
-        Country north_africa = game_board.getCountryFromName("North Africa");
-        Country egypt = game_board.getCountryFromName("Egypt");
-        Country central_africa = game_board.getCountryFromName("Congo (Central Africa)");
-        Country madagascar = game_board.getCountryFromName("Madagascar");
-        Country south_africa = game_board.getCountryFromName("South Africa");
-        Country middle_east = game_board.getCountryFromName("Middle East");
-
-        Country brazil = game_board.getCountryFromName("Brazil");
-        Country peru = game_board.getCountryFromName("Peru");
-        Country argentina = game_board.getCountryFromName("Argentina");
-        Country venezuela = game_board.getCountryFromName("Venezuela");
-
-
-
-        // Set set the current player as owner east africa
-        Player current_player = game.getCurrentPlayer();
-        current_player.onDistributionEvent(brazil);
-        brazil.addNumSoldiers(9);
-        current_player.onDistributionEvent(peru);
-        peru.addNumSoldiers(8);
-        current_player.onDistributionEvent(east_africa);
-        east_africa.addNumSoldiers(7);
-        current_player.onDistributionEvent(madagascar);
-        madagascar.addNumSoldiers(5);
-        current_player.onDistributionEvent(south_africa);
-        south_africa.addNumSoldiers(6);
-
-
-
-        // Set enemy players
-        player3.onDistributionEvent(north_africa);
-        north_africa.addNumSoldiers(3);
-        player3.onDistributionEvent(egypt);
-        egypt.addNumSoldiers(4);
-        player3.onDistributionEvent(central_africa);
-        central_africa.addNumSoldiers(9);
-        player3.onDistributionEvent(venezuela);
-        central_africa.addNumSoldiers(8);
-        player3.onDistributionEvent(argentina);
-        central_africa.addNumSoldiers(5);
-
-
-
-        player5.onDistributionEvent(middle_east);
-        middle_east.addNumSoldiers(2);
-
-        // Run method
-        //HashMap <Integer,List<Double>> feature_results =  get_state_features(game);
-        System.out.println(getTerritoryClusters(game));
-
-        System.out.println(ArmyDistributionFortify(getTerritoryClusters(game)));
-        System.out.println("Brazil "+brazil.getID());
-        System.out.println("Peru "+peru.getID());
-        System.out.println("east_africa "+east_africa.getID());
-        System.out.println("madagascar "+madagascar.getID());
-        System.out.println("south_africa "+south_africa.getID());
-
-
-
-    }
+public class FortifyHeuristic {
     /**
      * Returns a list of lists where each list contains the country ID's of countries that a grouped together i.e.
      * troops can move freely between them
@@ -159,7 +82,7 @@ public class test {
                 FortifiedArmyStrength = Math.floor(((double)BSTList.get(i) / (double)clusterBST) * (clusterArmyStrength - cluster.size()));
                 // Check for values aboth the maximum-1 (-1 because cluster.size is subtracted in the previous step)
                 if(FortifiedArmyStrength > (maxTroopsInCountry-1)){FortifiedArmyStrength = (maxTroopsInCountry-1);}
-                    BSTList.set(i, (int)FortifiedArmyStrength+1);
+                BSTList.set(i, (int)FortifiedArmyStrength+1);
 
                 distributedTroops += (FortifiedArmyStrength +1);
                 // Troops left to be distributed / fortified
@@ -195,49 +118,5 @@ public class test {
             }
         }
         return output;
-    }
-
-
-    public static HashMap get_state_features(Game game){
-        Player current_player = game.getCurrentPlayer();
-        HashSet<Country> owned_countries = current_player.getCountriesOwned();
-
-        double bst;
-        double bsr;
-        int player_troops;
-        List<Country> neighbor_countries;
-        Player owner;
-        HashMap<Integer, List<Double>> feature_results = new HashMap<Integer, List<Double>>();
-        List<Double> feature_values = new ArrayList<>();
-
-        for (Country owned_country : owned_countries) {
-            bst = 0;
-            bsr = 0;
-            feature_values.clear();
-            player_troops = owned_country.getNumSoldiers();
-
-            neighbor_countries = owned_country.getNeighboringCountries();
-            for (Country neighbor_country : neighbor_countries) {
-
-                owner = neighbor_country.getOwner();
-                if (owner != null && owner != current_player) {
-                    bst += neighbor_country.getNumSoldiers();
-                }
-            }
-            bsr = (double) bst/ (double) player_troops;
-            System.out.println("BSR:" +bsr);
-            System.out.println("BST:" +bst);
-
-            // add to list
-            feature_values.add(bst);
-            feature_values.add(bsr);
-            System.out.println("List containing BSR,BST:"+feature_values);
-
-            // add list to hashmap
-            feature_results.put(owned_country.getID(), feature_values);
-            System.out.println("HashMap containing feature results: " +feature_results);
-
-        }
-        return feature_results;
     }
 }
