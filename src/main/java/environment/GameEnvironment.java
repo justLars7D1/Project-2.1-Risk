@@ -36,15 +36,25 @@ public class GameEnvironment {
     private PlayerType playerTypes;
 
     /**
+     * Whether to enable file writing of statistics or not
+     */
+    private boolean fileWriting;
+
+    /**
      * Constructor
      * @param numPlayers The number of players
      * @param type The type of the players
      */
-    public GameEnvironment(int numPlayers, PlayerType type) {
+    public GameEnvironment(int numPlayers, PlayerType type, boolean fileWriting) {
         assert(2 <= numPlayers && numPlayers <= 6);
         assert(type != null && type != PlayerType.USER);
         this.numPlayers = numPlayers; this.playerTypes = type;
+        this.fileWriting = fileWriting;
         createGame();
+    }
+
+    public GameEnvironment(int numPlayers, PlayerType type) {
+        this(numPlayers, type, false);
     }
 
     /**
@@ -116,8 +126,10 @@ public class GameEnvironment {
             if(playerTypes == DQN){
                 saveDQNNWeights();
                 int i = 0;
-                for (Player p: game.getAllPlayer()) {
-                    ((DQNNBot) p).metrics.saveToFile("D:\\Projects\\Project-2.1---Game\\src\\main\\java\\gameelements\\player\\p"+i+++".txt");
+                if (fileWriting) {
+                    for (Player p: game.getAllPlayer()) {
+                        ((DQNNBot) p).metrics.saveToFile("D:\\Projects\\Project-2.1---Game\\src\\main\\java\\gameelements\\player\\p"+i+++".txt");
+                    }
                 }
             }
             if(playerTypes == TD){ saveTDWeight(); }

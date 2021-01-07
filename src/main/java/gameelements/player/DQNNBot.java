@@ -40,7 +40,7 @@ public class DQNNBot extends RiskBot {
 
     private final static double discountFactor = 0.75;
 
-    public final static boolean loadBestModel = true;
+    public final static boolean loadBestModel = false;
 
     Loss lossFunction = new MSE();
     Optimizer optEst = new Adam(10e-3);
@@ -230,7 +230,8 @@ public class DQNNBot extends RiskBot {
     @Override
     public void onFortifyEvent(Country countryFrom, Country countryTo, int numTroops) {
         // Put all the code to pick the right action here
-        super.onFortifyEvent(countryFrom, countryTo, numTroops);
+        //super.onFortifyEvent(countryFrom, countryTo, numTroops);
+        currentGame.nextBattlePhase();
         // Add code for deciding end of event phase here (finish attack phase method)
     }
 
