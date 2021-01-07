@@ -40,17 +40,24 @@ public class Game extends GameObserver {
     /**
      * The main seed of the game
      */
-    private int seed = 1;
-    private Random random = new Random(seed);
+    private final Random random;
 
     /**
      * Constructor
      * Sets selection of players and sets up starting game phases
      * @param playerSelection The player selection
      */
+    public Game(HashMap<Integer, PlayerType> playerSelection, int seed) {
+        super(GamePhase.DISTRIBUTION, BattlePhase.PLACEMENT);
+        this.random = new Random(seed);
+        this.numPlayers = playerSelection.size();
+        buildPlayerSetup(playerSelection);
+    }
+
     public Game(HashMap<Integer, PlayerType> playerSelection) {
         super(GamePhase.DISTRIBUTION, BattlePhase.PLACEMENT);
         this.numPlayers = playerSelection.size();
+        this.random = new Random();
         buildPlayerSetup(playerSelection);
     }
 
@@ -148,7 +155,7 @@ public class Game extends GameObserver {
         LinkedList<Player> players = new LinkedList<>();
 
         List<Integer> playerIDs = Arrays.asList(playerSelection.keySet().toArray(new Integer[0]));
-        Collections.shuffle(playerIDs);
+        Collections.shuffle(playerIDs, random);
 
         int numTroopsInInventory = getNumStartingTroops(playerIDs.size());
 
@@ -304,6 +311,7 @@ public class Game extends GameObserver {
     @Override
     public String toString() {
         return "Game{" +
+                "\n\tplayers = " + players +
                 "\n\tgamePhase = " + gamePhase +
                 ",\n\tbattlePhase = " + battlePhase +
                 "\n}";
