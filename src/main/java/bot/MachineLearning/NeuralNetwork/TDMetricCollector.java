@@ -6,7 +6,7 @@ import java.util.*;
 
 public class TDMetricCollector {
 
-    public static final String[] EXISTING_METRICS = {"alpha", "lambda", "winningChanceThreshold", "randomChanceThreshold", "armiesFeatureWeight", "territoryFeatureWeight", "enemyReinforcementFeatureWeight","bestEnemyFeatureWeight","hinterlandFeatureWeight", "stateValue", "turnsUntilWin"};
+    public static final String[] EXISTING_METRICS = {"alpha", "lambda", "winChanceThreshold", "randomChanceThreshold", "armiesFeatureWeight", "territoryFeatureWeight", "enemyReinforcementFeatureWeight","bestEnemyFeatureWeight","hinterlandFeatureWeight", "stateValue", "turnsUntilWin"};
 
     private final HashMap<String, List<Double>> metrics;
 

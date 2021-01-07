@@ -23,7 +23,7 @@ public class GameEnvironment {
     /**
      * The back-end of the game
      */
-    private Game game;
+    protected Game game;
 
     /**
      * The number of players in the game
@@ -163,7 +163,7 @@ public class GameEnvironment {
                     ((LinearTDBot) p).metrics.addToMetric("turnsUntilWin",turnsUntilWin);
                     int i = 0;
                     if (fileWriting) {
-                        ((LinearTDBot) p).metrics.saveToFile("D:\\Projects\\Project-2.1---Game\\src\\main\\java\\gameelements\\player\\p"+i+++".txt");
+                        ((LinearTDBot) p).metrics.saveToFile("src/main/java/gameelements/player/p"+i+++".txt");
                     }
                 }
             }

@@ -15,14 +15,15 @@ import environment.FeatureSpace;
 import java.util.*;
 
 public class LinearTDBot extends RiskBot {
-    static double winChanceThreshold = 0.5;
-    static double randomChanceThreshold = 0.2;
+
 
     Model linearEvalFunction;
     public TDMetricCollector metrics = new TDMetricCollector();
     private double alpha;
     private double lambda;
     private double currentStateValue;
+    private double winChanceThreshold = 0.5;
+    private double randomChanceThreshold = 0.2;
 
 
 
@@ -37,7 +38,7 @@ public class LinearTDBot extends RiskBot {
     public void enableGameMetrics(){
         metrics.enableMetric("alpha");
         metrics.enableMetric("lambda");
-        metrics.enableMetric("winningChanceThreshold");
+        metrics.enableMetric("winChanceThreshold");
         metrics.enableMetric("randomChanceThreshold");
         metrics.enableMetric("stateValue");
         metrics.enableMetric("turnsUntilWin");
@@ -45,7 +46,7 @@ public class LinearTDBot extends RiskBot {
     public void enableTurnMetrics(){
         metrics.enableMetric("alpha");
         metrics.enableMetric("lambda");
-        metrics.enableMetric("winningChanceThreshold");
+        metrics.enableMetric("winChanceThreshold");
         metrics.enableMetric("randomChanceThreshold");
         metrics.enableMetric("armiesFeatureWeight");
         metrics.enableMetric("territoryFeatureWeight");
@@ -114,11 +115,11 @@ public class LinearTDBot extends RiskBot {
 
 
         //If there is an 'obvious' attack where the win chance is greater than the threshold we attack straight away.
-        if(winChance > LinearTDBot.winChanceThreshold && countryFromID.getNumSoldiers() > 1){
+        if(winChance > this.winChanceThreshold && countryFromID.getNumSoldiers() > 1){
             linearEvalFunction.tdTrain(future, current);
             super.onAttackEvent(countryFromID, countryToID);
         } else { // this is the condition that the winChance is below the threshold to attack immediately.
-            if(Math.random() < LinearTDBot.randomChanceThreshold && countryFromID.getNumSoldiers() > 1){ //there is a 20% chance that the countries will attack even if it's below the threshold to allow exploration - 'underdog'
+            if(Math.random() < this.randomChanceThreshold && countryFromID.getNumSoldiers() > 1){ //there is a 20% chance that the countries will attack even if it's below the threshold to allow exploration - 'underdog'
                 linearEvalFunction.tdTrain(future, current);
                 super.onAttackEvent(countryFromID, countryToID);
             } else {// if there is no 'obvious attack', and the potential 'underdog' attack is also no considered then we will move onto the next battle phase.
@@ -269,11 +270,11 @@ public class LinearTDBot extends RiskBot {
     }
 
 
-    public static void setWinChanceThreshold(double WinChanceThreshold){LinearTDBot.winChanceThreshold = WinChanceThreshold;}
-    public static void setrandomChanceThreshold(double randomChanceThreshold){LinearTDBot.randomChanceThreshold = randomChanceThreshold;}
+    public void setWinChanceThreshold(double WinChanceThreshold){this.winChanceThreshold = WinChanceThreshold;}
+    public void setrandomChanceThreshold(double randomChanceThreshold){this.randomChanceThreshold = randomChanceThreshold;}
 
-    public static double getWinChanceThreshold(){return LinearTDBot.winChanceThreshold;}
-    public static double getrandomChanceThreshold(){return LinearTDBot.randomChanceThreshold;}
+    public double getWinChanceThreshold(){return this.winChanceThreshold;}
+    public double getrandomChanceThreshold(){return this.randomChanceThreshold;}
 
     public double getCurrentStateValue(){
         return currentStateValue;
