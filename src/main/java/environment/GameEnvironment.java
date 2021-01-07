@@ -41,6 +41,11 @@ public class GameEnvironment {
     private boolean fileWriting;
 
     /**
+     * Whether TD-Bot saves metrics per round or per game
+     */
+    private boolean perGame;
+
+    /**
      * Constructor
      * @param numPlayers The number of players
      * @param type The type of the players
@@ -137,13 +142,23 @@ public class GameEnvironment {
                     }
                 }
             }
-            if(playerTypes == TD){ saveTDWeight(); }
+            if(playerTypes == TD && perGame) {
+                for (Player p : game.getAllPlayer()) {
+                    ((LinearTDBot) p).setPerGameEval(true);
+                    ((LinearTDBot) p).metrics.addToMetric("alpha",((LinearTDBot) p).getAlpha());
+                    ((LinearTDBot) p).metrics.addToMetric("lambda", ((LinearTDBot) p).getLambda());
+                    //((LinearTDBot) p).metrics.addToMetric("winningChanceThreshold", );
+                    //((LinearTDBot) p).metrics.addToMetric("randomChanceThreshold", );
+                    //((LinearTDBot) p).metrics.addToMetric("stateValue", );
+                    //((LinearTDBot) p).metrics.addToMetric("turnsUntilWin",);
+                }
+            }
 
             reset();
         }
     }
     public  void saveTDWeight(){
-        System.out.println("###### saving waits ######");
+        System.out.println("###### saving weights ######");
         List<Player> players = game.getAllPlayer();
         Player best = players.get(0);
         int bestTerritory = -1;
@@ -199,6 +214,10 @@ public class GameEnvironment {
      */
     public void reset() {
         createGame();
+    }
+
+    public void setPerGame(boolean switcher){
+        perGame = switcher;
     }
 
 }

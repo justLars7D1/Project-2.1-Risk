@@ -5,6 +5,7 @@ import bot.MachineLearning.NeuralNetwork.Activations.Pass;
 import bot.MachineLearning.NeuralNetwork.Losses.TDLoss;
 import bot.MachineLearning.NeuralNetwork.Model;
 import bot.MachineLearning.NeuralNetwork.Optimizers.TDOptimizer;
+import bot.MachineLearning.NeuralNetwork.TDMetricCollector;
 import bot.Mathematics.LinearAlgebra.Vector;
 import environment.BorderSupplyFeatures;
 import environment.WolfFeatures;
@@ -17,6 +18,9 @@ public class LinearTDBot extends RiskBot {
 
 
     Model linearEvalFunction;
+    public TDMetricCollector metrics = new TDMetricCollector();
+    private double alpha;
+    private double lambda;
 
 
 
@@ -27,6 +31,33 @@ public class LinearTDBot extends RiskBot {
         super(id, numTroopsInInventory, game);
         setupModel();
         //linearEvalFunction = Model.loadModel("src/main/java/gameelements/player/botWeights/TD-Bot_Weights.txt");
+    }
+
+    public void enableGameMetrics(){
+        metrics.enableMetric("alpha");
+        metrics.enableMetric("lambda");
+        metrics.enableMetric("winningChanceThreshold");
+        metrics.enableMetric("randomChanceThreshold");
+        metrics.enableMetric("stateValue");
+        metrics.enableMetric("turnsUntilWin");
+    }
+    public void enableTurnMetrics(){
+        metrics.enableMetric("alpha");
+        metrics.enableMetric("lambda");
+        metrics.enableMetric("winningChanceThreshold");
+        metrics.enableMetric("randomChanceThreshold");
+        metrics.enableMetric("armiesFeatureWeight");
+        metrics.enableMetric("territoryFeatureWeight");
+        metrics.enableMetric("enemyReinforcementFeatureWeight");
+        metrics.enableMetric("bestEnemyFeatureWeight");
+        metrics.enableMetric("hinterlandFeatureWeight");
+        metrics.enableMetric("stateValue");
+    }
+    public void setPerGameEval(boolean yes){
+        if(yes){
+            enableGameMetrics();
+        }
+        else enableTurnMetrics();
     }
 
     private void setupModel() {
@@ -222,5 +253,17 @@ public class LinearTDBot extends RiskBot {
 
     public Model getLinearEvalFunction() {
         return linearEvalFunction;
+    }
+    public void setAlpha(double alpha){
+        this.alpha = alpha;
+    }
+    public double getAlpha(){
+        return alpha;
+    }
+    public void setLambda(double lambda){
+        this.lambda = lambda;
+    }
+    public double getLambda(){
+        return lambda;
     }
 }
