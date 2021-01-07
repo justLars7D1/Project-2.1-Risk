@@ -139,36 +139,23 @@ public class RiskBot extends Player {
     @Override
     public void onFortifyEvent(Country countryFrom, Country countryTo, int numTroops) {
 
-        System.out.println("Entered Foritifcation");
-
         //current player in the game to check before editing the troop count that this is the player themselves
         Player currentPLayer = currentGame.getCurrentPlayer();
-
-        System.out.println("Entered Foritifcation 1 ");
 
         //getting all the clusters to pass to the ArmyDistributionFortify method
         List<List<Country>> AllClusters = environment.FortifyHeuristic.getTerritoryClusters(currentGame);
 
-        System.out.println("Entered Foritifcation 2 ");
-
         //retrieving the list of size 42 with the troop assignments >0 for owned countries or 0 otherwise
         List<Integer> desiredTroops = environment.FortifyHeuristic.ArmyDistributionFortify(AllClusters);
 
-        System.out.println("Entered Foritifcation 3 ");
-
         //using this loop to be able to use the i as an index when retrieving other countries to adjust troop counts
         for(int i = 0; i < desiredTroops.size(); i++){
-            System.out.println(i + "countryID" );
-            System.out.println(desiredTroops.get(i) + "Desired Troops");
-
             //fetching the country object
             Country country = currentGame.getGameBoard().getCountryFromID(i);
             //if the owner of the country retrieved is that of the current player then we can adjust the troop countsw
             if(country.getOwner() == currentPLayer){
                 //finding the difference between what the country should finally have and what it currently has
                 int difference = (int)desiredTroops.get(i) - country.getNumSoldiers();
-
-                System.out.println(country.getNumSoldiers() + "Actual Troops");
 
                 //as the checks for whether it is valid is done within the fortify heuristic class we can simply add the difference to the country
                 // ex. desired :4 , numSoldiers : 2, difference is 2 so we add 2. desired 5, numSoldiers, 10, difference -5, so we add -5.

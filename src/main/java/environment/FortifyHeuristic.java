@@ -94,9 +94,11 @@ public class FortifyHeuristic {
             int threshold = 0;
             int target_index =0;
             while(ToBeDistributed > 0){
-                System.out.println("To be Distributed : " + ToBeDistributed);
+                threshold = 0;
+                target_index =0;
                 // Find the index of the largest value below 10
                 for(int i = 0; i < BSTList.size(); i++){
+
                     if(BSTList.get(i) < maxTroopsInCountry && BSTList.get(i) > threshold){
                         target_index = i;
                         threshold = BSTList.get(i);
