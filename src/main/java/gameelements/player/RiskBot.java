@@ -174,7 +174,7 @@ public class RiskBot extends Player {
 
 
         // Put all the code to pick the right action here
-        //currentGame.nextBattlePhase();
+        currentGame.nextBattlePhase();
         //super.onFortifyEvent(countryFrom, countryTo, numTroops);
         // Add code for deciding end of event phase here (finish attack phase method)
     }
