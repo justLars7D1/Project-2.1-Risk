@@ -22,6 +22,7 @@ public class LinearTDBot extends RiskBot {
     public TDMetricCollector metrics = new TDMetricCollector();
     private double alpha;
     private double lambda;
+    private double currentStateValue;
 
 
 
@@ -126,6 +127,8 @@ public class LinearTDBot extends RiskBot {
             }
         }
         //System.out.println("attack done");
+        Vector currentState = linearEvalFunction.evaluate(calculateFeatures(currentGame));
+        currentStateValue = currentState.get(0);
     }
 
     @Override
@@ -252,7 +255,7 @@ public class LinearTDBot extends RiskBot {
     public Model getLinearEvalFunction() {
         return linearEvalFunction;
     }
-    public void setAlpha(double alpha){
+    public  void setAlpha(double alpha){
         this.alpha = alpha;
     }
     public double getAlpha(){
@@ -271,5 +274,9 @@ public class LinearTDBot extends RiskBot {
 
     public static double getWinChanceThreshold(){return LinearTDBot.winChanceThreshold;}
     public static double getrandomChanceThreshold(){return LinearTDBot.randomChanceThreshold;}
+
+    public double getCurrentStateValue(){
+        return currentStateValue;
+    }
 
 }

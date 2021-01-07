@@ -46,6 +46,11 @@ public class GameEnvironment {
     private boolean perGame;
 
     /**
+     * Helper variable to save turns until player won
+     */
+    private int turnsUntilWin;
+
+    /**
      * Constructor
      * @param numPlayers The number of players
      * @param type The type of the players
@@ -118,6 +123,10 @@ public class GameEnvironment {
             System.out.println("##### Turn number "+turnCounter+" #####");
             turnCounter++;
         }
+        if(playerTypes == TD)
+        {
+            turnsUntilWin = turnCounter - 1;
+        }
     }
 
     public void train(int numGames, int maxTurns, boolean verbose) {
@@ -143,14 +152,19 @@ public class GameEnvironment {
                 }
             }
             if(playerTypes == TD && perGame) {
+                saveTDWeight();
                 for (Player p : game.getAllPlayer()) {
                     ((LinearTDBot) p).setPerGameEval(true);
                     ((LinearTDBot) p).metrics.addToMetric("alpha",((LinearTDBot) p).getAlpha());
                     ((LinearTDBot) p).metrics.addToMetric("lambda", ((LinearTDBot) p).getLambda());
-                    //((LinearTDBot) p).metrics.addToMetric("winningChanceThreshold", );
-                    //((LinearTDBot) p).metrics.addToMetric("randomChanceThreshold", );
-                    //((LinearTDBot) p).metrics.addToMetric("stateValue", );
-                    //((LinearTDBot) p).metrics.addToMetric("turnsUntilWin",);
+                    ((LinearTDBot) p).metrics.addToMetric("winningChanceThreshold", ((LinearTDBot) p).getWinChanceThreshold() );
+                    ((LinearTDBot) p).metrics.addToMetric("randomChanceThreshold", ((LinearTDBot) p).getrandomChanceThreshold());
+                    ((LinearTDBot) p).metrics.addToMetric("stateValue",((LinearTDBot) p).getCurrentStateValue());
+                    ((LinearTDBot) p).metrics.addToMetric("turnsUntilWin",turnsUntilWin);
+                    int i = 0;
+                    if (fileWriting) {
+                        ((LinearTDBot) p).metrics.saveToFile("D:\\Projects\\Project-2.1---Game\\src\\main\\java\\gameelements\\player\\p"+i+++".txt");
+                    }
                 }
             }
 
