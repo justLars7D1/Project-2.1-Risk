@@ -48,6 +48,7 @@ public class FortifyHeuristic {
      * @return list (int)
      */
     public static List<Integer> ArmyDistributionFortify(List<List<Country>> AllClusters){
+
         int clusterArmyStrength;
         int clusterBST;
         int BST;
@@ -78,6 +79,7 @@ public class FortifyHeuristic {
                 clusterArmyStrength += ownedCountry.getNumSoldiers();
             }
             for(int i = 0; i < BSTList.size(); i++){
+
                 // Substract number of countries in cluster from clusterArmyStrength to control for each contry having one troop by default
                 FortifiedArmyStrength = Math.floor(((double)BSTList.get(i) / (double)clusterBST) * (clusterArmyStrength - cluster.size()));
                 // Check for values aboth the maximum-1 (-1 because cluster.size is subtracted in the previous step)
@@ -92,6 +94,7 @@ public class FortifyHeuristic {
             int threshold = 0;
             int target_index =0;
             while(ToBeDistributed > 0){
+                System.out.println("To be Distributed : " + ToBeDistributed);
                 // Find the index of the largest value below 10
                 for(int i = 0; i < BSTList.size(); i++){
                     if(BSTList.get(i) < maxTroopsInCountry && BSTList.get(i) > threshold){
