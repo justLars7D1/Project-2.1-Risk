@@ -32,6 +32,11 @@ public abstract class Player {
     protected int numCards;
 
     /**
+     * The Random die for the player
+     */
+    private Random die = new Random();
+
+    /**
      * The countries that a player owns
      */
     protected HashSet<Country> countriesOwned;
@@ -207,7 +212,6 @@ public abstract class Player {
      * @return The results of the roll
      */
     private List<Integer> rollDice(int dice) {
-        Random die = new Random();
         List<Integer> diceResults = new ArrayList<>();
         for (int i = 0; i < dice; i++) {
             int d = die.nextInt(5);
@@ -223,6 +227,8 @@ public abstract class Player {
     private void removeCountry(Country country){
         countriesOwned.remove(country);
     }
+
+    public void setSeed(int seed) { die.setSeed(seed); }
 
     public int getNumCountriesOwned() {
         return countriesOwned.size();

@@ -33,6 +33,17 @@ public class Game extends GameObserver {
     private List<Country> conqueredCountries;
 
     /**
+     * Boolean for using a fixed seed
+     */
+    private boolean useSeed = false;
+
+    /**
+     * The main seed of the game
+     */
+    private int seed = 1;
+    private Random random = new Random(seed);
+
+    /**
      * Constructor
      * Sets selection of players and sets up starting game phases
      * @param playerSelection The player selection
@@ -154,6 +165,12 @@ public class Game extends GameObserver {
         }
 
         this.players = new PlayerList(players);
+
+        if (useSeed) {
+            for (Player player : this.players.getPlayers()) {
+                player.setSeed(random.nextInt());
+            }
+        }
     }
 
     private int getNumStartingTroops(int numPlayers) {

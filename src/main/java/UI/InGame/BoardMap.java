@@ -153,6 +153,7 @@ public class BoardMap {
                         s.setStyle(oldStyle);
                         s.toBack();
                     }
+                    updateAllCountries();
                 }
             });
         }
