@@ -65,6 +65,11 @@ public class GameEnvironment {
         this(2, type);
     }
 
+    public GameEnvironment(PlayerType type, boolean fileWriting) {
+        this(2, type, fileWriting);
+    }
+
+
     public void finishDistributionPhase() {
         while (game.getGamePhase().equals(GamePhase.DISTRIBUTION)) {
             game.onGameEvent(new DistributionEventData(-1));

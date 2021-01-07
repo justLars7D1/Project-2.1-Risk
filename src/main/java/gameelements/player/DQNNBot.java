@@ -230,8 +230,7 @@ public class DQNNBot extends RiskBot {
     @Override
     public void onFortifyEvent(Country countryFrom, Country countryTo, int numTroops) {
         // Put all the code to pick the right action here
-        //super.onFortifyEvent(countryFrom, countryTo, numTroops);
-        currentGame.nextBattlePhase();
+        super.onFortifyEvent(countryFrom, countryTo, numTroops);
         // Add code for deciding end of event phase here (finish attack phase method)
     }
 
