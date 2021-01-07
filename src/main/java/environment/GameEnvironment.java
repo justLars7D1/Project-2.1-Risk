@@ -115,7 +115,7 @@ public class GameEnvironment {
                 finishPlacementPhase();
 
             }
-
+            System.out.println("##### Turn number "+turnCounter+" #####");
             turnCounter++;
         }
     }
