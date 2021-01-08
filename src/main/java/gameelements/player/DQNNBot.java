@@ -6,10 +6,10 @@ import bot.MachineLearning.NeuralNetwork.Activations.ReLu;
 import bot.MachineLearning.NeuralNetwork.Losses.Loss;
 import bot.MachineLearning.NeuralNetwork.Losses.MSE;
 import bot.MachineLearning.NeuralNetwork.Model;
-import bot.MachineLearning.NeuralNetwork.Optimizers.Adam;
 import bot.MachineLearning.NeuralNetwork.Optimizers.Optimizer;
 import bot.MachineLearning.NeuralNetwork.Optimizers.SGD;
-import bot.MachineLearning.NeuralNetwork.QMetricCollector;
+import bot.MachineLearning.NeuralNetwork.GameMetricCollector;
+import bot.MachineLearning.NeuralNetwork.TurnMetricCollector;
 import bot.Mathematics.LinearAlgebra.Vector;
 import environment.BorderSupplyFeatures;
 import environment.WolfFeatures;
@@ -23,28 +23,30 @@ import java.util.Random;
 
 public class DQNNBot extends RiskBot {
     /*
-    * Double Q-Learning (Hasselt, 2010)
-    *
-    * Y = R[t+1] + gamma * Q'(S[t+1], argmax(a) Q(S[t+1], a)) 
-    *
-    * The weights of the online network are transfered to the
-    * target network every n steps.
-    *
-    * sequential attack decision
-    * state = (from, to, threat, ...) -> decision = (from, to, attack)
-    *
-    * predicts q values for a binary attack decision
-    */
+     * Double Q-Learning (Hasselt, 2010)
+     *
+     * Y = R[t+1] + gamma * Q'(S[t+1], argmax(a) Q(S[t+1], a))
+     *
+     * The weights of the online network are transfered to the
+     * target network every n steps.
+     *
+     * sequential attack decision
+     * state = (from, to, threat, ...) -> decision = (from, to, attack)
+     *
+     * predicts q values for a binary attack decision
+     */
+
+    private int gameNumber;
 
     private final static boolean trainingEnabled = true;
 
-    private final static double discountFactor = 0.75;
+    private final static double discountFactor = 0.8;
 
     public final static boolean loadBestModel = false;
 
     Loss lossFunction = new MSE();
-    Optimizer optEst = new Adam(10e-3);
-    Optimizer optTarget = new Adam(10e-3);
+    Optimizer optEst = new SGD(10e-3);
+    Optimizer optTarget = new SGD(10e-3);
 
     int lag;
 
@@ -52,25 +54,33 @@ public class DQNNBot extends RiskBot {
 
     Model estimatorNetwork;
 
-    private final double randomActionProbability = 0.01;
+    private final double randomActionProbability = 0.5;
     private Random random = new Random();
 
-    public QMetricCollector metrics = new QMetricCollector();
+    public GameMetricCollector gameMetrics = new GameMetricCollector();
+
     {
-        metrics.enableMetric("reward");
-        metrics.enableMetric("targetOffset");
-        metrics.enableMetric("estimatorOffset");
-        metrics.enableMetric("estimatorAttack");
-        metrics.enableMetric("exploration");
-        metrics.enableMetric("lossInTroops");
-        metrics.enableMetric("totalNumTroops");
+        gameMetrics.enableMetric("gameId");
+        gameMetrics.enableMetric("reward");
+        gameMetrics.enableMetric("targetOffset");
+        gameMetrics.enableMetric("estimatorOffset");
+        gameMetrics.enableMetric("estimatorAttack");
+        gameMetrics.enableMetric("exploration");
+        gameMetrics.enableMetric("lossInTroops");
+        gameMetrics.enableMetric("totalNumTroops");
+    }
+
+    public TurnMetricCollector turnMetrics = new TurnMetricCollector();
+    {
+        turnMetrics.enableMetric("gameId");
+        turnMetrics.enableMetric("totalNumTroops");
     }
 
     /**
      * algorithm and strategies for our risk bot
      */
     public DQNNBot(int id, int numTroopsInInventory, Game game) {
-        this(id, numTroopsInInventory, game, 8, 2);
+        this(id, numTroopsInInventory, game, 2, 2);
     }
 
     public DQNNBot(int id, int numTroopsInInventory, Game game, int numFeatures, int lag) {
@@ -81,7 +91,7 @@ public class DQNNBot extends RiskBot {
         if (loadBestModel) {
 
             estimatorNetwork = Model.loadModel("src/main/java/gameelements/player/botWeights/bestEstimatorWeights2.txt");
-            estimatorNetwork = Model.loadModel("src/main/java/gameelements/player/botWeights/bestTargetWeights2.txt");
+            targetNetwork = Model.loadModel("src/main/java/gameelements/player/botWeights/bestTargetWeights2.txt");
 
         } else {
 
@@ -120,8 +130,10 @@ public class DQNNBot extends RiskBot {
     }
 
     private List<List<Country>> countryFromToAttackPairs;
+    private int episodeSize;
 
     private int iteration = 0;
+    private int turnNum = 0;
 
     @Override
     public void onAttackEvent(Country countryFrom, Country countryTo) {
@@ -132,7 +144,9 @@ public class DQNNBot extends RiskBot {
 
             if(!countryFromToAttackPairs.isEmpty()){
 
-                metrics.addToMetric("totalNumTroops", getNumTroopsOwned());
+                gameMetrics.addToMetric("gameId", gameNumber);
+
+                gameMetrics.addToMetric("totalNumTroops", getNumTroopsOwned());
 
                 // Select the current pair we could potentially attack from and to
                 List<Country> attackPair = countryFromToAttackPairs.get(0);
@@ -150,12 +164,12 @@ public class DQNNBot extends RiskBot {
                 boolean takeAction = qValues.get(1) > qValues.get(0);
                 if (random.nextDouble() <= this.randomActionProbability) {
                     takeAction = !takeAction;
-                    metrics.addToMetric("exploration", 1);
+                    gameMetrics.addToMetric("exploration", 1);
                 } else {
-                    metrics.addToMetric("exploration", 0);
+                    gameMetrics.addToMetric("exploration", 0);
                 }
 
-                metrics.addToMetric("estimatorAttack", takeAction ? 1 : 0);
+                gameMetrics.addToMetric("estimatorAttack", takeAction ? 1 : 0);
 
                 //System.out.println("--- Turn Start ---");
                 //System.out.println(takeAction + ": " + countryFrom.getNumSoldiers() + " -> " + countryTo.getNumSoldiers());
@@ -169,49 +183,47 @@ public class DQNNBot extends RiskBot {
                 System.out.println("Stats from troops: " + countryFrom.getNumSoldiers());
                 System.out.println("Stats to troops: " + countryTo.getNumSoldiers());*/
 
+                optEst.init(estimatorNetwork);
+
+                double reward = 10*(getNumCountriesOwned() - numCountriesBeforeAttack);
+                if (reward == 0) reward += (countryFrom.getNumSoldiers() - numTroopsDefenderBeforeAttack);
+                if (reward == 0) reward = -1;
+
+                gameMetrics.addToMetric("lossInTroops", numTroopsDefenderBeforeAttack - countryFrom.getNumSoldiers());
+                gameMetrics.addToMetric("reward", reward);
+
+                Vector newFeatures = getPlayerFeatures(countryFrom, countryTo);
+
+                Vector qValuesNextStateEst = estimatorNetwork.evaluate(newFeatures);
+                int maxIndex = (qValuesNextStateEst.get(0) >= qValuesNextStateEst.get(1)) ? 0 : 1;
+
+                double targetValue = targetNetwork.evaluate(newFeatures).get(maxIndex);
+                //double targetValue = Math.max(qValuesNextStateEst.get(0), qValuesNextStateEst.get(1)); - Normal Q-Learning
+
+                targetValue *= discountFactor;
+                targetValue += reward;
+                Vector Yt = new Vector(2);
+                Yt.set(0, targetValue);
+                Yt.set(1, targetValue);
+
+                gameMetrics.addToMetric("estimatorOffset", lossFunction.evaluate(qValues, Yt).getMagnitude());
+                gameMetrics.addToMetric("targetOffset", lossFunction.evaluate(targetNetwork.evaluate(features), Yt).getMagnitude());
+
+                //System.out.print(lossFunction.evaluate(qValues, Yt));
+
+                //System.out.println("Reward: " + reward);
                 if (trainingEnabled) {
-                    optEst.init(estimatorNetwork);
-
-                    double reward = 10*(getNumCountriesOwned() - numCountriesBeforeAttack);
-                    if (reward == 0) reward += (countryFrom.getNumSoldiers() - numTroopsDefenderBeforeAttack);
-                    if (reward == 0) reward = -1;
-
-                    metrics.addToMetric("lossInTroops", numTroopsDefenderBeforeAttack - countryFrom.getNumSoldiers());
-                    metrics.addToMetric("reward", reward);
-
-                    Vector newFeatures = getPlayerFeatures(countryFrom, countryTo);
-
-                    Vector qValuesNextStateEst = estimatorNetwork.evaluate(newFeatures);
-                    int maxIndex = (qValuesNextStateEst.get(0) >= qValuesNextStateEst.get(1)) ? 0 : 1;
-
-                    double targetValue = targetNetwork.evaluate(newFeatures).get(maxIndex);
-                    //double targetValue = Math.max(qValuesNextStateEst.get(0), qValuesNextStateEst.get(1)); - Normal Q-Learning
-
-                    targetValue *= discountFactor;
-                    targetValue += reward;
-                    Vector Yt = new Vector(2);
-                    Yt.set(0, targetValue);
-                    Yt.set(1, targetValue);
-
-                    metrics.addToMetric("estimatorOffset", lossFunction.evaluate(qValues, Yt).getMagnitude());
-                    metrics.addToMetric("targetOffset", lossFunction.evaluate(targetNetwork.evaluate(features), Yt).getMagnitude());
-
-                    //System.out.print(lossFunction.evaluate(qValues, Yt));
-
-                    //System.out.println("Reward: " + reward);
 
                     estimatorNetwork.computeGradientsRL(newFeatures, qValues, Yt);
-                    optEst.updateWeights(estimatorNetwork);
-                    estimatorNetwork.resetGradients();
 
-                    if (iteration++ % this.lag == 0) {
+                    if (iteration % this.lag == 0) {
                         estimatorNetwork.copyModelWeights(targetNetwork);
                     }
 
-                    //System.out.println("--- Turn End ---");
-
-
                 }
+
+                //System.out.println("--- Turn End ---");
+                iteration++;
 
                 // Code for deciding end of event phase here (finish attack phase method)
                 countryFromToAttackPairs.remove(attackPair);
@@ -219,6 +231,18 @@ public class DQNNBot extends RiskBot {
             }
 
             if (countryFromToAttackPairs.size() == 0) {
+
+                if (trainingEnabled) {
+                    estimatorNetwork.averageGradients(episodeSize);
+                    optEst.updateWeights(estimatorNetwork);
+                    estimatorNetwork.resetGradients();
+                }
+
+                turnMetrics.addToMetric("gameId", gameNumber);
+                turnMetrics.addToMetric("totalNumTroops", getNumTroopsOwned());
+
+                turnNum = 0;
+
                 currentGame.nextBattlePhase();
                 actionTaken = true;
             }
@@ -271,7 +295,9 @@ public class DQNNBot extends RiskBot {
         double ownTerritories = BorderSupplyFeatures.getTerritoriesFeature(this);
         double enemyTerritories = BorderSupplyFeatures.getTerritoriesFeature(countryTo.getOwner());
 
-        return new Vector(suitible, susceptible, ownArmies, ownTerritories, enemyArmies, enemyTerritories, enemyReinforcement, bestEnemy);
+        return new Vector(countryFrom.getNumSoldiers(), countryTo.getNumSoldiers());
+
+        //return new Vector(suitible, susceptible, ownArmies, ownTerritories, enemyArmies, enemyTerritories, enemyReinforcement, bestEnemy);
     }
 
     private Vector getFeatures(Country countryFrom, Country countryTo){
@@ -318,6 +344,26 @@ public class DQNNBot extends RiskBot {
                 }
             }
         }
+        this.episodeSize = countryFromToAttackPairs.size();
+    }
+
+    @Override
+    public void reset(int numTroopsInInventory) {
+        gameNumber++;
+        iteration = 0;
+        turnNum = 0;
+        super.reset(numTroopsInInventory);
+    }
+
+    public void saveNetworks(String dir) {
+        targetNetwork.save(dir + "-target.txt");
+        estimatorNetwork.save(dir + "-estimator.txt");
+    }
+
+    public void saveMetrics(String dir) {
+        gameMetrics.saveToFile(dir + "-game-metrics.txt");
+        turnMetrics.saveToFile(dir + "-turn-metrics.txt");
+
     }
 
     public Model getEstimatorNetwork() {

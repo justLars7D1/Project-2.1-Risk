@@ -15,7 +15,6 @@ import gameelements.player.PlayerType;
 import java.util.HashMap;
 import java.util.List;
 
-import static gameelements.player.PlayerType.DQN;
 import static gameelements.player.PlayerType.TD;
 
 public class GameEnvironment {
@@ -28,17 +27,17 @@ public class GameEnvironment {
     /**
      * The number of players in the game
      */
-    private int numPlayers;
+    private final int numPlayers;
 
     /**
      * The type of the bot in the game
      */
-    private PlayerType playerTypes;
+    private final PlayerType playerTypes;
 
     /**
      * Whether to enable file writing of statistics or not
      */
-    private boolean fileWriting;
+    private final boolean fileWriting;
 
     /**
      * Constructor
@@ -68,7 +67,6 @@ public class GameEnvironment {
     public GameEnvironment(PlayerType type, boolean fileWriting) {
         this(2, type, fileWriting);
     }
-
 
     public void finishDistributionPhase() {
         while (game.getGamePhase().equals(GamePhase.DISTRIBUTION)) {
@@ -128,22 +126,19 @@ public class GameEnvironment {
                 System.out.println("Game " + gameNum + " - Phase: " + game.getGamePhase());
                 System.out.println("Time elapsed: " + (System.currentTimeMillis() - startTime)/1. + " ms");
             }
-            if(playerTypes == DQN){
-                saveDQNNWeights();
-                int i = 0;
-                if (fileWriting) {
-                    for (Player p: game.getAllPlayer()) {
-                        ((DQNNBot) p).metrics.saveToFile("D:\\Projects\\Project-2.1---Game\\src\\main\\java\\gameelements\\player\\p"+i+++".txt");
-                    }
-                }
-            }
             if(playerTypes == TD){ saveTDWeight(); }
 
             reset();
         }
+
+        for (int i = 0; i < game.gamePlayers.size(); i++) {
+            Player p = game.gamePlayers.get(i);
+            if (p instanceof DQNNBot) ((DQNNBot) p).saveMetrics("D:\\Projects\\Project-2.1---Game\\src\\main\\java\\gameelements\\player\\player " + i);
+        }
+
     }
-    public  void saveTDWeight(){
-        System.out.println("###### saving waits ######");
+    public void saveTDWeight(){
+        System.out.println("###### saving weights ######");
         List<Player> players = game.getAllPlayer();
         Player best = players.get(0);
         int bestTerritory = -1;
@@ -162,27 +157,6 @@ public class GameEnvironment {
 
     }
 
-    public void saveDQNNWeights() {
-        List<Player> players = game.getAllPlayer();
-        Player best = players.get(0);
-        int bestTerritory = -1;
-        for (Player p: players) {
-            int countriesOwned = p.getNumCountriesOwned();
-            if (countriesOwned > bestTerritory) {
-                best = p;
-                bestTerritory = countriesOwned;
-            }
-        }
-        String path = "src/main/java/gameelements/player/botWeights/bestEstimatorWeights2.txt";
-        ((DQNNBot) best)
-                .getEstimatorNetwork()
-                .save(path);
-        path = "src/main/java/gameelements/player/botWeights/bestTargetWeights2.txt";
-        ((DQNNBot) best)
-                .getTargetNetwork()
-                .save(path);
-    }
-
     /**
      * Creates the back-end of the game setting
      */
@@ -198,7 +172,7 @@ public class GameEnvironment {
      * Resets the game (e.g. creates a new instance of it)
      */
     public void reset() {
-        createGame();
+        game.reset();
     }
 
 }

@@ -180,6 +180,12 @@ public class RiskBot extends Player {
     }
 
     @Override
+    public void reset(int numTroopsInInventory) {
+        super.reset(numTroopsInInventory);
+        this.countryDistributionList = BotSettings.setupDistributionPriorityList(currentGame.getGameBoard(), currentGame.getNumPlayers());
+    }
+
+    @Override
     public String toString() {
         return "RiskBot{" +
                 "id=" + id +

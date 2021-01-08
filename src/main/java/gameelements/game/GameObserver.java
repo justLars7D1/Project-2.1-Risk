@@ -23,6 +23,11 @@ public abstract class GameObserver {
         this.battlePhase = battlePhase;
     }
 
+    public void reset() {
+        this.gamePhase = GamePhase.DISTRIBUTION;
+        this.battlePhase = BattlePhase.PLACEMENT;
+    }
+
     /**
      * Creates a game event given the data about the event
      * @param data The data about the event

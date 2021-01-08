@@ -242,7 +242,7 @@ public class Model implements Serializable {
         return new Matrix((i == 0) ? x : layers.get(i-1).getOutputAfterActivation());
     }
 
-    private void averageGradients(int batchSize) {
+    public void averageGradients(int batchSize) {
         for (Layer l: layers) {
             l.getGradientSumWeight().scale(1./batchSize);
             l.getGradientSumBias().scale(1./batchSize);

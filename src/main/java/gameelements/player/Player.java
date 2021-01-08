@@ -1,13 +1,7 @@
 package gameelements.player;
 
-import UI.InGame.BoardMap;
 import gameelements.board.Country;
-import gameelements.phases.data.AttackEventData;
-import gameelements.phases.data.DistributionEventData;
-import gameelements.phases.data.FortifyEventData;
-import gameelements.phases.data.PlacementEventData;
 import settings.Settings;
-
 
 import java.util.*;
 
@@ -45,6 +39,11 @@ public abstract class Player {
         this.countriesOwned = new HashSet<>();
         this.id = id;
         this.numTroopsInInventory = numTroopsInInventory;
+    }
+
+    public void reset(int numTroopsInInventory) {
+        this.numTroopsInInventory = numTroopsInInventory;
+        this.countriesOwned = new HashSet<>();
     }
 
     /**

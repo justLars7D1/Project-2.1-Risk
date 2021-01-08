@@ -23,12 +23,13 @@ public class Game extends GameObserver {
     /**
      * The list of players (acts as a cyclic linked list)
      */
+    public final List<Player> gamePlayers = new ArrayList<>();
     private PlayerList players;
 
     /**
      * The initial number of players in the game
      */
-    private int numPlayers;
+    private final int numPlayers;
 
     private List<Country> conqueredCountries;
 
@@ -59,6 +60,17 @@ public class Game extends GameObserver {
         this.numPlayers = playerSelection.size();
         this.random = new Random();
         buildPlayerSetup(playerSelection);
+    }
+
+    public void reset() {
+        super.reset();
+        gameBoard = new Board();
+        int numStartingTroops = getNumStartingTroops(numPlayers);
+        for (Player p: gamePlayers) {
+            p.reset(numStartingTroops);
+        }
+        players = new PlayerList(new LinkedList<>(gamePlayers));
+        conqueredCountries = new ArrayList<>();
     }
 
     @Override
@@ -168,7 +180,9 @@ public class Game extends GameObserver {
         }
 
         for (int id: playerIDs) {
-            players.add(PlayerFactory.createPlayer(id, numTroopsInInventory, this, playerSelection.get(id)));
+            Player p = PlayerFactory.createPlayer(id, numTroopsInInventory, this, playerSelection.get(id));
+            this.gamePlayers.add(p);
+            players.add(p);
         }
 
         this.players = new PlayerList(players);

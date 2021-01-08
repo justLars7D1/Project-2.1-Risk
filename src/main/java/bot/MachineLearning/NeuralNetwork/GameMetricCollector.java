@@ -3,13 +3,13 @@ package bot.MachineLearning.NeuralNetwork;
 import java.io.*;
 import java.util.*;
 
-public class QMetricCollector {
+public class GameMetricCollector {
 
-    public static final String[] EXISTING_METRICS = {"targetOffset", "lossInTroops", "totalNumTroops", "estimatorOffset", "estimatorAttack", "exploration", "reward"};
+    public static final String[] EXISTING_METRICS = {"gameId", "targetOffset", "lossInTroops", "totalNumTroops", "estimatorOffset", "estimatorAttack", "exploration", "reward"};
 
     private final HashMap<String, List<Double>> metrics;
 
-    public QMetricCollector() {
+    public GameMetricCollector() {
         this.metrics = new HashMap<>();
     }
 
@@ -53,6 +53,8 @@ public class QMetricCollector {
 
     private String getMetricName(String metricName) {
         switch (metricName.toLowerCase()) {
+            case "gameid":
+                return "gameId";
             case "estimatorattack":
                 return "estimatorAttack";
             case "reward":
