@@ -19,8 +19,8 @@ public class LinearTDBot extends RiskBot {
 
     Model linearEvalFunction;
     public TDMetricCollector metrics = new TDMetricCollector();
-    private double alpha;
-    private double lambda;
+    private double alpha = 0.05;
+    private double lambda = 0.5;
     private double currentStateValue;
     private double winChanceThreshold = 0.5;
     private double randomChanceThreshold = 0.2;

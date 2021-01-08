@@ -135,6 +135,7 @@ public class GameEnvironment {
             long startTime = System.currentTimeMillis();
             finishDistributionPhase();
             finishPlacementPhase();
+
             trainOnOneGame(maxTurns, false);
 
             gameNum++;
@@ -153,17 +154,17 @@ public class GameEnvironment {
             }
             if(playerTypes == TD && perGame) {
                 saveTDWeight();
+                int i = 0;
                 for (Player p : game.getAllPlayer()) {
                     ((LinearTDBot) p).setPerGameEval(true);
                     ((LinearTDBot) p).metrics.addToMetric("alpha",((LinearTDBot) p).getAlpha());
                     ((LinearTDBot) p).metrics.addToMetric("lambda", ((LinearTDBot) p).getLambda());
-                    ((LinearTDBot) p).metrics.addToMetric("winningChanceThreshold", ((LinearTDBot) p).getWinChanceThreshold() );
+                    ((LinearTDBot) p).metrics.addToMetric("winChanceThreshold", ((LinearTDBot) p).getWinChanceThreshold() );
                     ((LinearTDBot) p).metrics.addToMetric("randomChanceThreshold", ((LinearTDBot) p).getrandomChanceThreshold());
                     ((LinearTDBot) p).metrics.addToMetric("stateValue",((LinearTDBot) p).getCurrentStateValue());
                     ((LinearTDBot) p).metrics.addToMetric("turnsUntilWin",turnsUntilWin);
-                    int i = 0;
-                    if (fileWriting) {
-                        ((LinearTDBot) p).metrics.saveToFile("src/main/java/gameelements/player/p"+i+++".txt");
+                    if (true) {
+                        ((LinearTDBot) p).metrics.saveToFile("src\\main\\java\\p"+i+++".txt");
                     }
                 }
             }

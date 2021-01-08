@@ -58,23 +58,23 @@ public class TDMetricCollector {
                 return "alpha";
             case "lambda":
                 return "lambda";
-            case "winningChanceThreshold":
-                return "winningchancethreshold";
-            case "randomChanceThreshold":
+            case "winchancethreshold":
+                return "winChanceThreshold";
+            case "randomchancethreshold":
                 return "randomchancethreshold";
-            case "armiesFeatureWeight":
+            case "armiesfeatureweight":
                 return "armiesfeatureweight";
-            case "territoryFeatureWeight":
+            case "territoryfeatureweight":
                 return "territoryfeatureweight";
-            case "enemyReinforcementFeatureWeight":
+            case "enemyreinforcementfeatureweight":
                 return "enemyreinforcementfeatureweight";
-            case "bestEnemyFeatureWeight":
+            case "bestenemyfeatureweight":
                 return "bestenemyfeatureweight";
-            case "hinterlandFeatureWeight":
+            case "hinterlandfeatureweight":
                 return "hinterlandfeatureweight";
-            case "StateValues":
-                return "statevalues";
-            case "turnsUntilWin":
+            case "statevalue":
+                return "statevalue";
+            case "turnsuntilwin":
                 return "turnsuntilwin";
             default:
                 return "";
