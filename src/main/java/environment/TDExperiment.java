@@ -12,9 +12,9 @@ public class TDExperiment {
         //System.out.println("--- Attack ---");
         //environment.train(1, 2, true);
 
-        Double[] winChanceIncrement = new Double[]{};
-        Double[] randomChanceIncrement = new Double[]{};
-        Double[] alphaIncrement = new Double[]{};
+        Double[] winChanceIncrement = new Double[]{0.0, 5.0, 1.0};
+        Double[] randomChanceIncrement = new Double[]{0.0, 5.0, 1.0};
+        Double[] alphaIncrement = new Double[]{0.0, 5.0, 10.0};
         Double[] lambdaIncrement = new Double[]{0.0,5.0,1.0};
         HyperParameterTrain(2,2,true, winChanceIncrement, randomChanceIncrement, alphaIncrement, lambdaIncrement);
     }
@@ -55,8 +55,8 @@ public class TDExperiment {
                     System.out.println("+++++ using winChanceThreshold:"+ ExperimentBot.getWinChanceThreshold() +" +++++" );
                     ExperimentBot =  (LinearTDBot) environment.game.getAllPlayer().get(0);
                     futurewinchance +=increment;
-                    ExperimentBot.setWinChanceThreshold(futurewinchance);
                     environment.train(numGamesPerIteration, turnsPerGame, verbose);
+                    ExperimentBot.setWinChanceThreshold(futurewinchance);
                 }
                 System.out.println("++++++++++++++++++ DONE ++++++++++++++++++");
             }
@@ -83,8 +83,8 @@ public class TDExperiment {
                     System.out.println("+++++ using randomChanceThreshold:"+ ExperimentBot.getrandomChanceThreshold() +" +++++" );
                     ExperimentBot =  (LinearTDBot) environment.game.getAllPlayer().get(0);
                     futurerandomchance +=increment;
-                    ExperimentBot.setrandomChanceThreshold(futurerandomchance);
                     environment.train(numGamesPerIteration, turnsPerGame, verbose);
+                    ExperimentBot.setrandomChanceThreshold(futurerandomchance);
                 }
             }
             else{System.out.println("Wrong input randomChance");}
@@ -110,8 +110,8 @@ public class TDExperiment {
                     System.out.println("+++++ using alpha:"+ ExperimentBot.getAlpha() +" +++++" );
                     ExperimentBot =  (LinearTDBot) environment.game.getAllPlayer().get(0);
                     futurealpha +=increment;
-                    ExperimentBot.setAlpha(futurealpha);
                     environment.train(numGamesPerIteration, turnsPerGame, verbose);
+                    ExperimentBot.setAlpha(futurealpha);
                 }
             }
             else{System.out.println("Wrong input randomChance");}
@@ -137,8 +137,8 @@ public class TDExperiment {
                     System.out.println("+++++ using lambda:"+ ExperimentBot.getLambda() +" +++++" );
                     ExperimentBot =  (LinearTDBot) environment.game.getAllPlayer().get(0);
                     futureLambda +=increment;
+                    //System.out.println(((LinearTDBot) environment.game.getAllPlayer().get(0)).getLambda());
                     ExperimentBot.setLambda(futureLambda);
-                    System.out.println(((LinearTDBot) environment.game.getAllPlayer().get(0)).getLambda());
                     environment.train(numGamesPerIteration, turnsPerGame, verbose);
                 }
             }
