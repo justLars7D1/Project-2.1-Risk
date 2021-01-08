@@ -174,7 +174,8 @@ public class BoardMap {
         //attackB.setUnderline(true);
         endTurnB.setUnderline(true);
         skipB = new Button("Skip Turn");
-
+        skipB.isDisabled();
+        skipB.setUnderline(true);
         HBox actionPanel = new HBox(warning, endTurnB, skipB);
         actionPanel.getStyleClass().add("hbox");
         actionPanel.setAlignment(Pos.CENTER);
@@ -315,6 +316,12 @@ public class BoardMap {
             conquerScreen(game.getConqueredCountries());
         }
 
+        while (game.isBot() && game.getBattlePhase() == BattlePhase.FORTIFYING && game.getGamePhase() != game.getGamePhase().VICTORY) {
+            FortifyEventData data = new FortifyEventData(-1, -1, 1);
+            game.onGameEvent(data);
+        }
+
+        getPlayerColor();
         updateAllCountries();
         updateWarning();
     }
@@ -634,9 +641,15 @@ public class BoardMap {
                 warning.setText("Select a land to add your troops! ----- ");
                 //attackB.setDisable(true);
                 endTurnB.setDisable(true);
+                skipB.setDisable(true);
                 //confirmB.setDisable(true);
                 break;
             case BATTLE:
+                if (game.isCurrentPlayerBot()) {
+                    skipB.setDisable(false);
+                } else {
+                    skipB.setDisable(true);
+                }
                 endTurnB.setDisable(false);
                 updateBattlePhase();
                 break;
