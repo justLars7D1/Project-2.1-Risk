@@ -22,7 +22,7 @@ public class GameEnvironment {
     /**
      * The back-end of the game
      */
-    private Game game;
+    protected Game game;
 
     /**
      * The number of players in the game
@@ -38,6 +38,16 @@ public class GameEnvironment {
      * Whether to enable file writing of statistics or not
      */
     private final boolean fileWriting;
+
+    /**
+     * Whether TD-Bot saves metrics per round or per game
+     */
+    private boolean perGame;
+
+    /**
+     * Helper variable to save turns until player won
+     */
+    private int turnsUntilWin;
 
     /**
      * Constructor
@@ -108,8 +118,12 @@ public class GameEnvironment {
                 finishPlacementPhase();
 
             }
-
+            System.out.println("##### Turn number "+turnCounter+" #####");
             turnCounter++;
+        }
+        if(playerTypes == TD)
+        {
+            turnsUntilWin = turnCounter - 1;
         }
     }
 
@@ -119,6 +133,7 @@ public class GameEnvironment {
             long startTime = System.currentTimeMillis();
             finishDistributionPhase();
             finishPlacementPhase();
+
             trainOnOneGame(maxTurns, false);
 
             gameNum++;
@@ -126,7 +141,23 @@ public class GameEnvironment {
                 System.out.println("Game " + gameNum + " - Phase: " + game.getGamePhase());
                 System.out.println("Time elapsed: " + (System.currentTimeMillis() - startTime)/1. + " ms");
             }
-            if(playerTypes == TD){ saveTDWeight(); }
+
+            if(playerTypes == TD && perGame) {
+                saveTDWeight();
+                int i = 0;
+                for (Player p : game.getAllPlayer()) {
+                    ((LinearTDBot) p).setPerGameEval(true);
+                    ((LinearTDBot) p).metrics.addToMetric("alpha",((LinearTDBot) p).getAlpha());
+                    ((LinearTDBot) p).metrics.addToMetric("lambda", ((LinearTDBot) p).getLambda());
+                    ((LinearTDBot) p).metrics.addToMetric("winChanceThreshold", ((LinearTDBot) p).getWinChanceThreshold() );
+                    ((LinearTDBot) p).metrics.addToMetric("randomChanceThreshold", ((LinearTDBot) p).getrandomChanceThreshold());
+                    ((LinearTDBot) p).metrics.addToMetric("stateValue",((LinearTDBot) p).getCurrentStateValue());
+                    ((LinearTDBot) p).metrics.addToMetric("turnsUntilWin",turnsUntilWin);
+                    if (true) {
+                        ((LinearTDBot) p).metrics.saveToFile("src\\main\\java\\p"+i+++".txt");
+                    }
+                }
+            }
 
             reset();
         }
@@ -137,7 +168,7 @@ public class GameEnvironment {
         }
 
     }
-    public void saveTDWeight(){
+    public  void saveTDWeight(){
         System.out.println("###### saving weights ######");
         List<Player> players = game.getAllPlayer();
         Player best = players.get(0);
@@ -173,6 +204,10 @@ public class GameEnvironment {
      */
     public void reset() {
         game.reset();
+    }
+
+    public void setPerGame(boolean switcher){
+        perGame = switcher;
     }
 
 }

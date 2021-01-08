@@ -91,9 +91,9 @@ public class FortifyHeuristic {
                 ToBeDistributed = clusterArmyStrength -distributedTroops;
             }
             // Add remaining troops to the countries with largest army stationed (below maxTroopsInCountry)
-            int threshold = 0;
-            int target_index =0;
             while(ToBeDistributed > 0){
+                int threshold = 0;
+                int target_index =0;
                 threshold = 0;
                 target_index =0;
                 // Find the index of the largest value below 10
