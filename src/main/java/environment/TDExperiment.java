@@ -12,11 +12,12 @@ public class TDExperiment {
         //System.out.println("--- Attack ---");
         //environment.train(1, 2, true);
 
-        Double[] winChanceIncrement = new Double[]{0.0, 5.0, 1.0};
-        Double[] randomChanceIncrement = new Double[]{0.0, 5.0, 1.0};
-        Double[] alphaIncrement = new Double[]{0.0, 5.0, 10.0};
+        Double[] winChanceIncrement = new Double[]{};
+        Double[] randomChanceIncrement = new Double[]{};
+        Double[] alphaIncrement = new Double[]{};
         Double[] lambdaIncrement = new Double[]{0.0,5.0,1.0};
-        HyperParameterTrain(2,100,true, winChanceIncrement, randomChanceIncrement, alphaIncrement, lambdaIncrement);
+        HyperParameterTrain(2,10,true, winChanceIncrement, randomChanceIncrement, alphaIncrement, lambdaIncrement);
+        System.out.println("something");
     }
 
     public static void HyperParameterTrain(int numGamesPerIteration, int turnsPerGame, boolean verbose,  Double[] winChanceIncrement, Double[] randomChanceIncrement, Double[] alphaIncrement, Double[] lamdaIncrement){

@@ -105,7 +105,6 @@ public class GameEnvironment {
     public void trainOnOneGame(int maxTurns, boolean verbose) {
         int turnCounter = 0;
         double rewardSum = 0;
-        turnsUntilWin = 0; //reset the counter
         while (turnCounter < maxTurns*numPlayers && !game.getGamePhase().equals(GamePhase.VICTORY)) {
             //System.out.println("-- Current Player: " + game.getCurrentPlayer() + " --");
             while (game.getBattlePhase().equals(BattlePhase.ATTACK) && !game.getGamePhase().equals(GamePhase.VICTORY)) {
