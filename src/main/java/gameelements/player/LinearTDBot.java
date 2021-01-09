@@ -5,6 +5,7 @@ import bot.MachineLearning.NeuralNetwork.Activations.Pass;
 import bot.MachineLearning.NeuralNetwork.Losses.TDLoss;
 import bot.MachineLearning.NeuralNetwork.Model;
 import bot.MachineLearning.NeuralNetwork.Optimizers.TDOptimizer;
+import bot.MachineLearning.NeuralNetwork.TDMetricCollector;
 import bot.Mathematics.LinearAlgebra.Vector;
 import environment.BorderSupplyFeatures;
 import environment.WolfFeatures;
@@ -17,6 +18,18 @@ public class LinearTDBot extends RiskBot {
 
 
     Model linearEvalFunction;
+    public TDMetricCollector metrics = new TDMetricCollector();
+    private double alpha = 0.05;
+    private double lambda = 0.5;
+    private double currentStateValue;
+    private double winChanceThreshold = 0.5;
+    private double randomChanceThreshold = 0.2;
+    private double armiesFeatureWeight;
+    private double territoryFeatureWeight;
+    private double enemyReinforcementFeatureWeight;
+    private double bestEnemyFeatureWeight;
+    private double hinterlandFeatureWeight;
+
 
 
 
@@ -28,6 +41,33 @@ public class LinearTDBot extends RiskBot {
         setupModel();
         //linearEvalFunction = Model.loadModel("src/main/java/gameelements/player/botWeights/TD-Bot_Weights.txt");
     }
+    public void enableGameMetrics(){
+        metrics.enableMetric("alpha");
+        metrics.enableMetric("lambda");
+        metrics.enableMetric("winChanceThreshold");
+        metrics.enableMetric("randomChanceThreshold");
+        metrics.enableMetric("stateValue");
+        metrics.enableMetric("turnsUntilWin");
+    }
+    public void enableTurnMetrics(){
+        metrics.enableMetric("alpha");
+        metrics.enableMetric("lambda");
+        metrics.enableMetric("winChanceThreshold");
+        metrics.enableMetric("randomChanceThreshold");
+        metrics.enableMetric("armiesFeatureWeight");
+        metrics.enableMetric("territoryFeatureWeight");
+        metrics.enableMetric("enemyReinforcementFeatureWeight");
+        metrics.enableMetric("bestEnemyFeatureWeight");
+        metrics.enableMetric("hinterlandFeatureWeight");
+        metrics.enableMetric("stateValue");
+    }
+    public void setPerGameEval(boolean yes){
+        if(yes){
+            enableGameMetrics();
+        }
+        else enableTurnMetrics();
+    }
+
 
     private void setupModel() {
         this.linearEvalFunction = new Model(5);
@@ -96,7 +136,9 @@ public class LinearTDBot extends RiskBot {
                 System.out.println("Battle skipped");
             }
         }
-        System.out.println("attack done");
+        //System.out.println("attack done");
+        Vector currentState = linearEvalFunction.evaluate(calculateFeatures(currentGame));
+        currentStateValue = currentState.get(0);
     }
 
     @Override
@@ -192,7 +234,7 @@ public class LinearTDBot extends RiskBot {
                     final_defendingCountry = defendingCountry.getID();
                     // state value
                     maxExpectedStateValue = expectedStateValue;
-                    System.out.println(maxExpectedStateValue);
+                   // System.out.println(maxExpectedStateValue);
                 }
             }
         }
@@ -222,5 +264,57 @@ public class LinearTDBot extends RiskBot {
 
     public Model getLinearEvalFunction() {
         return linearEvalFunction;
+    }
+    public  void setAlpha(double alpha){
+        this.alpha = alpha;
+    }
+    public double getAlpha(){
+        return alpha;
+    }
+    public void setLambda(double lambda){
+        this.lambda = lambda;
+    }
+    public double getLambda(){
+        return lambda;
+    }
+
+
+    public void setWinChanceThreshold(double WinChanceThreshold){this.winChanceThreshold = WinChanceThreshold;}
+    public void setrandomChanceThreshold(double randomChanceThreshold){this.randomChanceThreshold = randomChanceThreshold;}
+
+    public double getWinChanceThreshold(){return this.winChanceThreshold;}
+    public double getrandomChanceThreshold(){return this.randomChanceThreshold;}
+
+    public double getCurrentStateValue(){
+        return currentStateValue;
+    }
+
+    public void prepWeights(){
+        double[][] rep = linearEvalFunction.getLayers().get(0).getRepresentation().getGrid();
+        double[] weights = rep[0];
+        armiesFeatureWeight = weights[0];
+        territoryFeatureWeight = weights[1];
+        enemyReinforcementFeatureWeight = weights[2];
+        bestEnemyFeatureWeight = weights[3];
+        hinterlandFeatureWeight = weights[4];
+    }
+    public double getArmiesFeatureWeight(){
+        return armiesFeatureWeight;
+    }
+
+    public double getTerritoryFeatureWeight(){
+        return territoryFeatureWeight;
+    }
+
+    public double getBestEnemyFeatureWeight() {
+        return bestEnemyFeatureWeight;
+    }
+
+    public double getEnemyReinforcementFeatureWeight(){
+        return enemyReinforcementFeatureWeight;
+    }
+
+    public double getHinterlandFeatureWeight(){
+        return hinterlandFeatureWeight;
     }
 }

@@ -22,7 +22,7 @@ public class GameEnvironment {
     /**
      * The back-end of the game
      */
-    private Game game;
+    protected Game game;
 
     /**
      * The number of players in the game
@@ -38,6 +38,22 @@ public class GameEnvironment {
      * Whether to enable file writing of statistics or not
      */
     private final boolean fileWriting;
+
+    /**
+     * Whether TD-Bot saves metrics per round or per game
+     */
+    private boolean perGame = false;
+
+    /**
+     * Whether TD-Bot saves metrics per round or per round
+     */
+    private boolean perRound = false;
+
+
+    /**
+     * Helper variable to save turns until player won
+     */
+    private int turnsUntilWin;
 
     /**
      * Constructor
@@ -95,6 +111,7 @@ public class GameEnvironment {
     public void trainOnOneGame(int maxTurns, boolean verbose) {
         int turnCounter = 0;
         double rewardSum = 0;
+        turnsUntilWin = 0; //reset the counter
         while (turnCounter < maxTurns*numPlayers && !game.getGamePhase().equals(GamePhase.VICTORY)) {
             //System.out.println("-- Current Player: " + game.getCurrentPlayer() + " --");
             while (game.getBattlePhase().equals(BattlePhase.ATTACK) && !game.getGamePhase().equals(GamePhase.VICTORY)) {
@@ -108,8 +125,53 @@ public class GameEnvironment {
                 finishPlacementPhase();
 
             }
-
+            System.out.println("##### Turn number "+turnCounter+" #####");
             turnCounter++;
+            if(playerTypes == TD && perRound){
+                int i = 0;
+                List<Player> players = game.getAllPlayer();
+                for(Player player : players) {
+                    ((LinearTDBot) player).enableTurnMetrics();
+                    ((LinearTDBot) player).prepWeights();
+                    ((LinearTDBot) player).metrics.addToMetric("alpha", ((LinearTDBot) player).getAlpha());
+                    ((LinearTDBot) player).metrics.addToMetric("lambda", ((LinearTDBot) player).getLambda());
+                    ((LinearTDBot) player).metrics.addToMetric("winChanceThreshold", ((LinearTDBot) player).getWinChanceThreshold());
+                    ((LinearTDBot) player).metrics.addToMetric("randomChanceThreshold", ((LinearTDBot) player).getrandomChanceThreshold());
+                    ((LinearTDBot) player).metrics.addToMetric("armiesFeatureWeight", ((LinearTDBot) player).getArmiesFeatureWeight());
+                    ((LinearTDBot) player).metrics.addToMetric("territoryFeatureWeight", ((LinearTDBot) player).getTerritoryFeatureWeight());
+                    ((LinearTDBot) player).metrics.addToMetric("enemyReinforcementFeatureWeight", ((LinearTDBot) player).getEnemyReinforcementFeatureWeight());
+                    ((LinearTDBot) player).metrics.addToMetric("bestEnemyFeatureWeight", ((LinearTDBot) player).getBestEnemyFeatureWeight());
+                    ((LinearTDBot) player).metrics.addToMetric("hinterlandFeatureWeight", ((LinearTDBot) player).getHinterlandFeatureWeight());
+                    ((LinearTDBot) player).metrics.addToMetric("stateValue", ((LinearTDBot) player).getCurrentStateValue());
+                    System.out.println("Player ID: " + player.getId());
+                    System.out.println(((LinearTDBot) player).getLambda());
+                    ((LinearTDBot) player).metrics.saveToFile("src\\main\\java\\p" + i++ + ".txt");
+                }
+
+            }
+        }
+
+        //this is the case that the game did not end within the allowed amount of turns
+        if(game.getGamePhase() == GamePhase.BATTLE){
+            turnsUntilWin = -1;
+
+        }
+
+        if(game.getGamePhase().equals(GamePhase.VICTORY)) {
+            List<Player> players = game.getAllPlayer();
+            for(Player player : players){
+                if(player.getId() != 1 && player.getCountriesOwned().size() > 0){ //whenever it is the bot that's being itterated and it wins i.e. owns all the countries
+                    turnsUntilWin = turnCounter - 1; //we use the turn counter to set the turns until win
+//                    System.out.println("We Have a victory in " + turnsUntilWin + " turns");
+//                    System.out.println(game.getAllPlayer());
+//                    System.out.println("player: " + player);
+//                    System.out.println("Number of Countries they own: " + player.getCountriesOwned().size());
+                }
+
+                reset();
+            }
+
+
         }
     }
 
@@ -128,7 +190,25 @@ public class GameEnvironment {
             }
             if(playerTypes == TD){ saveTDWeight(); }
 
-            reset();
+            if(playerTypes == TD && perGame) {
+                saveTDWeight();
+                int i = 0;
+                for (Player p : game.getAllPlayer()) {
+                    ((LinearTDBot) p).enableGameMetrics();
+                    ((LinearTDBot) p).metrics.addToMetric("alpha",((LinearTDBot) p).getAlpha());
+                    ((LinearTDBot) p).metrics.addToMetric("lambda", ((LinearTDBot) p).getLambda());
+                    ((LinearTDBot) p).metrics.addToMetric("winChanceThreshold", ((LinearTDBot) p).getWinChanceThreshold() );
+                    ((LinearTDBot) p).metrics.addToMetric("randomChanceThreshold", ((LinearTDBot) p).getrandomChanceThreshold());
+                    ((LinearTDBot) p).metrics.addToMetric("stateValue",((LinearTDBot) p).getCurrentStateValue());
+                    ((LinearTDBot) p).metrics.addToMetric("turnsUntilWin",turnsUntilWin);
+                    System.out.println("Player ID: " + p.getId());
+                    System.out.println(((LinearTDBot) p).getLambda());
+                    if (true) {
+                        ((LinearTDBot) p).metrics.saveToFile("src\\main\\java\\p"+i+++".txt");
+                    }
+                }
+
+            }
         }
 
         for (int i = 0; i < game.gamePlayers.size(); i++) {
@@ -173,6 +253,18 @@ public class GameEnvironment {
      */
     public void reset() {
         game.reset();
+    }
+
+
+
+    public void setPerGame(boolean switcher){
+        perGame = switcher;
+        System.out.println("Printing per game: " + switcher);
+    }
+
+    public void setPerRound(boolean switcher){
+        perRound = switcher;
+        System.out.println("Printing per turn " + switcher);
     }
 
 }

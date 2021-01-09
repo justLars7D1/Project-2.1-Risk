@@ -24,11 +24,12 @@ public class TDOptimizer extends Optimizer {
         Matrix currentWeights = layers.get(0).getRepresentation();
         double[][] weigths = currentWeights.getGrid();
         double[] vectorPrep = weigths[0];
-        System.out.println("------------- Weights--------------");
+       /* System.out.println("------------- Weights--------------");
         for (int l = 0; l < vectorPrep.length; l++){
             System.out.println(vectorPrep[l]);
         }
         System.out.println("------------- Weights--------------");
+        */
         double normFactor = this.normalization();
         double featureNorm = this.obtainCurrentFeatureNorm();
         for(int i = 0; i < losses.getCoordinates().length; i++){
