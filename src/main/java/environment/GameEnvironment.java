@@ -105,6 +105,7 @@ public class GameEnvironment {
     public void trainOnOneGame(int maxTurns, boolean verbose) {
         int turnCounter = 0;
         double rewardSum = 0;
+        turnsUntilWin = 0; //reset the counter
         while (turnCounter < maxTurns*numPlayers && !game.getGamePhase().equals(GamePhase.VICTORY)) {
             //System.out.println("-- Current Player: " + game.getCurrentPlayer() + " --");
             while (game.getBattlePhase().equals(BattlePhase.ATTACK) && !game.getGamePhase().equals(GamePhase.VICTORY)) {
@@ -121,9 +122,25 @@ public class GameEnvironment {
             System.out.println("##### Turn number "+turnCounter+" #####");
             turnCounter++;
         }
-        if(playerTypes == TD)
-        {
-            turnsUntilWin = turnCounter - 1;
+
+        //this is the case that the game did not end within the allowed amount of turns
+        if(game.getGamePhase() == GamePhase.BATTLE){
+            turnsUntilWin = -1;
+        }
+
+        if(game.getGamePhase().equals(GamePhase.VICTORY)) {
+            List<Player> players = game.getAllPlayer();
+            for(Player player : players){
+                if(player.getId() != 1 && player.getCountriesOwned().size() > 0){ //whenever it is the bot that's being itterated and it wins i.e. owns all the countries
+                    turnsUntilWin = turnCounter - 1; //we use the turn counter to set the turns until win
+//                    System.out.println("We Have a victory in " + turnsUntilWin + " turns");
+//                    System.out.println(game.getAllPlayer());
+//                    System.out.println("player: " + player);
+//                    System.out.println("Number of Countries they own: " + player.getCountriesOwned().size());
+                }
+            }
+
+
         }
     }
 
