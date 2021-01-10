@@ -75,6 +75,12 @@ public class LinearTDBot extends RiskBot {
         this.linearEvalFunction.compile(new TDLoss(), new TDOptimizer(0.05, 0.5));
     }
 
+    public void setupModel(TDOptimizer optimizer, TDLoss loss){
+        this.linearEvalFunction = new Model(5);
+        this.linearEvalFunction.addLayer(1, new Pass());
+        this.linearEvalFunction.compile(loss, optimizer);
+    }
+
     @Override
     public boolean onDistributionEvent(Country country) {
         // Put all the code to pick the right action here

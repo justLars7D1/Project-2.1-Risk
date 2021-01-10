@@ -134,6 +134,7 @@ public class Model implements Serializable {
     public void tdTrain(Vector xs, Vector ys) {
 //        this.compile(new TDLoss(), new TDOptimizer(alpha, lambda),new String[0]);
         TDOptimizer op = (TDOptimizer) optimizer;
+        optimizer = op;
         op.init(this);
          ((TDLoss) lossFunction).obtainLambda(op.getLambda());
         Vector losses = lossFunction.evalDerivative(xs, ys);
@@ -344,4 +345,6 @@ public class Model implements Serializable {
     public Loss getLossFunction(){
         return this.lossFunction;
     }
+
+    public Optimizer getOptimizer(){return this.optimizer;}
 }

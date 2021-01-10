@@ -1,6 +1,10 @@
 package environment;
 
+import bot.MachineLearning.NeuralNetwork.Losses.TDLoss;
+import bot.MachineLearning.NeuralNetwork.Optimizers.TDOptimizer;
 import gameelements.player.LinearTDBot;
+import gameelements.player.Player;
+import gameelements.player.PlayerList;
 import gameelements.player.PlayerType;
 
 import java.lang.reflect.Array;
@@ -16,14 +20,14 @@ public class TDExperiment {
         Double[] randomChanceIncrement = new Double[]{};
         Double[] alphaIncrement = new Double[]{};
         Double[] lambdaIncrement = new Double[]{0.0,5.0,1.0};
-        HyperParameterTrain(1,10,true, winChanceIncrement, randomChanceIncrement, alphaIncrement, lambdaIncrement);
+        HyperParameterTrain(1,500,true, winChanceIncrement, randomChanceIncrement, alphaIncrement, lambdaIncrement);
         System.out.println("something");
     }
 
     public static void HyperParameterTrain(int numGamesPerIteration, int turnsPerGame, boolean verbose,  Double[] winChanceIncrement, Double[] randomChanceIncrement, Double[] alphaIncrement, Double[] lamdaIncrement){
         GameEnvironment environment = new GameEnvironment(PlayerType.TD);
-        environment.setPerGame(true);
-        environment.setPerRound(false);
+        environment.setPerGame(false);
+        environment.setPerRound(true);
         // The experiment bot will always play against the bot using default values
         LinearTDBot ExperimentBot =  (LinearTDBot) environment.game.getAllPlayer().get(0);
 
@@ -135,6 +139,13 @@ public class TDExperiment {
                 ExperimentBot.setrandomChanceThreshold(defaultRandomChanceThreshold);
 
                 for(int i = 0; i < numIncrements; i++){
+                    ArrayList<Player> player = environment.game.getAllPlayer();
+                    for(Player p : player){
+                        TDLoss loss = (TDLoss) ((LinearTDBot)p).getLinearEvalFunction().getLossFunction();
+                        TDOptimizer optimizer = (TDOptimizer) ((LinearTDBot) p).getLinearEvalFunction().getOptimizer();
+                        ((LinearTDBot) p).setupModel(optimizer, loss);
+                    }
+
                     System.out.println("+++++++++++++++ Iteration "+i+" +++++++++++++++");
                     System.out.println("+++++ using lambda:"+ ExperimentBot.getLambda() +" +++++" );
                     ExperimentBot =  (LinearTDBot) environment.game.getAllPlayer().get(0);

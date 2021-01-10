@@ -143,8 +143,8 @@ public class GameEnvironment {
                     ((LinearTDBot) player).metrics.addToMetric("bestEnemyFeatureWeight", ((LinearTDBot) player).getBestEnemyFeatureWeight());
                     ((LinearTDBot) player).metrics.addToMetric("hinterlandFeatureWeight", ((LinearTDBot) player).getHinterlandFeatureWeight());
                     ((LinearTDBot) player).metrics.addToMetric("stateValue", ((LinearTDBot) player).getCurrentStateValue());
-                    System.out.println("Player ID: " + player.getId());
-                    System.out.println(((LinearTDBot) player).getLambda());
+                    //System.out.println("Player ID: " + player.getId());
+                    //System.out.println(((LinearTDBot) player).getLambda());
                     ((LinearTDBot) player).metrics.saveToFile("src\\main\\java\\p" + i++ + ".txt");
                 }
 
@@ -167,11 +167,7 @@ public class GameEnvironment {
 //                    System.out.println("player: " + player);
 //                    System.out.println("Number of Countries they own: " + player.getCountriesOwned().size());
                 }
-
-                reset();
             }
-
-
         }
     }
 
@@ -201,14 +197,15 @@ public class GameEnvironment {
                     ((LinearTDBot) p).metrics.addToMetric("randomChanceThreshold", ((LinearTDBot) p).getrandomChanceThreshold());
                     ((LinearTDBot) p).metrics.addToMetric("stateValue",((LinearTDBot) p).getCurrentStateValue());
                     ((LinearTDBot) p).metrics.addToMetric("turnsUntilWin",turnsUntilWin);
-                    System.out.println("Player ID: " + p.getId());
-                    System.out.println(((LinearTDBot) p).getLambda());
+                    //System.out.println("Player ID: " + p.getId());
+                    //System.out.println(((LinearTDBot) p).getLambda());
                     if (true) {
                         ((LinearTDBot) p).metrics.saveToFile("src\\main\\java\\p"+i+++".txt");
                     }
                 }
 
             }
+            reset();
         }
 
         for (int i = 0; i < game.gamePlayers.size(); i++) {
