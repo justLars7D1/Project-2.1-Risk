@@ -16,18 +16,17 @@ public class TDExperiment {
         //System.out.println("--- Attack ---");
         //environment.train(1, 2, true);
 
-        Double[] winChanceIncrement = new Double[]{};
-        Double[] randomChanceIncrement = new Double[]{};
+        Double[] winChanceIncrement = new Double[]{0.0,20.0,1.0};
+        Double[] randomChanceIncrement = new Double[]{0.0,20.0,1.0};
         Double[] alphaIncrement = new Double[]{};
-        Double[] lambdaIncrement = new Double[]{0.0,5.0,1.0};
-        HyperParameterTrain(1,500,true, winChanceIncrement, randomChanceIncrement, alphaIncrement, lambdaIncrement);
-        System.out.println("something");
+        Double[] lambdaIncrement = new Double[]{};
+        HyperParameterTrain(500,100,true, winChanceIncrement, randomChanceIncrement, alphaIncrement, lambdaIncrement);
     }
 
     public static void HyperParameterTrain(int numGamesPerIteration, int turnsPerGame, boolean verbose,  Double[] winChanceIncrement, Double[] randomChanceIncrement, Double[] alphaIncrement, Double[] lamdaIncrement){
         GameEnvironment environment = new GameEnvironment(PlayerType.TD);
-        environment.setPerGame(false);
-        environment.setPerRound(true);
+        environment.setPerGame(true);
+        environment.setPerRound(false);
         // The experiment bot will always play against the bot using default values
         LinearTDBot ExperimentBot =  (LinearTDBot) environment.game.getAllPlayer().get(0);
 
@@ -57,9 +56,16 @@ public class TDExperiment {
 
                 // starting at -1 as there are numIncrements +1 run as there is one initial run with the start value
                 for(int i = -1; i < numIncrements; i++){
+                    ArrayList<Player> player = environment.game.getAllPlayer();
+                    for(Player p : player){
+                        TDLoss loss = (TDLoss) ((LinearTDBot)p).getLinearEvalFunction().getLossFunction();
+                        TDOptimizer optimizer = (TDOptimizer) ((LinearTDBot) p).getLinearEvalFunction().getOptimizer();
+                        ((LinearTDBot) p).setupModel(optimizer, loss);
+                    }
                     System.out.println("+++++++++++++++ Iteration "+i+" +++++++++++++++");
                     System.out.println("+++++ using winChanceThreshold:"+ ExperimentBot.getWinChanceThreshold() +" +++++" );
                     ExperimentBot =  (LinearTDBot) environment.game.getAllPlayer().get(0);
+                    environment.ExpBotId = ExperimentBot.getId();
                     futurewinchance +=increment;
                     environment.train(numGamesPerIteration, turnsPerGame, verbose);
                     ExperimentBot.setWinChanceThreshold(futurewinchance);
@@ -85,9 +91,16 @@ public class TDExperiment {
                 ExperimentBot.setAlpha(defaultAlpha);
 
                 for(int i = -1; i < numIncrements; i++){
+                    ArrayList<Player> player = environment.game.getAllPlayer();
+                    for(Player p : player){
+                        TDLoss loss = (TDLoss) ((LinearTDBot)p).getLinearEvalFunction().getLossFunction();
+                        TDOptimizer optimizer = (TDOptimizer) ((LinearTDBot) p).getLinearEvalFunction().getOptimizer();
+                        ((LinearTDBot) p).setupModel(optimizer, loss);
+                    }
                     System.out.println("+++++++++++++++ Iteration "+i+" +++++++++++++++");
                     System.out.println("+++++ using randomChanceThreshold:"+ ExperimentBot.getrandomChanceThreshold() +" +++++" );
                     ExperimentBot =  (LinearTDBot) environment.game.getAllPlayer().get(0);
+                    environment.ExpBotId = ExperimentBot.getId();
                     futurerandomchance +=increment;
                     environment.train(numGamesPerIteration, turnsPerGame, verbose);
                     ExperimentBot.setrandomChanceThreshold(futurerandomchance);
@@ -112,9 +125,16 @@ public class TDExperiment {
                 ExperimentBot.setrandomChanceThreshold(defaultRandomChanceThreshold);
 
                 for(int i = -1; i < numIncrements; i++){
+                    ArrayList<Player> player = environment.game.getAllPlayer();
+                    for(Player p : player){
+                        TDLoss loss = (TDLoss) ((LinearTDBot)p).getLinearEvalFunction().getLossFunction();
+                        TDOptimizer optimizer = (TDOptimizer) ((LinearTDBot) p).getLinearEvalFunction().getOptimizer();
+                        ((LinearTDBot) p).setupModel(optimizer, loss);
+                    }
                     System.out.println("+++++++++++++++ Iteration "+i+" +++++++++++++++");
                     System.out.println("+++++ using alpha:"+ ExperimentBot.getAlpha() +" +++++" );
                     ExperimentBot =  (LinearTDBot) environment.game.getAllPlayer().get(0);
+                    environment.ExpBotId = ExperimentBot.getId();
                     futurealpha +=increment;
                     environment.train(numGamesPerIteration, turnsPerGame, verbose);
                     ExperimentBot.setAlpha(futurealpha);
@@ -145,13 +165,14 @@ public class TDExperiment {
                         TDOptimizer optimizer = (TDOptimizer) ((LinearTDBot) p).getLinearEvalFunction().getOptimizer();
                         ((LinearTDBot) p).setupModel(optimizer, loss);
                     }
-
                     System.out.println("+++++++++++++++ Iteration "+i+" +++++++++++++++");
-                    System.out.println("+++++ using lambda:"+ ExperimentBot.getLambda() +" +++++" );
                     ExperimentBot =  (LinearTDBot) environment.game.getAllPlayer().get(0);
+                    environment.ExpBotId = ExperimentBot.getId();
                     futureLambda +=increment;
                     //System.out.println(((LinearTDBot) environment.game.getAllPlayer().get(0)).getLambda());
                     ExperimentBot.setLambda(futureLambda);
+                    System.out.println("id id"+ExperimentBot.getId());
+                    System.out.println("+++++ using lambda:"+ ExperimentBot.getLambda() +" +++++" );
                     environment.train(numGamesPerIteration, turnsPerGame, verbose);
                 }
             }

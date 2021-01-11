@@ -74,6 +74,11 @@ public class LinearTDBot extends RiskBot {
         this.linearEvalFunction.addLayer(1, new Pass());
         this.linearEvalFunction.compile(new TDLoss(), new TDOptimizer(0.05, 0.5));
     }
+    public void setupModel(double alpha, double lambda) {
+        this.linearEvalFunction = new Model(5);
+        this.linearEvalFunction.addLayer(1, new Pass());
+        this.linearEvalFunction.compile(new TDLoss(), new TDOptimizer(alpha, lambda));
+    }
 
     public void setupModel(TDOptimizer optimizer, TDLoss loss){
         this.linearEvalFunction = new Model(5);
@@ -139,7 +144,7 @@ public class LinearTDBot extends RiskBot {
                 super.onAttackEvent(countryFromID, countryToID);
             } else {// if there is no 'obvious attack', and the potential 'underdog' attack is also no considered then we will move onto the next battle phase.
                 currentGame.nextBattlePhase();
-                System.out.println("Battle skipped");
+                //System.out.println("Battle skipped");
             }
         }
         //System.out.println("attack done");

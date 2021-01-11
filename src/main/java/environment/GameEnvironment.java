@@ -55,6 +55,10 @@ public class GameEnvironment {
      */
     private int turnsUntilWin;
 
+    public int turnsUntilWinP1;
+
+    public int ExpBotId;
+
     /**
      * Constructor
      * @param numPlayers The number of players
@@ -125,7 +129,7 @@ public class GameEnvironment {
                 finishPlacementPhase();
 
             }
-            System.out.println("##### Turn number "+turnCounter+" #####");
+            //System.out.println("##### Turn number "+turnCounter+" #####");
             turnCounter++;
             if(playerTypes == TD && perRound){
                 int i = 0;
@@ -149,18 +153,17 @@ public class GameEnvironment {
                 }
 
             }
+            turnsUntilWinP1 = turnCounter;
         }
 
         //this is the case that the game did not end within the allowed amount of turns
         if(game.getGamePhase() == GamePhase.BATTLE){
             turnsUntilWin = -1;
-
         }
-
         if(game.getGamePhase().equals(GamePhase.VICTORY)) {
             List<Player> players = game.getAllPlayer();
             for(Player player : players){
-                if(player.getId() != 1 && player.getCountriesOwned().size() > 0){ //whenever it is the bot that's being itterated and it wins i.e. owns all the countries
+                if(player.getId() == ExpBotId && player.getCountriesOwned().size() > 0){ //whenever it is the bot that's being itterated and it wins i.e. owns all the countries
                     turnsUntilWin = turnCounter - 1; //we use the turn counter to set the turns until win
 //                    System.out.println("We Have a victory in " + turnsUntilWin + " turns");
 //                    System.out.println(game.getAllPlayer());
@@ -180,9 +183,9 @@ public class GameEnvironment {
             trainOnOneGame(maxTurns, false);
 
             gameNum++;
-            if (verbose) {
+            if (verbose && gameNum % 100 == 0) {
                 System.out.println("Game " + gameNum + " - Phase: " + game.getGamePhase());
-                System.out.println("Time elapsed: " + (System.currentTimeMillis() - startTime)/1. + " ms");
+                //System.out.println("Time elapsed: " + (System.currentTimeMillis() - startTime)/1. + " ms");
             }
             if(playerTypes == TD){ saveTDWeight(); }
 
@@ -196,7 +199,22 @@ public class GameEnvironment {
                     ((LinearTDBot) p).metrics.addToMetric("winChanceThreshold", ((LinearTDBot) p).getWinChanceThreshold() );
                     ((LinearTDBot) p).metrics.addToMetric("randomChanceThreshold", ((LinearTDBot) p).getrandomChanceThreshold());
                     ((LinearTDBot) p).metrics.addToMetric("stateValue",((LinearTDBot) p).getCurrentStateValue());
-                    ((LinearTDBot) p).metrics.addToMetric("turnsUntilWin",turnsUntilWin);
+                    // ExpBot looses, DefaultBot turnsUntilWin set to turn number
+                    if(turnsUntilWin == 0 && p.getId() != ExpBotId){
+                        ((LinearTDBot) p).metrics.addToMetric("turnsUntilWin", turnsUntilWinP1);
+                    }
+                    // ExpBot wins, DefaultBot set to 0
+                    else if(turnsUntilWin > 0 && p.getId() != ExpBotId){
+                        ((LinearTDBot) p).metrics.addToMetric("turnsUntilWin", 0);
+                    }
+                    // ExpBot wins, ExpBot set to turnsUntilWin
+                    else if (turnsUntilWin > 0 && p.getId() == ExpBotId){
+                        ((LinearTDBot) p).metrics.addToMetric("turnsUntilWin",turnsUntilWin);
+                    }
+                    // both lost
+                    else{
+                        ((LinearTDBot) p).metrics.addToMetric("turnsUntilWin",turnsUntilWin);
+                    }
                     //System.out.println("Player ID: " + p.getId());
                     //System.out.println(((LinearTDBot) p).getLambda());
                     if (true) {
@@ -215,7 +233,7 @@ public class GameEnvironment {
 
     }
     public void saveTDWeight(){
-        System.out.println("###### saving weights ######");
+        //System.out.println("###### saving weights ######");
         List<Player> players = game.getAllPlayer();
         Player best = players.get(0);
         int bestTerritory = -1;
