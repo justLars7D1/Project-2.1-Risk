@@ -23,13 +23,14 @@ public class ExperienceReplayer {
 
     }
 
-    public void addSample(Vector currentState, boolean attack, int reward, Vector nextState) {
+    public void addSample(Vector currentState, boolean attack, double reward, Vector nextState) {
         this.transitions.add(new Transition(currentState, attack, reward, nextState));
     }
 
     public Transition[] getSamples(int batchSize) {
-        Transition[] transitions = new Transition[batchSize];
-        for (int i = 0; i < batchSize; i++) {
+        int minSize = Math.min(batchSize, transitions.size());
+        Transition[] transitions = new Transition[minSize];
+        for (int i = 0; i < minSize; i++) {
             transitions[i] = getSample();
         }
         return transitions;

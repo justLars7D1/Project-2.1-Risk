@@ -6,10 +6,10 @@ public class Transition {
 
     private final Vector currentState;
     private final boolean attackAction;
-    private final int reward;
+    private final double reward;
     private final Vector nextState;
 
-    public Transition(Vector currentState, boolean attackAction, int reward, Vector nextState) {
+    public Transition(Vector currentState, boolean attackAction, double reward, Vector nextState) {
         this.currentState = currentState;
         this.attackAction = attackAction;
         this.reward = reward;
@@ -24,7 +24,7 @@ public class Transition {
         return attackAction;
     }
 
-    public int getReward() {
+    public double getReward() {
         return reward;
     }
 

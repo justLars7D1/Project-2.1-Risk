@@ -183,7 +183,7 @@ public class GameEnvironment {
             trainOnOneGame(maxTurns, false);
 
             gameNum++;
-            if (verbose && gameNum % 100 == 0) {
+            if (verbose) {
                 System.out.println("Game " + gameNum + " - Phase: " + game.getGamePhase());
                 //System.out.println("Time elapsed: " + (System.currentTimeMillis() - startTime)/1. + " ms");
             }
@@ -229,6 +229,7 @@ public class GameEnvironment {
         for (int i = 0; i < game.gamePlayers.size(); i++) {
             Player p = game.gamePlayers.get(i);
             if (p instanceof DQNNBot) ((DQNNBot) p).saveMetrics("D:\\Projects\\Project-2.1---Game\\src\\main\\java\\gameelements\\player\\player " + i);
+            //if (p instanceof DQNNBot) ((DQNNBot) p).saveNetworks("D:\\Projects\\Project-2.1---Game\\src\\main\\java\\gameelements\\player\\player " + i);
         }
 
     }
