@@ -69,7 +69,9 @@ public class Game extends GameObserver {
         for (Player p: gamePlayers) {
             p.reset(numStartingTroops);
         }
-        players = new PlayerList(new LinkedList<>(gamePlayers));
+        LinkedList<Player> playersInGame = new LinkedList<>(gamePlayers);
+        Collections.shuffle(playersInGame, random);
+        players = new PlayerList(playersInGame);
         conqueredCountries = new ArrayList<>();
     }
 

@@ -1,20 +1,18 @@
 package gameelements.player;
 
 import bot.Algorithms.MarkovChain.BattlePhaseEstimator;
+import bot.MachineLearning.NeuralNetwork.Activations.*;
 import bot.MachineLearning.NeuralNetwork.*;
-import bot.MachineLearning.NeuralNetwork.Activations.Pass;
-import bot.MachineLearning.NeuralNetwork.Activations.ReLu;
 import bot.MachineLearning.NeuralNetwork.Losses.Loss;
 import bot.MachineLearning.NeuralNetwork.Losses.MSE;
 import bot.MachineLearning.NeuralNetwork.Optimizers.Optimizer;
+import bot.MachineLearning.NeuralNetwork.Optimizers.RMSProp;
 import bot.MachineLearning.NeuralNetwork.Optimizers.SGD;
 import bot.Mathematics.LinearAlgebra.Vector;
-import com.sun.prism.shader.Solid_TextureYV12_AlphaTest_Loader;
 import environment.BorderSupplyFeatures;
 import environment.WolfFeatures;
 import gameelements.board.Country;
 import gameelements.game.Game;
-import gameelements.phases.GamePhase;
 
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -38,15 +36,15 @@ public class DQNNBot extends RiskBot {
 
     private int gameNumber;
 
-    private final static boolean trainingEnabled = false;
+    private final static boolean trainingEnabled = true;
 
     private final static double discountFactor = 0.8;
 
-    public final static boolean loadBestModel = true;
+    public final static boolean loadBestModel = false;
 
     Loss lossFunction = new MSE();
-    Optimizer optEst = new SGD(10e-4);
-    Optimizer optTarget = new SGD(10e-4);
+    Optimizer optEst = new RMSProp(10e-4, 0.9);
+    Optimizer optTarget = new RMSProp(10e-4, 0.9);
 
     int lag;
 
@@ -57,7 +55,7 @@ public class DQNNBot extends RiskBot {
     private final ExperienceReplayer expReplay = new ExperienceReplayer();
     private final int batchSize = 64;
 
-    private final double randomActionProbability = 0;
+    private final double randomActionProbability = 0.05;
     private Random random = new Random();
 
     public GameMetricCollector gameMetrics = new GameMetricCollector();
@@ -77,13 +75,16 @@ public class DQNNBot extends RiskBot {
     {
         turnMetrics.enableMetric("gameId");
         turnMetrics.enableMetric("totalNumTroops");
+        turnMetrics.enableMetric("totalReward");
     }
+
+    private double turnReward = 0;
 
     /**
      * algorithm and strategies for our risk bot
      */
     public DQNNBot(int id, int numTroopsInInventory, Game game) {
-        this(id, numTroopsInInventory, game, 3, 100);
+        this(id, numTroopsInInventory, game, 2, 100);
     }
 
     public DQNNBot(int id, int numTroopsInInventory, Game game, int numFeatures, int lag) {
@@ -93,15 +94,14 @@ public class DQNNBot extends RiskBot {
 
         if (loadBestModel) {
 
-            estimatorNetwork = Model.loadModel("src/main/java/gameelements/player/player 0-estimator.txt");
-            targetNetwork = Model.loadModel("src/main/java/gameelements/player/player 0-target.txt");
+            estimatorNetwork = Model.loadModel("src/main/java/gameelements/player/player 0-estimator-1000.txt");
+            targetNetwork = Model.loadModel("src/main/java/gameelements/player/player 0-target-1000.txt");
 
         } else {
 
             // dynamic network
             estimatorNetwork = new Model(numFeatures);
-            estimatorNetwork.addLayer(6, new ReLu());
-            estimatorNetwork.addLayer(3, new ReLu());
+            estimatorNetwork.addLayer(3, new TanH());
             estimatorNetwork.addLayer(2, new Pass());
 
             estimatorNetwork.compile(lossFunction, optEst);
@@ -110,8 +110,7 @@ public class DQNNBot extends RiskBot {
 
         // target approximation
         targetNetwork = new Model(numFeatures);
-        targetNetwork.addLayer(6, new ReLu());
-        targetNetwork.addLayer(3, new ReLu());
+        targetNetwork.addLayer(3, new TanH());
         targetNetwork.addLayer(2, new Pass());
 
         targetNetwork.compile(lossFunction, optTarget);
@@ -190,9 +189,10 @@ public class DQNNBot extends RiskBot {
                 optEst.init(estimatorNetwork);
 
                 // Calculate the reward obtained
-                double reward = 5*(getNumCountriesOwned() - numCountriesBeforeAttack);
-                if (reward == 0) reward += (countryFrom.getNumSoldiers() - numTroopsDefenderBeforeAttack);
-                if (reward == 0) reward = -1;
+                double reward = 2*(getNumCountriesOwned() - numCountriesBeforeAttack);
+                reward += (countryFrom.getNumSoldiers() - numTroopsDefenderBeforeAttack);
+                // Incremental average
+                turnReward += reward;
 
                 gameMetrics.addToMetric("lossInTroops", numTroopsDefenderBeforeAttack - countryFrom.getNumSoldiers());
                 gameMetrics.addToMetric("reward", reward);
@@ -258,8 +258,10 @@ public class DQNNBot extends RiskBot {
 
                 turnMetrics.addToMetric("gameId", gameNumber);
                 turnMetrics.addToMetric("totalNumTroops", getNumTroopsOwned());
+                turnMetrics.addToMetric("totalReward", turnReward);
 
                 turnNum = 0;
+                turnReward = 0;
 
                 currentGame.nextBattlePhase();
                 actionTaken = true;
@@ -314,7 +316,7 @@ public class DQNNBot extends RiskBot {
         double enemyTerritories = BorderSupplyFeatures.getTerritoriesFeature(countryTo.getOwner());
 
         int newCountryOwner = (countryTo.getOwner() == this) ? 1 : 0;
-        return new Vector(countryFrom.getNumSoldiers(), countryTo.getNumSoldiers(), newCountryOwner);
+        return new Vector((countryFrom.getNumSoldiers() - 1)/9., (countryTo.getNumSoldiers() - 1)/9.);
 
         //return new Vector(suitible, susceptible, ownArmies, ownTerritories, enemyArmies, enemyTerritories, enemyReinforcement, bestEnemy);
     }

@@ -11,7 +11,7 @@ import java.util.Map;
 
 public class TurnMetricCollector {
 
-    public static final String[] EXISTING_METRICS = {"gameId", "totalNumTroops"};
+    public static final String[] EXISTING_METRICS = {"gameId", "totalNumTroops", "totalReward"};
     private final HashMap<String, List<Double>> metrics;
 
     public TurnMetricCollector() {
@@ -62,6 +62,8 @@ public class TurnMetricCollector {
                 return "gameId";
             case "totalnumtroops":
                 return "totalNumTroops";
+            case "totalreward":
+                return "totalReward";
             default:
                 return "";
         }

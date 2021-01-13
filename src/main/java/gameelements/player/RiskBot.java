@@ -26,8 +26,32 @@ public class RiskBot extends Player {
 
     @Override
     public boolean onDistributionEvent(Country country) {
-        country = selectBestCountry();
+        country = selectRandomCountry();
         return super.onDistributionEvent(country);
+    }
+
+    private Country selectRandomCountry() {
+        List<Country> availableCountries = new ArrayList<>();
+        for (Country c: currentGame.getGameBoard().getCountries()) {
+            if (!c.hasOwner()) {
+                availableCountries.add(c);
+            }
+        }
+        Random r = new Random();
+        if (!(availableCountries.size() == 0)) {
+            int randomIndex = r.nextInt(availableCountries.size());
+            return availableCountries.get(randomIndex);
+        } else {
+            int randomIndex = r.nextInt(countriesOwned.size());
+            int i = 0;
+            for (Country c: countriesOwned) {
+                if (i == randomIndex) {
+                    return c;
+                }
+                i++;
+            }
+        }
+        return null;
     }
 
     private Country selectBestCountry() {
