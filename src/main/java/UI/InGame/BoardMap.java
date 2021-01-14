@@ -547,6 +547,10 @@ public class BoardMap {
     private void updateAllCountries() {
 
         Board board = game.getGameBoard();
+        for(SVGPath s : listOfPaths) {
+            s.setStyle("-fx-fill: grey");
+        }
+
         for(String strings: Settings.countries){
             Country c = board.getCountryFromName(strings);
             if (c.hasOwner()) {
